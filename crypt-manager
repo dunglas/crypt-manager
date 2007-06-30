@@ -1,0 +1,88 @@
+#!/usr/bin/python
+# vim: set fileencoding=utf-8 :
+# Copyright (C) 2007 Kévin Dunglas <dunglas@gmail.com>
+#
+# Authors:
+#  Kévin Dunglas
+#
+# This program is a part of a the Google Summer Of Code 2007
+# For futher information see :
+# http://code.google.com/soc/ubuntu/appinfo.html?csaid=EF4FCF874D88234
+#
+# This program is free software; you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation; either version 2 of the License, or (at your option) any later
+# version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+# details.
+#
+# You should have received a copy of the GNU General Public License along with
+# this program; if not, write to the Free Software Foundation, Inc., 59 Temple
+# Place, Suite 330, Boston, MA 02111-1307 USA
+
+import os
+import sys
+import gtk
+import gnome.ui
+import gtk.glade
+import cryptmanager
+
+APPNAME="crypt-manager"
+APPVERSION="0.1"
+
+if __name__ == '__main__':
+	# Command Line Interface
+	lif sys.argv[1] == "--help":
+		msg=APPNAME + """, an encrypted folder manager
+Options:
+--crypt DIRECTORY	encrypt directory
+--open DIRECTORY	open an encrypted folder
+--help			display this help message
+--close DIRECTORY	close an encrypted folder
+--uncrypt DIRECTORY	uncrypt encrypted folder
+--version		display version information"""
+
+		sys.exit (msg)
+
+	elif sys.argv[1] == "--version":
+		msg = APPNAME + " " + APPVERSION
+		sys.exit (msg)
+
+	elif sys.argv[1] == "--crypt" and len (sys.argv) == 3:
+		Crypt(sys.argv[2])
+
+	elif sys.argv[1] == "--close" and len (sys.argv) == 3:
+		Unmount(sys.argv[2])
+
+	elif sys.argv[1] == "--open" and len (sys.argv) == 3:
+		Mount(sys.argv[2])
+
+	elif sys.argv[1] == "--uncrypt" and len (sys.argv) == 3:
+		Uncrypt(sys.argv[2])
+
+	else:
+		msg = """Invalid option
+Try « """ + APPNAME + """ --help » to get more information"""
+		sys.exit(msg)
+
+	gtk.main()
+
+
+#	if os.access (".crypt", os.R_OK):
+		# Ask password
+#    		widgets = WidgetsWrapper('password')
+#		gtk.main()
+
+		# Mount the crypted partition
+
+#	elif os.access (".crypted", os.R_OK):
+	# umount
+#		widgets = WidgetsWrapper('password')
+#		gtk.main()
+	
+#	elif os.access (".", os.W_OK):
+	# encrypt
+
