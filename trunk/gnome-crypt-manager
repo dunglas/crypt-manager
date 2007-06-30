@@ -1,0 +1,169 @@
+#!/usr/bin/python
+# vim: set fileencoding=utf-8 :
+# Copyright (C) 2007 Kévin Dunglas <dunglas@gmail.com>
+#
+# Authors:
+#  Kévin Dunglas
+#
+# This program is a part of a the Google Summer Of Code 2007
+# For futher information see :
+# http://code.google.com/soc/ubuntu/appinfo.html?csaid=EF4FCF874D88234
+#
+# This program is free software; you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation; either version 2 of the License, or (at your option) any later
+# version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+# details.
+#
+# You should have received a copy of the GNU General Public License along with
+# this program; if not, write to the Free Software Foundation, Inc., 59 Temple
+# Place, Suite 330, Boston, MA 02111-1307 USA
+
+import os
+import sys
+import gtk
+import gnome.ui
+import gtk.glade
+
+APPNAME="gnome-crypt-manager"
+APPVERSION="0.1"
+
+class GladeHandlers:
+	def gtk_main_quit(event):
+		WidgetsWrapper.quit(widgets)
+
+	def on_manager_add_clicked(event):
+		Crypt()
+
+	def on_crypt_apply_clicked(event):
+		folder = Folder (widgets["crypt_path"].get_text(), widgets["crypt_size"].get_text())
+		manager.add(folder)
+
+	def on_crypt_cancel_clicked(event):
+		WidgetsWrapper.hide_or_quit(widgets, "crypt")
+
+	def on_password_cancel_clicked(event):
+		WidgetsWrapper.hide_or_quit(widgets, "password")
+
+class WidgetsWrapper:
+	def __init__(self):
+		"""Display a window"""
+		gnome.init(APPNAME, APPVERSION)
+		self.widgets = gtk.glade.XML('gnome-crypt-manager.glade')
+		self.widgets.signal_autoconnect(GladeHandlers.__dict__)
+
+	def __getitem__(self, key):
+		"""Allow to use widgets['widget_name'].action()"""
+		return self.widgets.get_widget(key)
+
+	def hide_or_quit(self, name):
+		"""Hide or quit the window"""
+		if widgets["manager"].get_property("visible"):
+			widgets[name].hide()
+		else:
+			self.quit()
+
+	def quit(self):
+		"""Quit the program"""
+		gtk.main_quit()
+class Folder:
+	def __init__(self, path=None, size=None):
+		"""Folder information"""
+		self.path = path
+		self.size = size
+
+
+class Manager:
+	def __init__(self):
+		"""Launch the Cypted Folder manager"""
+		widgets["manager"].show()
+
+	def add(folder):
+		"""Add a folder to the list"""
+		
+class Crypt:
+	def __init__(self, d = None):
+		"""Encrypt a directory"""
+		widgets["crypt"].show()
+		self.d = d
+		
+class Mount:
+	def __init__(self, d = None):
+		"""Mount an encrypted folder"""
+		# if .crypt exists and contain a ref to ~/.crypt/XXX this an unmounted crypted driectory
+		widgets["password"].show()
+		self.d = d
+
+class Unmount:
+	def __init__(self, d = None):
+		"""Unmount an encrypted folder"""
+		# if .crypted exists, this a mounted crypted directory
+		widgets["password"].show()
+		self.d = d
+
+if __name__ == '__main__':
+	widgets = WidgetsWrapper()
+
+	# Command Line Interface
+	if len(sys.argv) == 1:
+		manager = Manager()
+
+	elif sys.argv[1] == "--help":
+		msg=APPNAME + """, an encrypted folder manager
+Options:
+No option		launch the manager
+--crypt [DIRECTORY]	encrypt directory
+--open DIRECTORY	open an encrypted folder
+--help			display this help message
+--close DIRECTORY	close an encrypted folder
+--uncrypt DIRECTORY	uncrypt encrypted folder
+--version		display version information"""
+
+		sys.exit (msg)
+
+	elif sys.argv[1] == "--version":
+		msg = APPNAME + " " + APPVERSION
+		sys.exit (msg)
+
+	elif sys.argv[1] == "--crypt":
+		if len (sys.argv) == 3:
+				Crypt(sys.argv[2])
+		else:
+				Crypt()
+
+	elif sys.argv[1] == "--close" and len (sys.argv) == 3:
+		Unmount(sys.argv[2])
+
+	elif sys.argv[1] == "--open" and len (sys.argv) == 3:
+		Mount(sys.argv[2])
+
+	elif sys.argv[1] == "--uncrypt" and len (sys.argv) == 3:
+		Uncrypt(sys.argv[2])
+
+	else:
+		msg = """Invalid option
+Try « """ + APPNAME + """ --help » to get more information"""
+		sys.exit(msg)
+
+	gtk.main()
+
+
+#	if os.access (".crypt", os.R_OK):
+		# Ask password
+#    		widgets = WidgetsWrapper('password')
+#		gtk.main()
+
+		# Mount the crypted partition
+
+#	elif os.access (".crypted", os.R_OK):
+	# umount
+#		widgets = WidgetsWrapper('password')
+#		gtk.main()
+	
+#	elif os.access (".", os.W_OK):
+	# encrypt
+
