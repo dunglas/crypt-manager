@@ -38,22 +38,34 @@ MOUNT = "/bin/mount"
 UMOUNT = "/bin/umount"
 
 class Folder:
-	def __init__(self, path, passowrd, size, loop = None):
+	def __init__(self, path, password, size, loop = None):
 		"""Folder information"""
 		self.path = path
 		self.password = password
 		self.size = size
-		self.digest = digest()
+		self.digest = self.digest()
 		self.loop = loop
 
 	def digest(self):
-		return hashlib.sha256().new(self.path).hexdigest()
+		h = hashlib.sha256()
+		h.update(self.path)
+		return h.hexdigest()
+
+class Test:
+	def __init__(self, folder):
+		"""Encrypt a folder"""
+		self.folder = folder
+		print self.folder.password
+
+class IMGexists(Exception):
+	def __str__(self):
+		return "This is already a crypted folder"
 
 class Crypt:
 	def __init__(self, folder):
 		"""Encrypt a folder"""
 		self.folder = folder
-		create_img()
+		self.create_img()
 
 	def create_img(self):
 		"""Create a disk image"""
@@ -67,20 +79,23 @@ class Crypt:
 		mapper = "/dev/mapper/" + self.folder.digest
 
 		if os.path.exists(img):
-			raise IMGexists, "This is already a crypted folder"
+			raise IMGexists()
 		else:
 			subprocess.check_call([DD, "if=/dev/zero", "of=" + img, "bs=1M", "count=" + self.folder.size])
 			p = os.popen (LOSETUP + " -f")
 			for s in p:
-				loop = s
-			self.folder.loop = loop
+				self.folder.loop = s.strip("\n")
 			subprocess.check_call([LOSETUP, self.folder.loop, img])
 			
-			p1 = subprocess.Popen(["echo", "\"" + self.folder.password + "\""], stdout=PIPE)
-			p2 = subprocess.Popen([CRYPTSETUP, "--batch-mode", "luksFormat", self.folder.loop], stdin=p1.stdout, stdout=PIPE)
+			p1 = subprocess.Popen(["echo", "\"" + self.folder.password + "\""], stdout=subprocess.PIPE)
+			p2 = subprocess.Popen([CRYPTSETUP, "--batch-mode", "luksFormat", self.folder.loop], stdin=p1.stdout, stdout=subprocess.PIPE)
 			p2.communicate()[0]
+			#p2 = subprocess.check_call([CRYPTSETUP, "--batch-mode", "luksFormat", self.folder.loop])
 			
-			Mount(self.folder)
+			p1 = subprocess.Popen(["echo", "\"" + self.folder.password + "\""], stdout=subprocess.PIPE)
+			p2 = subprocess.Popen([CRYPTSETUP, "--batch-mode", "luksOpen", self.folder.loop, self.folder.digest], stdin=p1.stdout, stdout=subprocess.PIPE)
+			p2.communicate()
+			#subprocess.check_call([CRYPTSETUP, "luksOpen", self.folder.loop, self.folder.digest])
 
 			subprocess.check_call([MKFS, mapper])
 			subprocess.check_call([MOUNT, mapper, self.folder.path])
@@ -91,8 +106,8 @@ class Mount:
 		# if .crypt exists and contain a ref to ~/.crypt/XXX this an unmounted crypted driectory
 		self.folder = folder
 
-		p1 = subprocess.Popen(["echo", "\"" + self.folder.password + "\""], stdout=PIPE)
-		p2 = subprocess.Popen([CRYPTSETUP, "--batch-mode", "lukOpen", self.folder.loop, self.folder.digest], stdin=p1.stdout, stdout=PIPE)
+		p1 = subprocess.Popen(["echo", "\"" + self.folder.password + "\""], stdout=subprocess.PIPE)
+		p2 = subprocess.Popen([CRYPTSETUP, "--batch-mode", "luksOpen", self.folder.loop, self.folder.digest], stdin=p1.stdout, stdout=subprocess.PIPE)
 		p2.communicate()[0]
 
 class Unmount:
