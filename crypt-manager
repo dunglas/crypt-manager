@@ -53,17 +53,20 @@ Options:
 	elif len (sys.argv) == 4 and sys.argv[1] == "--crypt":
 		password = raw_input("Password: ")
 		folder = cryptmanager.Folder(sys.argv[2], password, sys.argv[3])
-		cryptmanager.Crypt(folder)
+		cryptmanager.Manage(folder).crypt()
 
 	elif len (sys.argv) == 3 and sys.argv[1] == "--close":
-		Unmount(sys.argv[2])
+		folder = cryptmanager.Folder(sys.argv[2])
+		cryptmanager.Manage(folder).unmount()
 
 	elif len (sys.argv) == 3 and sys.argv[1] == "--open":
 		password = raw_input("Password: ")
-		Mount(sys.argv[2])
+		folder = cryptmanager.Folder(sys.argv[2], password)
+		cryptmanager.Manage(folder).mount()
 
 	elif len (sys.argv) == 3 and sys.argv[1] == "--uncrypt":
-		Uncrypt(sys.argv[2])
+		folder = cryptmanager.Folder(sys.argv[2], password)
+		cryptmanager.Manage(folder).uncrypt()
 
 	else:
 		msg = """Invalid option
