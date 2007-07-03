@@ -35,40 +35,40 @@ APPVERSION="0.1"
 
 if __name__ == '__main__':
 	# Command Line Interface
-	lif sys.argv[1] == "--help":
+	if len (sys.argv) == 2 and sys.argv[1] == "--help":
 		msg=APPNAME + """, an encrypted folder manager
 Options:
---crypt DIRECTORY	encrypt directory
+--crypt DIRECTORY SIZE	encrypt directory
 --open DIRECTORY	open an encrypted folder
 --help			display this help message
 --close DIRECTORY	close an encrypted folder
 --uncrypt DIRECTORY	uncrypt encrypted folder
 --version		display version information"""
-
 		sys.exit (msg)
 
-	elif sys.argv[1] == "--version":
+	elif len (sys.argv) == 2 and sys.argv[1] == "--version":
 		msg = APPNAME + " " + APPVERSION
 		sys.exit (msg)
 
-	elif sys.argv[1] == "--crypt" and len (sys.argv) == 3:
-		Crypt(sys.argv[2])
+	elif len (sys.argv) == 4 and sys.argv[1] == "--crypt":
+		password = raw_input("Password: ")
+		folder = cryptmanager.Folder(sys.argv[2], password, sys.argv[3])
+		cryptmanager.Crypt(folder)
 
-	elif sys.argv[1] == "--close" and len (sys.argv) == 3:
+	elif len (sys.argv) == 3 and sys.argv[1] == "--close":
 		Unmount(sys.argv[2])
 
-	elif sys.argv[1] == "--open" and len (sys.argv) == 3:
+	elif len (sys.argv) == 3 and sys.argv[1] == "--open":
+		password = raw_input("Password: ")
 		Mount(sys.argv[2])
 
-	elif sys.argv[1] == "--uncrypt" and len (sys.argv) == 3:
+	elif len (sys.argv) == 3 and sys.argv[1] == "--uncrypt":
 		Uncrypt(sys.argv[2])
 
 	else:
 		msg = """Invalid option
 Try « """ + APPNAME + """ --help » to get more information"""
 		sys.exit(msg)
-
-	gtk.main()
 
 
 #	if os.access (".crypt", os.R_OK):
