@@ -29,6 +29,7 @@ import hashlib
 
 # http://forum.ubuntu-fr.org/viewtopic.php?pid=268552#p268552
 
+TMPDIR = "/tmp/cryptmanager"
 IMGDIR = os.environ['HOME'] + "/.config/cryptmanager"
 DD = "/bin/dd"
 LOSETUP = "/sbin/losetup"
@@ -37,14 +38,33 @@ MKFS = "/sbin/mkfs.ext3"
 MOUNT = "/bin/mount"
 UMOUNT = "/bin/umount"
 
+class IMGexists(Exception):
+	def __str__(self):
+		return "This is already a crypted folder"
+
+class BadPassword(Exception):
+	def __str__(self):
+		return "The password is wrong"
+
+class Util:
+	def rm(self, path):
+		"""Remove recursivly a directory"""
+		if os.path.exists(path):
+			for root, dirs, files in os.walk(path, topdown=False):
+				for name in files:
+					os.unlink(os.path.join(root, name))
+				for name in dirs:
+					os.rmdir(os.path.join(root, name))
+
 class Folder:
-	def __init__(self, path, password, size, loop = None):
+	def __init__(self, path, password = None, size = None, loop = None):
 		"""Folder information"""
 		self.path = path
 		self.password = password
 		self.size = size
 		self.digest = self.digest()
 		self.loop = loop
+		self.opened = False
 
 	def digest(self):
 		h = hashlib.sha256()
@@ -57,65 +77,103 @@ class Test:
 		self.folder = folder
 		print self.folder.password
 
-class IMGexists(Exception):
-	def __str__(self):
-		return "This is already a crypted folder"
-
-class Crypt:
+class Manage:
 	def __init__(self, folder):
-		"""Encrypt a folder"""
 		self.folder = folder
-		self.create_img()
+		self.img = os.path.join(IMGDIR, folder.digest)
+		self.mapper = "/dev/mapper/" + folder.digest
 
-	def create_img(self):
-		"""Create a disk image"""
-
+	def crypt(self):
+		"""Encrypt a folder"""
+		# Create ~/.config/cryptmanager if needed
+		# The disk images are stored here
 		if not os.path.exists(IMGDIR):
 			os.makedirs(IMGDIR)
+
+		# Create the mount point if needed
 		if not os.path.exists(self.folder.path):
 			os.makedirs(self.folder.path)
 
-		img = IMGDIR + "/" + self.folder.digest
-		mapper = "/dev/mapper/" + self.folder.digest
-
-		if os.path.exists(img):
+		# Test if the disk images (sha256 hash of the path name) already exists
+		if os.path.exists(self.img):
 			raise IMGexists()
 		else:
-			subprocess.check_call([DD, "if=/dev/zero", "of=" + img, "bs=1M", "count=" + self.folder.size])
-			p = os.popen (LOSETUP + " -f")
-			for s in p:
-				self.folder.loop = s.strip("\n")
-			subprocess.check_call([LOSETUP, self.folder.loop, img])
+			# Create the disk image
+			subprocess.check_call([DD, "if=/dev/zero", "of=" + self.img, "bs=1M", "count=" + self.folder.size])
+			self.losetup()
 			
+			# Crypt the disk image
 			p1 = subprocess.Popen(["echo", "\"" + self.folder.password + "\""], stdout=subprocess.PIPE)
 			p2 = subprocess.Popen([CRYPTSETUP, "--batch-mode", "luksFormat", self.folder.loop], stdin=p1.stdout, stdout=subprocess.PIPE)
 			p2.communicate()[0]
 			#p2 = subprocess.check_call([CRYPTSETUP, "--batch-mode", "luksFormat", self.folder.loop])
 			
-			p1 = subprocess.Popen(["echo", "\"" + self.folder.password + "\""], stdout=subprocess.PIPE)
-			p2 = subprocess.Popen([CRYPTSETUP, "--batch-mode", "luksOpen", self.folder.loop, self.folder.digest], stdin=p1.stdout, stdout=subprocess.PIPE)
-			p2.communicate()
-			#subprocess.check_call([CRYPTSETUP, "luksOpen", self.folder.loop, self.folder.digest])
+			self.open_img()
 
-			subprocess.check_call([MKFS, mapper])
-			subprocess.check_call([MOUNT, mapper, self.folder.path])
+			# Format the disk image
+			subprocess.check_call([MKFS, self.mapper])
+			
+			self.close_img()
+			self.delete_lo()
 
-class Mount:
-	def __init__(self, folder):
+
+
+	def mount(self):
 		"""Mount an encrypted folder"""
-		# if .crypt exists and contain a ref to ~/.crypt/XXX this an unmounted crypted driectory
-		self.folder = folder
+		# if .crypt exists and contain a ref to ~/.crypt/XXX this an unmounted crypted directory
 
-		p1 = subprocess.Popen(["echo", "\"" + self.folder.password + "\""], stdout=subprocess.PIPE)
-		p2 = subprocess.Popen([CRYPTSETUP, "--batch-mode", "luksOpen", self.folder.loop, self.folder.digest], stdin=p1.stdout, stdout=subprocess.PIPE)
-		p2.communicate()[0]
+		self.open_img()
+		# Mount
+		subprocess.check_call([MOUNT, self.mapper, self.folder.path])
+		self.folder.opened = True
 
-class Unmount:
-	def __init__(self, d):
+	def unmount(self):
 		"""Unmount an encrypted folder"""
 		# if .crypted exists, this a mounted crypted directory
-		mapper = "/dev/mapper/" + self.folder.digest
 
+
+		# Unmount
 		subprocess.check_call([UMOUNT, mapper])
+
+		self.close_img()
+		self.delete_lo()
+		self.folder.opened = False
+
+	def uncrypt(self):
+		"""Uncrypt a folder"""
+		tmp = os.path.join(TMPDIR, self.folder.digest)
+
+		# Delete /tmp/cryptmanager/DIGEST if already exists
+		Util().rm(tmp)
+
+		self.mount()
+		os.renames(self.folder.path, tmp)
+		self.unmount()
+		os.unlink(self.img)
+		os.renames(tmp, self.folder.path)
+
+	def losetup(self):
+		"""Set up the loop device"""
+		# Get the first unused /dev/loopX
+		p = os.popen (LOSETUP + " -f")
+		for s in p:
+			self.folder.loop = s.strip("\n")
+		# Set up the loop device
+		subprocess.check_call([LOSETUP, self.folder.loop, self.img])
+
+	def open_img(self):
+		"""Open the disk image"""
+		p1 = subprocess.Popen(["echo", "\"" + self.folder.password + "\""], stdout=subprocess.PIPE)
+		p2 = subprocess.Popen([CRYPTSETUP, "--batch-mode", "luksOpen", self.folder.loop, self.folder.digest], stdin=p1.stdout, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+		p2.communicate()
+		if p2.returncode > 0:
+			raise BadPassword()
+		#subprocess.check_call([CRYPTSETUP, "luksOpen", self.folder.loop, self.folder.digest])
+
+	def close_img(self):
+		"""Close the disk image"""
 		subprocess.check_call([CRYPTSETUP, "luksClose", self.folder.digest])
+
+	def delete_lo(self):
+		"""Delete the loop device"""
 		subprocess.check_call([LOSETUP, "-d", self.folder.loop])
