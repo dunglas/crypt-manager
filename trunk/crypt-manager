@@ -42,26 +42,12 @@ def save_data():
 
 
 def load_data():
-    try:
-        f = open(os.path.join(CACHE, "folders"), "wb")
-    except IOError:
+    if not os.path.exists(os.path.join(CACHE, "folders")):
         folders = cryptmanager.Folders()
-    try:
-        folders = cPickle.load(f)
-    except:
-        f.close()
-        i = 0
-        while i < 3:
-            try:
-                os.remove(os.path.join(CACHE, "folders"))
-                break
-            except:
-                time.sleep(1)
-                print "exception: n  %s, n  %s, n  %s n  when trying to remove \
-                file %s" % (sys.exc_info()[0], sys.exc_info()[1], \
-                sys.exc_info()[2], os.path.join(CACHE, "folders"))
-            i += 1
         return
+        
+    f = open(os.path.join(CACHE, "folders"), "wb")
+    folders = cPickle.load(f)
     f.close()
 
 
