@@ -29,9 +29,11 @@ import cPickle
 import time
 import cryptmanager
 
+
 APPNAME="crypt-manager"
 APPVERSION="0.1"
 CACHE = os.environ['HOME'] + "/.config/cryptmanager/cache"
+
 
 def save_data():
     if not os.path.exists(CACHE):

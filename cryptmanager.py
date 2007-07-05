@@ -38,6 +38,7 @@ MKFS = "/sbin/mkfs.ext3"
 MOUNT = "/bin/mount"
 UMOUNT = "/bin/umount"
 
+
 class IMGexists(Exception):
     def __str__(self):
         return "This is already a crypted folder"
@@ -46,6 +47,11 @@ class IMGexists(Exception):
 class BadPassword(Exception):
     def __str__(self):
         return "The password is wrong"
+
+
+class BadPassword(Exception):
+    def __str__(self):
+        return "This folder already exists"
 
 
 class Util:
@@ -71,7 +77,13 @@ class Folders:
                 raise AlreadyExists()
                 return
         self.li.append(Folder(path, password=None, size=None, loop=None))
-              
+        
+    def rem(self, path):
+        """Remove a folder"""
+        for f in self.li:
+            if f.path == path:
+                li.remove(f)
+
 
 class Folder:
     def __init__(self, path, password=None, size=None, loop=None):
