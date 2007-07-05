@@ -25,18 +25,56 @@
 
 import os
 import sys
-import gtk
-import gnome.ui
-import gtk.glade
+import cPickle
+import time
 import cryptmanager
 
 APPNAME="crypt-manager"
 APPVERSION="0.1"
+CACHE = os.environ['HOME'] + "/.config/cryptmanager/cache"
+
+def save_data():
+    if not os.path.exists(CACHE):
+        os.makedirs(CACHE)
+    f = open(os.path.join(CACHE, "folders"), "wb")
+    cPickle.dump(folders, f, protocol = cPickle.HIGHEST_PROTOCOL)
+    f.close()
+
+
+def load_data():
+    try:
+        f = open(os.path.join(CACHE, "folders"), "wb")
+    except IOError:
+        folders = cryptmanager.Folders()
+    try:
+        folders = cPickle.load(f)
+    except:
+        f.close()
+        i = 0
+        while i < 3:
+            try:
+                os.remove(os.path.join(CACHE, "folders"))
+                break
+            except:
+                time.sleep(1)
+                print "exception: n  %s, n  %s, n  %s n  when trying to remove \
+                file %s" % (sys.exc_info()[0], sys.exc_info()[1], \
+                sys.exc_info()[2], os.path.join(CACHE, "folders"))
+            i += 1
+        return
+    f.close()
+
+
+def exit(msg=None):
+    save_data()
+    sys.exit(msg)
 
 if __name__ == '__main__':
-	# Command Line Interface
-	if len (sys.argv) == 2 and sys.argv[1] == "--help":
-		msg=APPNAME + """, an encrypted folder manager
+    folders = load_data()
+
+    # Command Line Interface
+    if len(sys.argv) == 2 and sys.argv[1] == "--help":
+        msg = APPNAME + """, an encrypted folder manager
 Options:
 --crypt DIRECTORY SIZE	encrypt directory
 --open DIRECTORY	open an encrypted folder
@@ -44,48 +82,38 @@ Options:
 --close DIRECTORY	close an encrypted folder
 --uncrypt DIRECTORY	uncrypt encrypted folder
 --version		display version information"""
-		sys.exit (msg)
+        exit(msg)
 
-	elif len (sys.argv) == 2 and sys.argv[1] == "--version":
-		msg = APPNAME + " " + APPVERSION
-		sys.exit (msg)
+    elif len(sys.argv) == 2 and sys.argv[1] == "--test":
+        pass
 
-	elif len (sys.argv) == 4 and sys.argv[1] == "--crypt":
-		password = raw_input("Password: ")
-		folder = cryptmanager.Folder(sys.argv[2], password, sys.argv[3])
-		cryptmanager.Manage(folder).crypt()
+    elif len(sys.argv) == 2 and sys.argv[1] == "--version":
+        msg = APPNAME + " " + APPVERSION
+        exit(msg)
 
-	elif len (sys.argv) == 3 and sys.argv[1] == "--close":
-		folder = cryptmanager.Folder(sys.argv[2])
-		cryptmanager.Manage(folder).unmount()
+    elif len(sys.argv) == 4 and sys.argv[1] == "--crypt":
+        password = raw_input("Password: ")
+        folder = cryptmanager.Folder(sys.argv[2], password, sys.argv[3])
+        cryptmanager.Manage(folder).crypt()
+        exit()
 
-	elif len (sys.argv) == 3 and sys.argv[1] == "--open":
-		password = raw_input("Password: ")
-		folder = cryptmanager.Folder(sys.argv[2], password)
-		cryptmanager.Manage(folder).mount()
+    elif len(sys.argv) == 3 and sys.argv[1] == "--close":
+        folder = cryptmanager.Folder(sys.argv[2])
+        cryptmanager.Manage(folder).unmount()
+        exit()
 
-	elif len (sys.argv) == 3 and sys.argv[1] == "--uncrypt":
-		folder = cryptmanager.Folder(sys.argv[2], password)
-		cryptmanager.Manage(folder).uncrypt()
+    elif len(sys.argv) == 3 and sys.argv[1] == "--open":
+        password = raw_input("Password: ")
+        folder = cryptmanager.Folder(sys.argv[2], password)
+        cryptmanager.Manage(folder).mount()
+        exit()
 
-	else:
-		msg = """Invalid option
+    elif len(sys.argv) == 3 and sys.argv[1] == "--uncrypt":
+        folder = cryptmanager.Folder(sys.argv[2], password)
+        cryptmanager.Manage(folder).uncrypt()
+        exit()
+
+    else:
+        msg = """Invalid option
 Try « """ + APPNAME + """ --help » to get more information"""
-		sys.exit(msg)
-
-
-#	if os.access (".crypt", os.R_OK):
-		# Ask password
-#    		widgets = WidgetsWrapper('password')
-#		gtk.main()
-
-		# Mount the crypted partition
-
-#	elif os.access (".crypted", os.R_OK):
-	# umount
-#		widgets = WidgetsWrapper('password')
-#		gtk.main()
-	
-#	elif os.access (".", os.W_OK):
-	# encrypt
-
+        exit(msg)
