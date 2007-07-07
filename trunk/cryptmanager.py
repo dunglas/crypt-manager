@@ -70,18 +70,18 @@ class Folders:
         """Folders list"""
         self.li = []
 
-    def add(self, path, password=None, size=None, loop=None):
+    def add(self, folder):
         """Add a folder"""
         for f in self.li:
-            if f.path == path:
+            if f.path == folder.path:
                 raise AlreadyExists()
                 return
-        self.li.append(Folder(path, password=None, size=None, loop=None))
+        self.li.append(folder)
         
-    def rem(self, path):
+    def rem(self, folder):
         """Remove a folder"""
         for f in self.li:
-            if f.path == path:
+            if f.path == folder.path:
                 li.remove(f)
 
 
