@@ -36,9 +36,13 @@ CACHE = os.environ['HOME'] + "/.config/cryptmanager/cache"
 
 
 def save_data():
+    if folders == None:
+        return
     if not os.path.exists(CACHE):
         os.makedirs(CACHE)
-    f = open(os.path.join(CACHE, "folders"), "wb")
+    print folders
+    f = open(os.path.join(CACHE, "folders"), "w")
+    print f
     cPickle.dump(folders, f, protocol = cPickle.HIGHEST_PROTOCOL)
     f.close()
 
@@ -48,7 +52,7 @@ def load_data():
         folders = cryptmanager.Folders()
         return
         
-    f = open(os.path.join(CACHE, "folders"), "wb")
+    f = open(os.path.join(CACHE, "folders"), "r")
     folders = cPickle.load(f)
     f.close()
 
@@ -83,6 +87,7 @@ Options:
         password = raw_input("Password: ")
         folder = cryptmanager.Folder(sys.argv[2], password, sys.argv[3])
         cryptmanager.Manage(folder).crypt()
+        folders.add(folder)
         exit()
 
     elif len(sys.argv) == 3 and sys.argv[1] == "--close":
@@ -99,6 +104,7 @@ Options:
     elif len(sys.argv) == 3 and sys.argv[1] == "--uncrypt":
         folder = cryptmanager.Folder(sys.argv[2], password)
         cryptmanager.Manage(folder).uncrypt()
+        folders.rem(folder)
         exit()
 
     else:
