@@ -105,7 +105,7 @@ Options:
         try:
             cryptmanager.Manage(folder).mount()
         except AlreadyOpened:
-            exit(folder.path + " is already opened"
+            exit(folder.path + " is already opened")
         except BadPassword:
             exit("Your password is wrong")
         else:
