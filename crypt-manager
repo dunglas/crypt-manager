@@ -57,9 +57,9 @@ def load_data():
     f.close()
 
 
-def exit(msg=None):
+def exit(para=0):
     save_data()
-    sys.exit(msg)
+    sys.exit(para)
 
 if __name__ == '__main__':
     folders = load_data()
@@ -86,9 +86,13 @@ Options:
     elif len(sys.argv) == 4 and sys.argv[1] == "--crypt":
         password = raw_input("Password: ")
         folder = cryptmanager.Folder(sys.argv[2], password, sys.argv[3])
-        cryptmanager.Manage(folder).crypt()
-        folders.add(folder)
-        exit()
+        try:
+            cryptmanager.Manage(folder).crypt()
+        except IMGexists:
+            exit(folder.path + " is already a crypted folder.")
+        else:
+            folders.add(folder)
+            exit()
 
     elif len(sys.argv) == 3 and sys.argv[1] == "--close":
         folder = cryptmanager.Folder(sys.argv[2])
@@ -98,8 +102,14 @@ Options:
     elif len(sys.argv) == 3 and sys.argv[1] == "--open":
         password = raw_input("Password: ")
         folder = cryptmanager.Folder(sys.argv[2], password)
-        cryptmanager.Manage(folder).mount()
-        exit()
+        try:
+            cryptmanager.Manage(folder).mount()
+        except AlreadyOpened:
+            exit(folder.path + " is already opened"
+        except BadPassword:
+            exit("Your password is wrong")
+        else:
+            exit()
 
     elif len(sys.argv) == 3 and sys.argv[1] == "--uncrypt":
         folder = cryptmanager.Folder(sys.argv[2], password)
