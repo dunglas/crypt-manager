@@ -49,14 +49,15 @@ class BadPassword(Exception):
         return "The password is wrong"
 
 
-class BadPassword(Exception):
+class AlreadyExists(Exception):
     def __str__(self):
         return "This folder already exists"
+
 
 class AlreadyOpened(Exception):
     def __str__(self):
             return "This folder is already opened"
-
+            
 class Util:
     def rm(self, path):
         """Remove recursivly a directory"""
@@ -66,7 +67,6 @@ class Util:
                     os.unlink(os.path.join(root, name))
                 for name in dirs:
                     os.rmdir(os.path.join(root, name))
-
 
 class Folders:
     def __init__(self):
@@ -85,7 +85,7 @@ class Folders:
         """Remove a folder"""
         for f in self.li:
             if f.path == folder.path:
-                li.remove(f)
+                self.li.remove(f)
 
 
 class Folder:
