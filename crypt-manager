@@ -32,9 +32,8 @@ import cryptmanager
 APPNAME="crypt-manager"
 APPVERSION="0.1"
 CACHE = os.environ['HOME'] + "/.config/cryptmanager/cache"
-folders = None
 
-def save_data():
+def save_data(folders):
     if folders == None:
         return
     if not os.path.exists(CACHE):
@@ -43,23 +42,21 @@ def save_data():
     cPickle.dump(folders, f, protocol = cPickle.HIGHEST_PROTOCOL)
     f.close()
 
-
 def load_data():
     if not os.path.exists(os.path.join(CACHE, "folders")):
-        folders = cryptmanager.Folders()
-        return
-        
+        return cryptmanager.Folders()
     f = open(os.path.join(CACHE, "folders"), "r")
     folders = cPickle.load(f)
     f.close()
+    return folders
 
 
-def exit(para=0):
-    save_data()
+def exit(folders, para=0):
+    save_data(folders)
     sys.exit(para)
 
 if __name__ == '__main__':
-    load_data()
+    folders = load_data()
     
     # Command Line Interface
     if len(sys.argv) == 2 and sys.argv[1] == "--help":
@@ -71,52 +68,65 @@ Options:
 --close DIRECTORY	close an encrypted folder
 --uncrypt DIRECTORY	uncrypt encrypted folder
 --version		display version information"""
-        exit(msg)
+        exit(folders, msg)
 
-    elif len(sys.argv) == 2 and sys.argv[1] == "--test":
-        folders.add(cryptmanager.Folder("/tmp2"))
+    elif len(sys.argv) >= 2 and sys.argv[1] == "--test":
         print folders.li
-        exit()
-
+        if len(sys.argv) == 3:
+            print folders.get(sys.argv[2]).opened
+        
     elif len(sys.argv) == 2 and sys.argv[1] == "--version":
         msg = APPNAME + " " + APPVERSION
-        exit(msg)
+        exit(folders, msg)
 
     elif len(sys.argv) == 4 and sys.argv[1] == "--crypt":
         password = raw_input("Password: ")
-        folder = cryptmanager.Folder(sys.argv[2], password, sys.argv[3])
+        folder = cryptmanager.Folder(sys.argv[2], sys.argv[3])
         try:
-            cryptmanager.Manage(folder).crypt()
-        except IMGexists:
-            exit(folder.path + " is already a crypted folder.")
+            cryptmanager.Manage(folder).crypt(password)
+        except cryptmanager.IMGexists:
+            exit(folders, folder.path + " is already a crypted folder.")
         else:
             folders.add(folder)
-            exit()
+            print folder.path
+            exit(folders)
 
     elif len(sys.argv) == 3 and sys.argv[1] == "--close":
-        folder = cryptmanager.Folder(sys.argv[2])
-        cryptmanager.Manage(folder).unmount()
-        exit()
+        try:
+            folder = folders.get(sys.argv[2])
+        except cryptmanager.Uncrypted:
+            exit(folders, "This is not a crypted direcotry")
+        try:
+            folder = cryptmanager.Manage(folder).unmount()
+        except cryptmanager.NotOpened:
+            exit(folders, "This folder is not opened")
+        folders.update(folder)
+        exit(folders)
 
     elif len(sys.argv) == 3 and sys.argv[1] == "--open":
-        password = raw_input("Password: ")
-        folder = cryptmanager.Folder(sys.argv[2], password)
         try:
-            cryptmanager.Manage(folder).mount()
-        except AlreadyOpened:
-            exit(folder.path + " is already opened")
-        except BadPassword:
-            exit("Your password is wrong")
+            folder = folders.get(sys.argv[2])
+        except cryptmanager.Uncrypted:
+            exit(folders, "This is not a crypted direcotry")
+        password = raw_input("Password: ")
+        try:
+            folder = cryptmanager.Manage(folder).mount(password)
+        except cryptmanager.AlreadyOpened:
+            exit(folders, folder.path + " is already opened")
+        except cryptmanager.BadPassword:
+            exit(folders, "Your password is wrong")
         else:
-            exit()
+            folders.update(folder)
+            exit(folders)
 
     elif len(sys.argv) == 3 and sys.argv[1] == "--uncrypt":
-        folder = cryptmanager.Folder(sys.argv[2], password)
-        cryptmanager.Manage(folder).uncrypt()
+        folder = folders.get(sys.argv[2])
+        password = raw_input("Password: ")
+        cryptmanager.Manage(folder).uncrypt(password)
         folders.rem(folder)
-        exit()
+        exit(folders)
 
     else:
         msg = """Invalid option
 Try « """ + APPNAME + """ --help » to get more information"""
-        exit(msg)
+        exit(folders, msg)
