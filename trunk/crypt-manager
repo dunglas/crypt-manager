@@ -26,16 +26,15 @@
 import os
 import sys
 import cPickle
-import time
 import cryptmanager
 
 
 APPNAME="crypt-manager"
 APPVERSION="0.1"
 CACHE = os.environ['HOME'] + "/.config/cryptmanager/cache"
+folders = None
 
-
-def save_data(folders):
+def save_data():
     if folders == None:
         return
     if not os.path.exists(CACHE):
@@ -53,7 +52,6 @@ def load_data():
     f = open(os.path.join(CACHE, "folders"), "r")
     folders = cPickle.load(f)
     f.close()
-    return folders
 
 
 def exit(para=0):
@@ -61,8 +59,8 @@ def exit(para=0):
     sys.exit(para)
 
 if __name__ == '__main__':
-   #load_data()
-
+    load_data()
+    
     # Command Line Interface
     if len(sys.argv) == 2 and sys.argv[1] == "--help":
         msg = APPNAME + """, an encrypted folder manager
@@ -76,10 +74,9 @@ Options:
         exit(msg)
 
     elif len(sys.argv) == 2 and sys.argv[1] == "--test":
-        folders = load_data()
-        folders.rem(cryptmanager.Folder("/tmp2"))
+        folders.add(cryptmanager.Folder("/tmp2"))
         print folders.li
-        save_data(folders)
+        exit()
 
     elif len(sys.argv) == 2 and sys.argv[1] == "--version":
         msg = APPNAME + " " + APPVERSION
