@@ -35,14 +35,12 @@ APPVERSION="0.1"
 CACHE = os.environ['HOME'] + "/.config/cryptmanager/cache"
 
 
-def save_data():
+def save_data(folders):
     if folders == None:
         return
     if not os.path.exists(CACHE):
         os.makedirs(CACHE)
-    print folders
     f = open(os.path.join(CACHE, "folders"), "w")
-    print f
     cPickle.dump(folders, f, protocol = cPickle.HIGHEST_PROTOCOL)
     f.close()
 
@@ -55,6 +53,7 @@ def load_data():
     f = open(os.path.join(CACHE, "folders"), "r")
     folders = cPickle.load(f)
     f.close()
+    return folders
 
 
 def exit(para=0):
@@ -62,7 +61,7 @@ def exit(para=0):
     sys.exit(para)
 
 if __name__ == '__main__':
-    folders = load_data()
+   #load_data()
 
     # Command Line Interface
     if len(sys.argv) == 2 and sys.argv[1] == "--help":
@@ -77,7 +76,10 @@ Options:
         exit(msg)
 
     elif len(sys.argv) == 2 and sys.argv[1] == "--test":
-        pass
+        folders = load_data()
+        folders.rem(cryptmanager.Folder("/tmp2"))
+        print folders.li
+        save_data(folders)
 
     elif len(sys.argv) == 2 and sys.argv[1] == "--version":
         msg = APPNAME + " " + APPVERSION
