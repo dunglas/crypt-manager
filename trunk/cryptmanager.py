@@ -26,6 +26,7 @@
 import subprocess
 import os
 import hashlib
+import shutil
 
 # http://forum.ubuntu-fr.org/viewtopic.php?pid=268552#p268552
 
@@ -57,20 +58,46 @@ class AlreadyExists(Exception):
 class AlreadyOpened(Exception):
     def __str__(self):
             return "This folder is already opened"
+
+
+class Uncrypted(Exception):
+    def __str__(self):
+            return "This folder is not crypted"
+
+class NotOpened(Exception):
+    def __str__(self):
+            return "This folder is not opened"
+     
+           
+class LoError(Exception):
+    def __str__(self):
+            return "No loopback device available" 
             
 class Util:
     def rm(self, path):
         """Remove recursivly a directory"""
         if os.path.exists(path):
-            for root, dirs, files in os.walk(path, topdown=False):
-                for name in files:
-                    os.unlink(os.path.join(root, name))
-                for name in dirs:
-                    os.rmdir(os.path.join(root, name))
+            shutil.rmtree(path)
+
+    def fullpath(self, path):
+        """Expand a path"""
+        path = os.path.expanduser(path)
+        path = os.path.realpath(path)
+        path = os.path.normpath(path)
+        return path
+        
+    def mv(self, src, dst):
+        for f in os.listdir(src):
+        
+            if os.path.isdir(os.path.join(src, f)):
+                shutil.copytree(os.path.join(src, f), dst)
+            if os.path.isfile(os.path.join(src, f)):
+                shutil.copy2(os.path.join(src, f), dst)
 
 class Folders:
+    """Folders list"""
+    
     def __init__(self):
-        """Folders list"""
         self.li = []
 
     def add(self, folder):
@@ -80,19 +107,34 @@ class Folders:
                 raise AlreadyExists()
                 return
         self.li.append(folder)
+        print "Added..."
         
     def rem(self, folder):
         """Remove a folder"""
         for f in self.li:
             if f.path == folder.path:
                 self.li.remove(f)
+                print "Removed..."
+    
+    def update(self, folder):
+        """Update a folder"""
+        self.rem(folder)
+        self.add(folder)
+    
+    def get(self, path):
+        """Get a folder"""
+        path = Util().fullpath(path)
+        for f in self.li:
+            if f.path == path:
+                return f
+        raise Uncrypted()
 
 
 class Folder:
-    def __init__(self, path, password=None, size=None, loop=None):
-        """Folder information"""
-        self.path = path
-        self.password = password
+    """Folder information"""
+    
+    def __init__(self, path, size, loop=None):
+        self.path = Util().fullpath(path)
         self.size = size
         self.digest = self.digest()
         self.loop = loop
@@ -115,12 +157,14 @@ class Test:
 
 
 class Manage:
+    """Operations on a folder"""
+    
     def __init__(self, folder):
         self.folder = folder
         self.img = os.path.join(IMGDIR, folder.digest)
         self.mapper = "/dev/mapper/" + folder.digest
 
-    def crypt(self):
+    def crypt(self, password):
         """Encrypt a folder"""
         # Create ~/.config/cryptmanager if needed
         # The disk images are stored here
@@ -138,24 +182,31 @@ class Manage:
             # Create the disk image
             subprocess.check_call([DD, "if=/dev/zero", "of=" + self.img, "bs=1M", "count=" + self.folder.size])
             self.losetup()
+            
+            # Backup existing data
+            tmp = os.path.join(TMPDIR, self.folder.digest)
 
+            # Delete /tmp/cryptmanager/DIGEST if already exists
+            Util().rm(tmp)
+            shutil.copytree(self.folder.path, tmp)
             # Crypt the disk image
-            p1 = subprocess.Popen(["echo", "\"" + self.folder.password + "\""], stdout=subprocess.PIPE)
+            p1 = subprocess.Popen(["echo", "\"" + password + "\""], stdout=subprocess.PIPE)
             p2 = subprocess.Popen([CRYPTSETUP, "--batch-mode", "luksFormat", self.folder.loop], stdin=p1.stdout, stdout=subprocess.PIPE)
             p2.communicate()[0]
             #p2 = subprocess.check_call([CRYPTSETUP, "--batch-mode", "luksFormat", self.folder.loop])
 
-            self.open_img()
-
+            self.open_img(password)
+            
             # Format the disk image
             subprocess.check_call([MKFS, self.mapper])
+            
+            # Copy existing data
+            Util().mv(tmp, self.folder.path)
 
             self.close_img()
             self.delete_lo()
 
-
-
-    def mount(self):
+    def mount(self, password):
         """Mount an encrypted folder"""
         # if .crypt exists and contain a ref to ~/.crypt/XXX
         # this an unmounted crypted directory
@@ -163,35 +214,54 @@ class Manage:
         if self.folder.opened:
             raise AlreadyOpened()
             return
-        self.open_img()
+        try:
+            self.open_img(password)
+        except BadPassword:
+            raise BadPassword()
+            return
         # Mount
         subprocess.check_call([MOUNT, self.mapper, self.folder.path])
         self.folder.opened = True
+        print self.folder.loop
+        
+        return self.folder
 
     def unmount(self):
         """Unmount an encrypted folder"""
-        # if .crypted exists, this a mounted crypted directory
-
+        print self.folder.loop
+        
+        if not self.folder.opened:
+            raise NotOpened()
+            return
 
         # Unmount
-        subprocess.check_call([UMOUNT, mapper])
+        subprocess.check_call([UMOUNT, self.mapper])
 
         self.close_img()
         self.delete_lo()
         self.folder.opened = False
+        
+        return self.folder
 
-    def uncrypt(self):
+    def uncrypt(self, password):
         """Uncrypt a folder"""
         tmp = os.path.join(TMPDIR, self.folder.digest)
 
         # Delete /tmp/cryptmanager/DIGEST if already exists
         Util().rm(tmp)
 
-        self.mount()
-        os.renames(self.folder.path, tmp)
+        try:
+            self.mount(password)
+        except AlreadyOpened:
+            pass
+        except BadPassword:
+            raise BadPassword()
+            return 
+        shutil.copytree(self.folder.path, tmp)
         self.unmount()
         os.unlink(self.img)
-        os.renames(tmp, self.folder.path)
+        shutil.rmtree(self.folder.path)
+        shutil.move(tmp, self.folder.path)
 
     def losetup(self):
         """Set up the loop device"""
@@ -200,11 +270,14 @@ class Manage:
         for s in p:
             self.folder.loop = s.strip("\n")
         # Set up the loop device
-        subprocess.check_call([LOSETUP, self.folder.loop, self.img])
+        r = subprocess.call([LOSETUP, self.folder.loop, self.img])
+        if r is not 0:
+            raise LoError()
 
-    def open_img(self):
+    def open_img(self, password):
         """Open the disk image"""
-        p1 = subprocess.Popen(["echo", "\"" + self.folder.password + "\""], \
+        self.losetup()
+        p1 = subprocess.Popen(["echo", "\"" + password + "\""], \
             stdout=subprocess.PIPE)
         p2 = subprocess.Popen([CRYPTSETUP, "--batch-mode", "luksOpen", \
             self.folder.loop, self.folder.digest], stdin=p1.stdout, \
@@ -221,4 +294,6 @@ class Manage:
 
     def delete_lo(self):
         """Delete the loop device"""
+        print self.folder.loop
         subprocess.check_call([LOSETUP, "-d", self.folder.loop])
+        self.folder.loop = None
