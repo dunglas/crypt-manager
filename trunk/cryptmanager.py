@@ -53,6 +53,9 @@ class BadPassword(Exception):
     def __str__(self):
         return "This folder already exists"
 
+class AlreadyOpened(Exception):
+    def __str__(self):
+            return "This folder is already opened"
 
 class Util:
     def rm(self, path):
@@ -156,7 +159,10 @@ class Manage:
         """Mount an encrypted folder"""
         # if .crypt exists and contain a ref to ~/.crypt/XXX
         # this an unmounted crypted directory
-
+        
+        if self.folder.opened:
+            raise AlreadyOpened()
+            return
         self.open_img()
         # Mount
         subprocess.check_call([MOUNT, self.mapper, self.folder.path])
