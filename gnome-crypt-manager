@@ -36,7 +36,7 @@ CACHE = os.environ['HOME'] + "/.config/cryptmanager/cache"
 
 class GladeHandlers:
     def gtk_main_quit(event):
-        WidgetsWrapper.quit(widgets)
+        widgets_wrapper.quit(widgets)
 
     def on_manager_add_clicked(event):
         Crypt()
@@ -46,22 +46,14 @@ class GladeHandlers:
         manager.add(folder)
 
     def on_crypt_cancel_clicked(event):
-        WidgetsWrapper.hide_or_quit(widgets, "crypt")
+        widgets_wrapper.hide_or_quit(widgets, "crypt")
 
     def on_password_cancel_clicked(event):
-        WidgetsWrapper.hide_or_quit(widgets, "password")
+        widgets_wrapper.hide_or_quit(widgets, "password")
     
-    def on_crypt_open_clicked(event):
-        #widgets["crypt"].hide()
-        widgets["filechooserdialog"].show()
-    
-    def on_crypt_open_clicked(event):
-        widgets["filechooserdialog"].hide()
-        
-    def on_filechooserdialog_open_clicked(event):
-        
 
-class WidgetsWrapper:
+
+class widgets_wrapper:
     def __init__(self):
         """Display a window"""
         gnome.init(APPNAME, APPVERSION)
@@ -108,10 +100,10 @@ class Mount:
         try:
             cryptmanager.Manage(folder).crypt(password)
         except cryptmanager.IMGexists:
-            exit(folders, folder.path + " is already a crypted folder.")
+            exit(folder.path + " is already a crypted folder.")
         else:
             folders.add(folder)
-            exit(folders)
+            exit()
 
 
 class Unmount:
@@ -121,7 +113,7 @@ class Unmount:
         self.d = d
 
 
-def save_data(folders):
+def save_data():
     if folders == None:
         return
     if not os.path.exists(CACHE):
@@ -140,14 +132,14 @@ def load_data():
     return folders
 
 
-def exit(folders, para=0):
-    save_data(folders)
+def exit(para=0):
+    save_data()
     sys.exit(para)
 
 
 if __name__ == '__main__':
     folders = load_data()
-    widgets = WidgetsWrapper()
+    widgets = widgets_wrapper()
     
     # Command Line Interface
     if len(sys.argv) == 1:
@@ -162,11 +154,11 @@ Options:
 --close [DIRECTORY]         close an encrypted folder
 --uncrypt [DIRECTORY]       uncrypt encrypted folder
 --version                   display version information"""
-        exit(folders, msg)
+        exit(msg)
         
     elif len(sys.argv) == 2 and sys.argv[1] == "--version":
         msg = APPNAME + " " + APPVERSION
-        exit(folders, msg)
+        exit(msg)
 
     elif len(sys.argv) >= 2 and len(sys.argv) <= 4 and sys.argv[1] == "--crypt":
         pass
@@ -175,40 +167,40 @@ Options:
         try:
             folder = folders.get(sys.argv[2])
         except cryptmanager.Uncrypted:
-            exit(folders, "This is not a crypted direcotry")
+            exit("This is not a crypted direcotry")
         try:
             folder = cryptmanager.Manage(folder).unmount()
         except cryptmanager.NotOpened:
-            exit(folders, "This folder is not opened")
+            exit("This folder is not opened")
         folders.update(folder)
-        exit(folders)
+        exit()
 
     elif len(sys.argv) == 3 and sys.argv[1] == "--open":
         try:
             folder = folders.get(sys.argv[2])
         except cryptmanager.Uncrypted:
-            exit(folders, "This is not a crypted direcotry")
+            exit("This is not a crypted direcotry")
         password = raw_input("Password: ")
         try:
             folder = cryptmanager.Manage(folder).mount(password)
         except cryptmanager.AlreadyOpened:
-            exit(folders, folder.path + " is already opened")
+            exit(folder.path + " is already opened")
         except cryptmanager.BadPassword:
-            exit(folders, "Your password is wrong")
+            exit("Your password is wrong")
         else:
             folders.update(folder)
-            exit(folders)
+            exit()
 
     elif len(sys.argv) == 3 and sys.argv[1] == "--uncrypt":
         folder = folders.get(sys.argv[2])
         password = raw_input("Password: ")
         cryptmanager.Manage(folder).uncrypt(password)
         folders.rem(folder)
-        exit(folders)
+        exit()
 
     else:
         msg = """Invalid option
 Try « """ + APPNAME + """ --help » to get more information"""
-        exit(folders, msg)
+        exit(msg)
 
     gtk.main()
