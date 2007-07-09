@@ -36,24 +36,44 @@ CACHE = os.environ['HOME'] + "/.config/cryptmanager/cache"
 
 class GladeHandlers:
     def gtk_main_quit(event):
-        widgets_wrapper.quit(widgets)
+        WidgetsWrapper.quit(widgets)
 
     def on_manager_add_clicked(event):
         Crypt()
 
     def on_crypt_apply_clicked(event):
-        folder = Folder (widgets["crypt_path"].get_text(), widgets["crypt_size"].get_text())
-        manager.add(folder)
+        path = widgets["crypt_path"].get_text()
+        size = widgets["crypt_size"].get_value_as_int()
+        if Valid().crypt(path, size):
+            widgets["password"].show()
+            Encrypt(path, size)
 
     def on_crypt_cancel_clicked(event):
-        widgets_wrapper.hide_or_quit(widgets, "crypt")
+        WidgetsWrapper.hide_or_quit(widgets, "crypt")
 
     def on_password_cancel_clicked(event):
-        widgets_wrapper.hide_or_quit(widgets, "password")
+        WidgetsWrapper.hide_or_quit(widgets, "password")
     
+    def on_password_apply_clicked(event):
+        self.encrypt = widgets["password_password"].get_text()
+        widgets["password"].hide()
+    
+    def on_crypt_open_clicked(event):
+        widgets["filechooserdialog"].show()
+        
+    def on_filechooserdialog_cancel_clicked(event):
+        widgets["filechooserdialog"].hide()
+    
+    def on_filechooserdialog_open_clicked(event):
+        path = widgets["filechooserdialog"].get_filename()
+        widgets["crypt_path"].set_text(path)
+        widgets["filechooserdialog"].hide()
+
+    def on_error_ok_clicked(event):
+        widgets["error"].hide()
 
 
-class widgets_wrapper:
+class WidgetsWrapper:
     def __init__(self):
         """Display a window"""
         gnome.init(APPNAME, APPVERSION)
@@ -87,9 +107,46 @@ class Manager:
 
 
 class Crypt:
+    """Encrypted folder chooser"""
     def __init__(self, path=None, size=None):
-        """Encrypt a directory"""
+        if path is not None and os.path.exists(path):
+            widgets["crypt_path"].set_text(path)
+        if size is not None and size.isdigit():
+            widgets["crypt_size"].set_value(size)
         widgets["crypt"].show()
+    
+class Valid:
+    """Validation"""
+    def error_box(self, msg):
+        #"""Display an error box"
+        widgets["error_error"].set_text(msg)
+        widgets["error"].show()
+
+    def crypt(self, path, size):
+        """Validation for the crypt window"""
+        
+        if not os.path.exists(path):
+            self.error_box("You must select a valid folder")
+            return False
+        if size == 0:
+            self.error_box("The size of your crypted folder cannot be null")
+            return False
+        return True
+    
+class Encrypt:
+    """Ask for the password and encrypt a folder while displaying a progress bar"""
+    
+    def __init__(self, path, size, password):
+        folder = cryptmanager.Folder(path, size)
+        password = Pass
+        try:
+            cryptmanager.Manage(folder).crypt(password)
+        except cryptmanager.IMGexists:
+            Valid().error_box(folder.path + " is already a crypted folder.")
+            #exit(folder.path + " is already a crypted folder.")
+        else:
+            folders.add(folder)
+            exit()
 
 
 class Mount:
@@ -139,7 +196,7 @@ def exit(para=0):
 
 if __name__ == '__main__':
     folders = load_data()
-    widgets = widgets_wrapper()
+    widgets = WidgetsWrapper()
     
     # Command Line Interface
     if len(sys.argv) == 1:
@@ -161,7 +218,7 @@ Options:
         exit(msg)
 
     elif len(sys.argv) >= 2 and len(sys.argv) <= 4 and sys.argv[1] == "--crypt":
-        pass
+        c = Crypt()
 
     elif len(sys.argv) == 3 and sys.argv[1] == "--close":
         try:
