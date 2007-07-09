@@ -42,6 +42,7 @@ def save_data(folders):
     cPickle.dump(folders, f, protocol = cPickle.HIGHEST_PROTOCOL)
     f.close()
 
+
 def load_data():
     if not os.path.exists(os.path.join(CACHE, "folders")):
         return cryptmanager.Folders()
@@ -54,6 +55,7 @@ def load_data():
 def exit(folders, para=0):
     save_data(folders)
     sys.exit(para)
+
 
 if __name__ == '__main__':
     folders = load_data()
@@ -88,7 +90,6 @@ Options:
             exit(folders, folder.path + " is already a crypted folder.")
         else:
             folders.add(folder)
-            print folder.path
             exit(folders)
 
     elif len(sys.argv) == 3 and sys.argv[1] == "--close":
