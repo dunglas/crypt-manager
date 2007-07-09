@@ -25,145 +25,190 @@
 
 import os
 import sys
+import cPickle
 import gtk
 import gnome.ui
 import gtk.glade
 
 APPNAME="gnome-crypt-manager"
 APPVERSION="0.1"
+CACHE = os.environ['HOME'] + "/.config/cryptmanager/cache"
 
 class GladeHandlers:
-	def gtk_main_quit(event):
-		WidgetsWrapper.quit(widgets)
+    def gtk_main_quit(event):
+        WidgetsWrapper.quit(widgets)
 
-	def on_manager_add_clicked(event):
-		Crypt()
+    def on_manager_add_clicked(event):
+        Crypt()
 
-	def on_crypt_apply_clicked(event):
-		folder = Folder (widgets["crypt_path"].get_text(), widgets["crypt_size"].get_text())
-		manager.add(folder)
+    def on_crypt_apply_clicked(event):
+        folder = Folder (widgets["crypt_path"].get_text(), widgets["crypt_size"].get_text())
+        manager.add(folder)
 
-	def on_crypt_cancel_clicked(event):
-		WidgetsWrapper.hide_or_quit(widgets, "crypt")
+    def on_crypt_cancel_clicked(event):
+        WidgetsWrapper.hide_or_quit(widgets, "crypt")
 
-	def on_password_cancel_clicked(event):
-		WidgetsWrapper.hide_or_quit(widgets, "password")
+    def on_password_cancel_clicked(event):
+        WidgetsWrapper.hide_or_quit(widgets, "password")
+    
+    def on_crypt_open_clicked(event):
+        #widgets["crypt"].hide()
+        widgets["filechooserdialog"].show()
+    
+    def on_crypt_open_clicked(event):
+        widgets["filechooserdialog"].hide()
+        
+    def on_filechooserdialog_open_clicked(event):
+        
 
 class WidgetsWrapper:
-	def __init__(self):
-		"""Display a window"""
-		gnome.init(APPNAME, APPVERSION)
-		self.widgets = gtk.glade.XML('gnome-crypt-manager.glade')
-		self.widgets.signal_autoconnect(GladeHandlers.__dict__)
+    def __init__(self):
+        """Display a window"""
+        gnome.init(APPNAME, APPVERSION)
+        self.widgets = gtk.glade.XML("gnome-crypt-manager.glade")
+        self.widgets.signal_autoconnect(GladeHandlers.__dict__)
 
-	def __getitem__(self, key):
-		"""Allow to use widgets['widget_name'].action()"""
-		return self.widgets.get_widget(key)
+    def __getitem__(self, key):
+        """Allow to use widgets['widget_name'].action()"""
+        return self.widgets.get_widget(key)
 
-	def hide_or_quit(self, name):
-		"""Hide or quit the window"""
-		if widgets["manager"].get_property("visible"):
-			widgets[name].hide()
-		else:
-			self.quit()
+    def hide_or_quit(self, name):
+        """Hide or quit the window"""
+        if widgets["manager"].get_property("visible"):
+            widgets[name].hide()
+        else:
+            self.quit()
 
-	def quit(self):
-		"""Quit the program"""
-		gtk.main_quit()
-class Folder:
-	def __init__(self, path=None, size=None):
-		"""Folder information"""
-		self.path = path
-		self.size = size
+    def quit(self):
+        """Quit the program"""
+        gtk.main_quit()
 
 
 class Manager:
-	def __init__(self):
-		"""Launch the Cypted Folder manager"""
-		widgets["manager"].show()
+    def __init__(self, folders):
+        """Launch the Cypted Folder manager"""
+        widgets["manager"].show()
 
-	def add(folder):
-		"""Add a folder to the list"""
-		
+    def add(folder):
+        """Add a folder to the list"""
+        pass
+
+
 class Crypt:
-	def __init__(self, d = None):
-		"""Encrypt a directory"""
-		widgets["crypt"].show()
-		self.d = d
-		
+    def __init__(self, path=None, size=None):
+        """Encrypt a directory"""
+        widgets["crypt"].show()
+
+
 class Mount:
-	def __init__(self, d = None):
-		"""Mount an encrypted folder"""
-		# if .crypt exists and contain a ref to ~/.crypt/XXX this an unmounted crypted driectory
-		widgets["password"].show()
-		self.d = d
+    def __init__(self, path=None):
+        """Mount an encrypted folder"""
+        widgets["password"].show()
+        folder = cryptmanager.Folder(path, size)
+        try:
+            cryptmanager.Manage(folder).crypt(password)
+        except cryptmanager.IMGexists:
+            exit(folders, folder.path + " is already a crypted folder.")
+        else:
+            folders.add(folder)
+            exit(folders)
+
 
 class Unmount:
-	def __init__(self, d = None):
-		"""Unmount an encrypted folder"""
-		# if .crypted exists, this a mounted crypted directory
-		widgets["password"].show()
-		self.d = d
+    def __init__(self, folder):
+        """Unmount an encrypted folder"""
+        widgets["password"].show()
+        self.d = d
+
+
+def save_data(folders):
+    if folders == None:
+        return
+    if not os.path.exists(CACHE):
+        os.makedirs(CACHE)
+    f = open(os.path.join(CACHE, "folders"), "w")
+    cPickle.dump(folders, f, protocol = cPickle.HIGHEST_PROTOCOL)
+    f.close()
+
+
+def load_data():
+    if not os.path.exists(os.path.join(CACHE, "folders")):
+        return cryptmanager.Folders()
+    f = open(os.path.join(CACHE, "folders"), "r")
+    folders = cPickle.load(f)
+    f.close()
+    return folders
+
+
+def exit(folders, para=0):
+    save_data(folders)
+    sys.exit(para)
+
 
 if __name__ == '__main__':
-	widgets = WidgetsWrapper()
-
-	# Command Line Interface
-	if len(sys.argv) == 1:
-		manager = Manager()
-
-	elif sys.argv[1] == "--help":
-		msg=APPNAME + """, an encrypted folder manager
+    folders = load_data()
+    widgets = WidgetsWrapper()
+    
+    # Command Line Interface
+    if len(sys.argv) == 1:
+        manager = Manager(folders)
+        
+    elif len(sys.argv) == 2 and sys.argv[1] == "--help":
+        msg = APPNAME + """, an encrypted folder manager
 Options:
-No option		launch the manager
---crypt [DIRECTORY]	encrypt directory
---open DIRECTORY	open an encrypted folder
---help			display this help message
---close DIRECTORY	close an encrypted folder
---uncrypt DIRECTORY	uncrypt encrypted folder
---version		display version information"""
+--crypt [DIRECTORY] [SIZE]  encrypt directory
+--open [DIRECTORY]          open an encrypted folder
+--help                      display this help message
+--close [DIRECTORY]         close an encrypted folder
+--uncrypt [DIRECTORY]       uncrypt encrypted folder
+--version                   display version information"""
+        exit(folders, msg)
+        
+    elif len(sys.argv) == 2 and sys.argv[1] == "--version":
+        msg = APPNAME + " " + APPVERSION
+        exit(folders, msg)
 
-		sys.exit (msg)
+    elif len(sys.argv) >= 2 and len(sys.argv) <= 4 and sys.argv[1] == "--crypt":
+        pass
 
-	elif sys.argv[1] == "--version":
-		msg = APPNAME + " " + APPVERSION
-		sys.exit (msg)
+    elif len(sys.argv) == 3 and sys.argv[1] == "--close":
+        try:
+            folder = folders.get(sys.argv[2])
+        except cryptmanager.Uncrypted:
+            exit(folders, "This is not a crypted direcotry")
+        try:
+            folder = cryptmanager.Manage(folder).unmount()
+        except cryptmanager.NotOpened:
+            exit(folders, "This folder is not opened")
+        folders.update(folder)
+        exit(folders)
 
-	elif sys.argv[1] == "--crypt":
-		if len (sys.argv) == 3:
-				Crypt(sys.argv[2])
-		else:
-				Crypt()
+    elif len(sys.argv) == 3 and sys.argv[1] == "--open":
+        try:
+            folder = folders.get(sys.argv[2])
+        except cryptmanager.Uncrypted:
+            exit(folders, "This is not a crypted direcotry")
+        password = raw_input("Password: ")
+        try:
+            folder = cryptmanager.Manage(folder).mount(password)
+        except cryptmanager.AlreadyOpened:
+            exit(folders, folder.path + " is already opened")
+        except cryptmanager.BadPassword:
+            exit(folders, "Your password is wrong")
+        else:
+            folders.update(folder)
+            exit(folders)
 
-	elif sys.argv[1] == "--close" and len (sys.argv) == 3:
-		Unmount(sys.argv[2])
+    elif len(sys.argv) == 3 and sys.argv[1] == "--uncrypt":
+        folder = folders.get(sys.argv[2])
+        password = raw_input("Password: ")
+        cryptmanager.Manage(folder).uncrypt(password)
+        folders.rem(folder)
+        exit(folders)
 
-	elif sys.argv[1] == "--open" and len (sys.argv) == 3:
-		Mount(sys.argv[2])
-
-	elif sys.argv[1] == "--uncrypt" and len (sys.argv) == 3:
-		Uncrypt(sys.argv[2])
-
-	else:
-		msg = """Invalid option
+    else:
+        msg = """Invalid option
 Try « """ + APPNAME + """ --help » to get more information"""
-		sys.exit(msg)
+        exit(folders, msg)
 
-	gtk.main()
-
-
-#	if os.access (".crypt", os.R_OK):
-		# Ask password
-#    		widgets = WidgetsWrapper('password')
-#		gtk.main()
-
-		# Mount the crypted partition
-
-#	elif os.access (".crypted", os.R_OK):
-	# umount
-#		widgets = WidgetsWrapper('password')
-#		gtk.main()
-	
-#	elif os.access (".", os.W_OK):
-	# encrypt
-
+    gtk.main()
