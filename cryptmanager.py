@@ -72,7 +72,12 @@ class NotOpened(Exception):
            
 class LoError(Exception):
     def __str__(self):
-            return "No loopback device available" 
+            return "No loopback device available"
+
+
+class NotDir(Exception):
+    def __str__(self):
+            return "This is not a directory"
             
 class Util:
     """Utilities"""
@@ -136,6 +141,9 @@ class Folder:
     
     def __init__(self, path, size, loop=None):
         self.path = Util().fullpath(path)
+        if not os.path.isdir(self.path):
+               raise NotDir()
+               return
         self.size = size
         self.digest = self.digest()
         self.loop = loop
