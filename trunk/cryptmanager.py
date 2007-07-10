@@ -148,6 +148,7 @@ class Folder:
         self.digest = self.digest()
         self.loop = loop
         self.opened = False
+        self.processing = False
         
     def __repr__(self):
         return repr(self.path)
@@ -174,6 +175,7 @@ class Manage:
 
     def crypt(self, password):
         """Encrypt a folder"""
+        self.folder.processing = True
         # Create ~/.config/cryptmanager if needed
         # The disk images are stored here
         if not os.path.exists(IMGDIR):
@@ -182,9 +184,10 @@ class Manage:
         # Test if the disk images (sha256 hash of the path name) already exists
         if os.path.exists(self.img):
             raise IMGexists()
+            self.folder.processing = False
         else:
             # Create the disk image
-            subprocess.check_call([DD, "if=/dev/zero", "of=" + self.img, "bs=1M", "count=" + self.folder.size])
+            subprocess.check_call([DD, "if=/dev/zero", "of=" + self.img, "bs=1M", "count=" + str(self.folder.size)])
             self.losetup()
             
             tmp = os.path.join(TMPDIR, self.folder.digest)
@@ -215,6 +218,7 @@ class Manage:
             Util().cp(tmp, self.folder.path)
             Util().rm(tmp)
             self.unmount()
+            self.folder.processing = False
 
     def mount(self, password):
         """Mount an encrypted folder"""
@@ -274,6 +278,10 @@ class Manage:
     def losetup(self):
         """Set up the loop device"""
         # Get the first unused /dev/loopX
+        ret = subprocess.call ([LOSETUP, "-f"])
+        if ret is not 0:
+            raise LoError()
+            return
         p = os.popen (LOSETUP + " -f")
         for s in p:
             self.folder.loop = s.strip("\n")
