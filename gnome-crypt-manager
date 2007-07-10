@@ -76,6 +76,20 @@ class GladeHandlers:
 
     def on_error_ok_clicked(event):
         widgets["error"].hide()
+    
+    def on_manager_list_cursor_changed(event):
+        (m, i) = widgets["manager_list"].get_selection().get_selected()
+        print m.get_value(i, 2)
+        if m.get_value(i, 2) == "True":
+            widgets["manager_open_close"].set_label("gtk-close")
+        else:
+            widgets["manager_open_close"].set_label("gtk-open")
+        widgets["manager_open_close"].set_sensitive(True)
+    
+    def on_manager_open_close_clicked(event):
+        (m, i) = widgets["manager_list"].get_selection().get_selected()
+        v = m.get_value(i, 3)
+        Open(v)
 
 
 class WidgetsWrapper:
@@ -107,7 +121,7 @@ class Manager:
     def __init__(self, folders):
         """Launch the Cypted Folder manager"""
         widgets["manager"].show()
-        column0 = gtk.TreeViewColumn("Folder", gtk.CellRendererText(), text=0)
+        column0 = gtk.TreeViewColumn("Folder name", gtk.CellRendererText(), text=0)
         column0.set_resizable(True)
         column0.set_sort_column_id(0)
         
@@ -119,12 +133,16 @@ class Manager:
         column2.set_resizable(True)
         column2.set_sort_column_id(2)
         
+        column3 = gtk.TreeViewColumn("Full path", gtk.CellRendererText(), text=3)
+        column3.set_resizable(True)
+        column3.set_sort_column_id(3)
+        
         widgets["manager_list"].append_column(column0)
         widgets["manager_list"].append_column(column1)
         widgets["manager_list"].append_column(column2)
+        widgets["manager_list"].append_column(column3)
         
-        self.folderList = gtk.ListStore(str, str, str)
-        #Attache the model to the treeView
+        self.folderList = gtk.ListStore(str, str, str, str)
         widgets["manager_list"].set_model(self.folderList)
         self.update()
 
@@ -134,7 +152,7 @@ class Manager:
         for f in folders.li:
             path = f.path.split("/")
             path = path[len(path) - 1]
-            self.folderList.append([path, f.size, f.opened])
+            self.folderList.append([path, f.size, f.opened, f.path])
    
                 
     def add(folder):

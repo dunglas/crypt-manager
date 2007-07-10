@@ -526,6 +526,7 @@
 	      <property name="fixed_height_mode">False</property>
 	      <property name="hover_selection">False</property>
 	      <property name="hover_expand">False</property>
+	      <signal name="cursor_changed" handler="on_manager_list_cursor_changed" last_modification_time="Tue, 10 Jul 2007 12:49:38 GMT"/>
 	    </widget>
 	    <packing>
 	      <property name="padding">0</property>
@@ -555,7 +556,7 @@
 	      </child>
 
 	      <child>
-		<widget class="GtkButton" id="manager_mount">
+		<widget class="GtkButton" id="manager_open_close">
 		  <property name="visible">True</property>
 		  <property name="sensitive">False</property>
 		  <property name="can_default">True</property>
@@ -564,6 +565,7 @@
 		  <property name="use_stock">True</property>
 		  <property name="relief">GTK_RELIEF_NORMAL</property>
 		  <property name="focus_on_click">True</property>
+		  <signal name="clicked" handler="on_manager_open_close_clicked" last_modification_time="Tue, 10 Jul 2007 13:07:03 GMT"/>
 		</widget>
 	      </child>
 
