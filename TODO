@@ -2,13 +2,18 @@ TODO
 
 Cryptmanager module
 
+- Add a restore option to restore the state after a reboot
+- Add a clean option
 - Test if the selected size for the crypted folder is >= to current directory size
 
+Crypt manager
+[OK]
 
 Gnome Crypt Manager
 
-- Finish it
+- Finish it [OK]
 - Respect the Gnome Human Interface Guidelines
+- Solve the progress bar problem
 
 Other
 - Integration of Gnome Crypt Manager with Nautilus

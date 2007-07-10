@@ -121,9 +121,15 @@ Options:
             exit()
 
     elif len(sys.argv) == 3 and sys.argv[1] == "--uncrypt":
-        folder = folders.get(sys.argv[2])
+        try:
+            folder = folders.get(sys.argv[2])
+        except cryptmanager.AlreadyOpened:
+            exit(folder.path + " is already opened")
         password = raw_input("Password: ")
-        cryptmanager.Manage(folder).uncrypt(password)
+        try:
+            cryptmanager.Manage(folder).uncrypt(password)
+        except cryptmanager.BadPassword:
+            exit("Your password is wrong")
         folders.rem(folder)
         exit()
 

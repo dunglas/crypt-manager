@@ -186,7 +186,8 @@ class Manage:
             self.folder.processing = False
         else:
             # Create the disk image
-            subprocess.check_call([DD, "if=/dev/zero", "of=" + self.img, "bs=1M", "count=" + str(self.folder.size)])
+            subprocess.check_call([DD, "if=/dev/zero", "of=" + self.img,\
+                "bs=1M", "count=" + str(self.folder.size)])
             self.losetup()
             
             tmp = os.path.join(TMPDIR, self.folder.digest)
@@ -199,8 +200,10 @@ class Manage:
             # Create the mount point if needed
             os.makedirs(self.folder.path)
             # Crypt the disk image
-            p1 = subprocess.Popen(["echo", "\"" + password + "\""], stdout=subprocess.PIPE)
-            p2 = subprocess.Popen([CRYPTSETUP, "--batch-mode", "luksFormat", self.folder.loop], stdin=p1.stdout, stdout=subprocess.PIPE)
+            p1 = subprocess.Popen(["echo", "\"" + password + "\""],\
+                stdout=subprocess.PIPE)
+            p2 = subprocess.Popen([CRYPTSETUP, "--batch-mode", "luksFormat",\
+                self.folder.loop], stdin=p1.stdout, stdout=subprocess.PIPE)
             p2.communicate()[0]
             #p2 = subprocess.check_call([CRYPTSETUP, "--batch-mode", "luksFormat", self.folder.loop])
 
