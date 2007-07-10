@@ -1,0 +1,15 @@
+TODO
+
+Cryptmanager module
+
+- Test if the selected size for the crypted folder is >= to current directory size
+
+
+Gnome Crypt Manager
+
+- Finish it
+- Respect the Gnome Human Interface Guidelines
+
+Other
+- Integration of Gnome Crypt Manager with Nautilus
+- a QT GUI ?
