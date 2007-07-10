@@ -150,8 +150,8 @@ class Encrypt:
         try:
             cryptmanager.Manage(self.folder).crypt(password) 
         except cryptmanager.IMGexists:
-            Valid().error_box(folder.path + " is already a crypted folder.")
-            exit(folder.path + " is already a crypted folder.")
+            Valid().error_box(self.folder.path + " is already a crypted folder.")
+            #exit(folder.path + " is already a crypted folder.")
         else:
             folders.add(self.folder)
 
