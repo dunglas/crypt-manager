@@ -28,10 +28,9 @@ import os
 import hashlib
 import shutil
 
-# http://forum.ubuntu-fr.org/viewtopic.php?pid=268552#p268552
-
-TMPDIR = "/tmp/cryptmanager"
 IMGDIR = os.environ['HOME'] + "/.config/cryptmanager/img"
+BACKUP = os.environ['HOME'] + "/.config/cryptmanager/backup"
+TMPDIR = "/tmp/cryptmanager"
 DD = "/bin/dd"
 LOSETUP = "/sbin/losetup"
 CRYPTSETUP = "/sbin/cryptsetup"
@@ -104,7 +103,6 @@ class Util:
 
 class Folders:
     """Folders list"""
-    
     def __init__(self):
         self.li = []
 
@@ -134,11 +132,39 @@ class Folders:
             if f.path == path:
                 return f
         raise Uncrypted()
+    
+    def restore(self):
+        """Restore the state of the folders (i.e: after a reboot)"""
+        for f in self.li:
+            if f.opened == True:
+                if not os.path.exists ("/dev/mapper/" + f.digest):
+                    f.opened = False
+                    Manage(f).mount()
+    
+    def close_all(self):
+        """Close all the open folders (i.e: before a reboot)"""
+        for f in self.li:
+            if f.opened:
+                Manage(f).unmount()
+    
+    def clean(self):
+        """Move unused images to BACKUP and empty TMPDIR"""
+        if not os.path.exists(BACKUP):
+            os.makedirs(BACKUP)
+        for f in os.listdir(IMGDIR):
+            if os.path.isfile(os.path.join(src, f)):
+                ok = False
+                for fo in self.li:
+                    if os.path.join(src, f) == fo.path:
+                        ok = True
+                if not ok:
+                    shutil.move(os.path.join(src, f), os.path.join(BACKUP, f))
+        Util().rm(TMPDIR)
+                    
 
 
 class Folder:
     """Folder information"""
-    
     def __init__(self, path, size, loop=None):
         self.path = Util().fullpath(path)
         if not os.path.isdir(self.path):
@@ -158,6 +184,7 @@ class Folder:
         h.update(self.path)
         return h.hexdigest()
 
+
 class Test:
     def __init__(self, folder):
         """Encrypt a folder"""
@@ -166,7 +193,6 @@ class Test:
 
 class Manage:
     """Operations on a folder"""
-    
     def __init__(self, folder):
         self.folder = folder
         self.img = os.path.join(IMGDIR, folder.digest)
