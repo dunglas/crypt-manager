@@ -49,19 +49,26 @@ class GladeHandlers:
         path = widgets["crypt_path"].get_text()
         password = widgets["crypt_password"].get_text()
         size = widgets["crypt_size"].get_value_as_int()
-        if Valid().crypt(path, size):
+        if Util().crypt(path, size):
             Encrypt(path, size, password)
             widgets["crypt"].hide()
 
     def on_crypt_cancel_clicked(event):
         WidgetsWrapper.hide_or_quit(widgets, "crypt")
 
-    def on_password_cancel_clicked(event):
-        WidgetsWrapper.hide_or_quit(widgets, "password")
+    def on_open_cancel_clicked(event):
+        WidgetsWrapper.hide_or_quit(widgets, "open")
     
-    def on_password_apply_clicked(event):
-        self.encrypt    = widgets["password_password"].get_text()
-        widgets["password"].hide()
+    def on_open_apply_clicked(event):
+        Mount(widgets["open_path"].get_text(), widgets["open_password"].get_text())
+        widgets["open"].hide()
+    
+    def on_uncrypt_cancel_clicked(event):
+        WidgetsWrapper.hide_or_quit(widgets, "uncrypt")
+    
+    def on_uncrypt_apply_clicked(event):
+        Runcrypt(widgets["uncrypt_path"].get_text(), widgets["uncrypt_password"].get_text())
+        widgets["uncrypt"].hide()
     
     def on_crypt_open_clicked(event):
         widgets["filechooserdialog"].show()
@@ -74,13 +81,12 @@ class GladeHandlers:
         widgets["crypt_path"].set_text(path)
         widgets["filechooserdialog"].hide()
 
-    def on_error_ok_clicked(event):
+    def on_error_close_clicked(event):
         widgets["error"].hide()
     
     def on_manager_list_cursor_changed(event):
         (m, i) = widgets["manager_list"].get_selection().get_selected()
-        print m.get_value(i, 2)
-        if m.get_value(i, 2) == "True":
+        if m.get_value(i, 2) == "Yes":
             widgets["manager_open_close"].set_label("gtk-close")
         else:
             widgets["manager_open_close"].set_label("gtk-open")
@@ -88,8 +94,16 @@ class GladeHandlers:
     
     def on_manager_open_close_clicked(event):
         (m, i) = widgets["manager_list"].get_selection().get_selected()
-        v = m.get_value(i, 3)
-        Open(v)
+        path = m.get_value(i, 3)
+        if m.get_value(i, 2) == "Yes":
+            Unmount(path)
+        else:
+            Open(path)
+    
+    def on_manager_uncrypt_clicked(event):
+        (m, i) = widgets["manager_list"].get_selection().get_selected()
+        path = m.get_value(i, 3)
+        Uncrypt(path)
 
 
 class WidgetsWrapper:
@@ -129,7 +143,7 @@ class Manager:
         column1.set_resizable(True)
         column1.set_sort_column_id(1)
         
-        column2 = gtk.TreeViewColumn("Opened", gtk.CellRendererText(), text=2)
+        column2 = gtk.TreeViewColumn("Open", gtk.CellRendererText(), text=2)
         column2.set_resizable(True)
         column2.set_sort_column_id(2)
         
@@ -152,7 +166,11 @@ class Manager:
         for f in folders.li:
             path = f.path.split("/")
             path = path[len(path) - 1]
-            self.folderList.append([path, f.size, f.opened, f.path])
+            if f.opened == True:
+                o = "Yes"
+            else:
+                o = "No"
+            self.folderList.append([path, f.size, o, f.path])
    
                 
     def add(folder):
@@ -169,12 +187,17 @@ class Crypt:
             widgets["crypt_size"].set_value(size)
         widgets["crypt"].show()
     
-class Valid:
-    """Validation methods"""
+class Util:
+    """Utilities"""
     def error_box(self, msg):
-        #"""Display an error box"
-        widgets["error_error"].set_text(msg)
+        """Display an error box"""
+        widgets["error_label"].set_text(msg)
         widgets["error"].show()
+    
+    def warning_box(self, msg):
+        """Display a warning box"""
+        widgets["warning_label"].set_text(msg)
+        widgets["warning"].show()
 
     def crypt(self, path, size):
         """Validation for the crypt window"""
@@ -212,26 +235,67 @@ class Encrypt:
             time.sleep(1)
         widgets["progressbar"].hide()
 
+class Open:
+    """Open an encrypted folder"""
+    def __init__(self, path):
+        widgets["open_password"].set_text("")
+        widgets["open_path"].set_text(path)
+        widgets["open"].show()
+
+class Uncrypt:
+    """Uncrypt a folder"""
+    def __init__(self, path):
+        widgets["uncrypt_password"].set_text("")
+        widgets["uncrypt_path"].set_text(path)
+        widgets["uncrypt"].show()
+
+
+class Runcrypt:
+    """Do really the unencryption"""  
+    def __init__(self, path, password):
+        try:
+            folder = folders.get(path)
+        except cryptmanager.AlreadyOpened:
+            Util().error_box(folder.path + " is already opened")
+        try:
+            cryptmanager.Manage(folder).uncrypt(password)
+        except cryptmanager.BadPassword:
+            Util().error_box("Your password is wrong")
+            folders.rem(folder)
 
 class Mount:
-    def __init__(self, path=None):
-        """Mount an encrypted folder"""
-        widgets["password"].show()
-        folder = cryptmanager.Folder(path, size)
+    """Mount an encrypted folder"""
+    def __init__(self, path, password):
+        print path
+        print password
         try:
-            cryptmanager.Manage(folder).crypt(password)
-        except cryptmanager.IMGexists:
-            exit(folder.path + " is already a crypted folder.")
+            folder = folders.get(path)
+        except cryptmanager.Uncrypted:
+            Util().error_box("This is not a crypted directory")
+            return
+        try:
+            folder = cryptmanager.Manage(folder).mount(password)
+        except cryptmanager.AlreadyOpened:
+            Util().error_box(folder.path + " is already opened")
+        except cryptmanager.BadPassword:
+            Util().error_box("Your password is wrong")
         else:
-            folders.add(folder)
-            exit()
-
+            folders.update(folder)
+            manager.update()
 
 class Unmount:
-    def __init__(self, folder):
+    def __init__(self, path):
         """Unmount an encrypted folder"""
-        widgets["password"].show()
-        self.d = d
+        try:
+            folder = folders.get(path)
+        except cryptmanager.Uncrypted:
+            Util().error_box("This is not a crypted direcotry")
+        try:
+            folder = cryptmanager.Manage(folder).unmount()
+        except cryptmanager.NotOpened:
+            Util().error_box("This folder is not opened")
+        folders.update(folder)
+        manager.update()
 
 
 def save_data():
@@ -270,10 +334,10 @@ if __name__ == '__main__':
         msg = APPNAME + """, an encrypted folder manager
 Options:
 --crypt [DIRECTORY] [SIZE]  encrypt directory
---open [DIRECTORY]          open an encrypted folder
+--open DIRECTORY          open an encrypted folder
 --help                      display this help message
---close [DIRECTORY]         close an encrypted folder
---uncrypt [DIRECTORY]       uncrypt encrypted folder
+--close DIRECTORY         close an encrypted folder
+--uncrypt DIRECTORY       uncrypt encrypted folder
 --version                   display version information"""
         exit(msg)
         
