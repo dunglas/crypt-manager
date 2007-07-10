@@ -29,12 +29,16 @@ import cPickle
 import gtk
 import gnome.ui
 import gtk.glade
+import threading
+import time
+import cryptmanager
 
 APPNAME="gnome-crypt-manager"
 APPVERSION="0.1"
 CACHE = os.environ['HOME'] + "/.config/cryptmanager/cache"
 
 class GladeHandlers:
+    """Connectors to GTK/Glade events"""
     def gtk_main_quit(event):
         WidgetsWrapper.quit(widgets)
 
@@ -43,10 +47,10 @@ class GladeHandlers:
 
     def on_crypt_apply_clicked(event):
         path = widgets["crypt_path"].get_text()
+        password = widgets["crypt_password"].get_text()
         size = widgets["crypt_size"].get_value_as_int()
         if Valid().crypt(path, size):
-            widgets["password"].show()
-            Encrypt(path, size)
+            Encrypt(path, size, password)
 
     def on_crypt_cancel_clicked(event):
         WidgetsWrapper.hide_or_quit(widgets, "crypt")
@@ -55,7 +59,7 @@ class GladeHandlers:
         WidgetsWrapper.hide_or_quit(widgets, "password")
     
     def on_password_apply_clicked(event):
-        self.encrypt = widgets["password_password"].get_text()
+        self.encrypt    = widgets["password_password"].get_text()
         widgets["password"].hide()
     
     def on_crypt_open_clicked(event):
@@ -74,6 +78,7 @@ class GladeHandlers:
 
 
 class WidgetsWrapper:
+    """Wrapper for GTK/Galde widgets"""
     def __init__(self):
         """Display a window"""
         gnome.init(APPNAME, APPVERSION)
@@ -97,6 +102,7 @@ class WidgetsWrapper:
 
 
 class Manager:
+    """Main window"""
     def __init__(self, folders):
         """Launch the Cypted Folder manager"""
         widgets["manager"].show()
@@ -116,7 +122,7 @@ class Crypt:
         widgets["crypt"].show()
     
 class Valid:
-    """Validation"""
+    """Validation methods"""
     def error_box(self, msg):
         #"""Display an error box"
         widgets["error_error"].set_text(msg)
@@ -137,16 +143,25 @@ class Encrypt:
     """Ask for the password and encrypt a folder while displaying a progress bar"""
     
     def __init__(self, path, size, password):
-        folder = cryptmanager.Folder(path, size)
-        password = Pass
+        self.folder = cryptmanager.Folder(path, size)
+        self.folder.processing = True
+        #t = threading.Thread(target=self.progress_bar)
+        #t.start()
         try:
-            cryptmanager.Manage(folder).crypt(password)
+            cryptmanager.Manage(self.folder).crypt(password) 
         except cryptmanager.IMGexists:
             Valid().error_box(folder.path + " is already a crypted folder.")
-            #exit(folder.path + " is already a crypted folder.")
+            exit(folder.path + " is already a crypted folder.")
         else:
-            folders.add(folder)
-            exit()
+            folders.add(self.folder)
+
+    def progress_bar(self):
+        """Display a progress Bar while processing operations on a folder"""
+        widgets["progressbar"].show()
+        while self.folder.processing == True:
+            widgets["progressbar_progressbar"].pulse()
+            time.sleep(1)
+        widgets["progressbar"].hide()
 
 
 class Mount:
