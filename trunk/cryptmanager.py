@@ -158,7 +158,6 @@ class Folder:
         h.update(self.path)
         return h.hexdigest()
 
-
 class Test:
     def __init__(self, folder):
         """Encrypt a folder"""

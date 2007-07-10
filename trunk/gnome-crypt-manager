@@ -51,6 +51,7 @@ class GladeHandlers:
         size = widgets["crypt_size"].get_value_as_int()
         if Valid().crypt(path, size):
             Encrypt(path, size, password)
+            widgets["crypt"].hide()
 
     def on_crypt_cancel_clicked(event):
         WidgetsWrapper.hide_or_quit(widgets, "crypt")
@@ -106,7 +107,36 @@ class Manager:
     def __init__(self, folders):
         """Launch the Cypted Folder manager"""
         widgets["manager"].show()
+        column0 = gtk.TreeViewColumn("Folder", gtk.CellRendererText(), text=0)
+        column0.set_resizable(True)
+        column0.set_sort_column_id(0)
+        
+        column1 = gtk.TreeViewColumn("Size", gtk.CellRendererText(), text=1)
+        column1.set_resizable(True)
+        column1.set_sort_column_id(1)
+        
+        column2 = gtk.TreeViewColumn("Opened", gtk.CellRendererText(), text=2)
+        column2.set_resizable(True)
+        column2.set_sort_column_id(2)
+        
+        widgets["manager_list"].append_column(column0)
+        widgets["manager_list"].append_column(column1)
+        widgets["manager_list"].append_column(column2)
+        
+        self.folderList = gtk.ListStore(str, str, str)
+        #Attache the model to the treeView
+        widgets["manager_list"].set_model(self.folderList)
+        self.update()
 
+    def update(self):
+        """Update the tree view with the content of folders"""
+        self.folderList.clear()
+        for f in folders.li:
+            path = f.path.split("/")
+            path = path[len(path) - 1]
+            self.folderList.append([path, f.size, f.opened])
+   
+                
     def add(folder):
         """Add a folder to the list"""
         pass
@@ -154,6 +184,7 @@ class Encrypt:
             #exit(folder.path + " is already a crypted folder.")
         else:
             folders.add(self.folder)
+            manager.update()
 
     def progress_bar(self):
         """Display a progress Bar while processing operations on a folder"""
@@ -276,3 +307,4 @@ Try « """ + APPNAME + """ --help » to get more information"""
         exit(msg)
 
     gtk.main()
+    exit()
