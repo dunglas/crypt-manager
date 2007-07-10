@@ -282,7 +282,7 @@ Options:
         try:
             folder = folders.get(sys.argv[2])
         except cryptmanager.Uncrypted:
-            exit("This is not a crypted direcotry")
+            exit("This is not a crypted direcyory")
         password = raw_input("Password: ")
         try:
             folder = cryptmanager.Manage(folder).mount(password)
