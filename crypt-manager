@@ -80,6 +80,14 @@ Options:
     elif len(sys.argv) == 2 and sys.argv[1] == "--version":
         msg = APPNAME + " " + APPVERSION
         exit(msg)
+    
+    elif len(sys.argv) == 2 and sys.argv[1] == "--restore":
+        folders.restore()
+        exit()
+    
+    elif len(sys.argv) == 2 and sys.argv[1] == "--clean":
+        folders.clean()
+        exit()
 
     elif len(sys.argv) == 4 and sys.argv[1] == "--crypt":
         password = raw_input("Password: ")
@@ -88,6 +96,8 @@ Options:
             cryptmanager.Manage(folder).crypt(password)
         except cryptmanager.IMGexists:
             exit(folder.path + " is already a crypted folder.")
+        except cryptmanager.LoError:
+            exit("No loopback device available.")
         else:
             folders.add(folder)
             exit()
@@ -96,11 +106,11 @@ Options:
         try:
             folder = folders.get(sys.argv[2])
         except cryptmanager.Uncrypted:
-            exit("This is not a crypted direcotry")
+            exit("This is not a crypted directory.")
         try:
             folder = cryptmanager.Manage(folder).unmount()
         except cryptmanager.NotOpened:
-            exit("This folder is not opened")
+            exit("This folder is not opened.")
         folders.update(folder)
         exit()
 
@@ -108,14 +118,16 @@ Options:
         try:
             folder = folders.get(sys.argv[2])
         except cryptmanager.Uncrypted:
-            exit("This is not a crypted directory")
+            exit("This is not a crypted directory.")
         password = raw_input("Password: ")
         try:
             folder = cryptmanager.Manage(folder).mount(password)
         except cryptmanager.AlreadyOpened:
-            exit(folder.path + " is already opened")
+            exit(folder.path + " is already opened.")
         except cryptmanager.BadPassword:
-            exit("Your password is wrong")
+            exit("Your password is wrong.")
+        except cryptmanager.LoError:
+            exit("No loopback device available.")
         else:
             folders.update(folder)
             exit()
@@ -124,12 +136,14 @@ Options:
         try:
             folder = folders.get(sys.argv[2])
         except cryptmanager.AlreadyOpened:
-            exit(folder.path + " is already opened")
+            exit(folder.path + " is already opened.")
         password = raw_input("Password: ")
         try:
             cryptmanager.Manage(folder).uncrypt(password)
         except cryptmanager.BadPassword:
-            exit("Your password is wrong")
+            exit("Your password is wrong.")
+        except cryptmanager.LoError:
+            exit("No loopback device available.")
         folders.rem(folder)
         exit()
 
