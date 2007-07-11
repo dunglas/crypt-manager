@@ -1,0 +1,10 @@
+#summary Global goals of Crypt Manager
+#labels Phase-Design
+
+The goal of Crypt Manager is to provide a generic and easy solution to manage crypted folders on Linux and especially on GTK based desktops (GNOME [1] and Xfce [2]).
+The modularization of the code (see _cryptsetup.py_ Python module) allow to easily wrote applications using this encrypted folder management system.
+By example, it will be easy to wrote a KDE [3] interface using the module.
+
+  * [1] http://www.gnome.org/
+  * [2] http://www.xfce.org/
+  * [3] http://www.kde.org/
