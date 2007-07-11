@@ -1,0 +1,30 @@
+#summary Basic informations
+#labels Phase-Requirements,Phase-Design
+= Introduction =
+
+Crypt Manager is the Google Summer of Code project of Kévin Dunglas [1] for Ubuntu [2].
+The goal of this project is to increase security of sensitives data especially on computers which can be thieved (like laptops).  
+Crypt manager is a compilation of tools which allow to easily encrypt, open, close and uncrypt folders in a Desktop environment.
+It is wrote in Python [3], it use cryptsetup [4] and LUKS [5] as backend.
+Gcrypt Manager, the graphical interface for Crypt Manager also use Pygtk [6] and Glade [7].
+
+[1] http://placelibre.ath.cx/keyes/
+[2] http://www.ubuntu.com/
+[3] http://www.python.org/
+[4] http://www.saout.de/misc/dm-crypt/
+[5] http://luks.endorphin.org/
+[6] http://www.pygtk.org/
+[7] http://glade.gnome.org/
+
+
+= Details =
+
+The Crypt Manager project is composed of three parts:
+  * A Python module called "cryptsetup.py" which perform basics crypt, uncrypt, open and close operations on crypted folders.
+  * A command line tool using the module called "crypt-manager"
+  * A GTK interface using the module called "gcrypt-manager"
+
+Add your content here.  Format your content with:
+  * Text in *bold* or _italic_
+  * Headings, paragraphs, and lists
+  * Automatic links to other wiki pages
