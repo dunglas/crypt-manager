@@ -8,13 +8,13 @@ Crypt manager is a compilation of tools which allow to easily encrypt, open, clo
 It is wrote in Python [3], it use cryptsetup [4] and LUKS [5] as backend.
 Gcrypt Manager, the graphical interface for Crypt Manager also use Pygtk [6] and Glade [7].
 
-[1] http://placelibre.ath.cx/keyes/
-[2] http://www.ubuntu.com/
-[3] http://www.python.org/
-[4] http://www.saout.de/misc/dm-crypt/
-[5] http://luks.endorphin.org/
-[6] http://www.pygtk.org/
-[7] http://glade.gnome.org/
+  * [1] http://placelibre.ath.cx/keyes/
+  * [2] http://www.ubuntu.com/
+  * [3] http://www.python.org/
+  * [4] http://www.saout.de/misc/dm-crypt/
+  * [5] http://luks.endorphin.org/
+  * [6] http://www.pygtk.org/
+  * [7] http://glade.gnome.org/
 
 
 = Details =
