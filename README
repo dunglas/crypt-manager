@@ -5,6 +5,8 @@ Gnome crypt manager is a crypt manager GUI for the Gnome desktop .
 This software use Cryptsetup as backend and is wrote in Python using Pygtk and
 Glade.
 
+See
+
 CRYPT-MANAGER
 =============
 
@@ -46,13 +48,13 @@ aurevoir  bonjour  lost+found
 
 
 
-GNOME-CRYPT-MANAGER
+GRYPT-MANAGER
 ===================
 
 Options:
 --crypt [DIRECTORY] [SIZE]  encrypt directory
---open [DIRECTORY]          open an encrypted folder
---help                      display this help message
---close [DIRECTORY]         close an encrypted folder
---uncrypt [DIRECTORY]       uncrypt encrypted folder
+--open DIRECTORY          open an encrypted folder
+--info                      display this help message
+--close DIRECTORY         close an encrypted folder
+--uncrypt DIRECTORY       uncrypt encrypted folder
 --version                   display version information

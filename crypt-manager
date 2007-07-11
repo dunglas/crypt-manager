@@ -64,12 +64,12 @@ if __name__ == '__main__':
     if len(sys.argv) == 2 and sys.argv[1] == "--help":
         msg = APPNAME + """, an encrypted folder manager
 Options:
---crypt DIRECTORY SIZE	encrypt directory
---open DIRECTORY	open an encrypted folder
---help			display this help message
---close DIRECTORY	close an encrypted folder
---uncrypt DIRECTORY	uncrypt encrypted folder
---version		display version information"""
+--crypt DIRECTORY SIZE  encrypt directory, size in MB
+--open DIRECTORY        open an encrypted folder
+--help                  display this help message
+--close DIRECTORY       close an encrypted folder
+--decrypt DIRECTORY     decrypt encrypted folder
+--version               display version information"""
         exit(msg)
 
     elif len(sys.argv) >= 2 and sys.argv[1] == "--test":
@@ -98,6 +98,8 @@ Options:
             exit(folder.path + " is already a crypted folder.")
         except cryptmanager.LoError:
             exit("No loopback device available.")
+        except cryptmanager.TooSmall:
+            exit("Size too small, cannot contain current data")
         else:
             folders.add(folder)
             exit()
@@ -105,7 +107,7 @@ Options:
     elif len(sys.argv) == 3 and sys.argv[1] == "--close":
         try:
             folder = folders.get(sys.argv[2])
-        except cryptmanager.Uncrypted:
+        except cryptmanager.NoEncrypted:
             exit("This is not a crypted directory.")
         try:
             folder = cryptmanager.Manage(folder).unmount()
@@ -117,7 +119,7 @@ Options:
     elif len(sys.argv) == 3 and sys.argv[1] == "--open":
         try:
             folder = folders.get(sys.argv[2])
-        except cryptmanager.Uncrypted:
+        except cryptmanager.NoEncrypted:
             exit("This is not a crypted directory.")
         password = raw_input("Password: ")
         try:
@@ -132,14 +134,14 @@ Options:
             folders.update(folder)
             exit()
 
-    elif len(sys.argv) == 3 and sys.argv[1] == "--uncrypt":
+    elif len(sys.argv) == 3 and sys.argv[1] == "--decrypt":
         try:
             folder = folders.get(sys.argv[2])
         except cryptmanager.AlreadyOpened:
             exit(folder.path + " is already opened.")
         password = raw_input("Password: ")
         try:
-            cryptmanager.Manage(folder).uncrypt(password)
+            cryptmanager.Manage(folder).decrypt(password)
         except cryptmanager.BadPassword:
             exit("Your password is wrong.")
         except cryptmanager.LoError:
