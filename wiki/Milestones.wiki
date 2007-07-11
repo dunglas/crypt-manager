@@ -3,7 +3,7 @@
 
 ==During the Summer Of Code==
   * Study encryptions methods on Linux *[OK]*
-  * Select the more appropriate way *[OK]*: cryptsetup/Luks was selected instead of TrueCrypt because it it is more integrated with Linux, more reliable, more faster and become the standard disk encryption on Linux.
+  * Select the more appropriate way *[OK]*: cryptsetup/Luks was selected instead of TrueCrypt because it it is more integrated with Linux, more reliable, more faster, become the standard disk encryption on Linux and TrueCrypt as licence issues (publicity).
   * Make tests. *[OK]*
   * Implements the best way to encrypt folders in Python. *[OK]*
   * Create a Python module which offer the capability of management, encryption, open, close and uncryption of directories. *[OK]* See CryptManagerModule
