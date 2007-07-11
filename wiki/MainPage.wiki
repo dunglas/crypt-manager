@@ -20,6 +20,6 @@ _Gcrypt Manager_, the graphical interface for _Crypt Manager_ also use Pygtk [6]
 = Details =
 
 The Crypt Manager project is composed of three parts:
-  * A Python module called _cryptsetup.py_ which perform basics crypt, uncrypt, open and close operations on crypted folders.
-  * A command line tool using the module called _crypt-manager_.
-  * A GTK interface using the module called _gcrypt-manager_.
+  * A Python module called _cryptsetup.py_ which perform basics crypt, uncrypt, open and close operations on crypted folders. See CryptManagerModule
+  * A command line tool using the module called _crypt-manager_. See CommandLineTool
+  * A GTK interface using the module called _gcrypt-manager_. See GcryptManager
