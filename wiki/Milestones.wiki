@@ -6,7 +6,7 @@
   * Select the more appropriate way *[OK]*: cryptsetup/Luks was selected instead of TrueCrypt because it it is more integrated with Linux, more reliable, more faster and become the standard disk encryption on Linux.
   * Make tests. *[OK]*
   * Implements the best way to encrypt folders in Python. *[OK]*
-  * Create a Python module which offer the capability of management, encryption, open, close and uncryption of directories. *[OK]* See PythonModule
+  * Create a Python module which offer the capability of management, encryption, open, close and uncryption of directories. *[OK]* See CryptManagerModule
   * Create a command-line tool using this module. *[OK]* See CommandLineTool
   * Create a GTK interface using this module. *[OK]* See GcryptManager
   * Release a beta version.
