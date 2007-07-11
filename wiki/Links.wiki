@@ -1,0 +1,9 @@
+#summary Useful links about encryption on Linux
+#labels Featured
+
+  * cryptsetup: http://www.saout.de/misc/dm-crypt/
+  * LUKS: http://luks.endorphin.org/
+  * LUKS tools: Tools to use LUKS with GNOME: http://www.flyn.org/projects/luks-tools/
+  * Manpage of _gnome-mount_ (to mount crypted USB keys): http://linux.die.net/man/1/gnome-mount
+  * redhat article about LUKS and HAL: http://www.wideopen.com/magazine/012oct05/features/hal/#figure-gnome-luks-format
+  * Crypt a partition (in French): http://forum.ubuntu-fr.org/viewtopic.php?pid=268552#p268552
