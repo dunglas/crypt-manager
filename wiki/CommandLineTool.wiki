@@ -6,36 +6,36 @@
 You must run this command as root !
 
 Options:
---crypt DIRECTORY SIZE	encrypt directory
---open DIRECTORY	open an encrypted folder
---help			display this help message
---close DIRECTORY	close an encrypted folder
---uncrypt DIRECTORY	uncrypt encrypted folder
---version		display version information
+  * --crypt DIRECTORY SIZE	encrypt directory
+  * --open DIRECTORY	open an encrypted folder
+  * --help			display this help message
+  * --close DIRECTORY	close an encrypted folder
+  * --uncrypt DIRECTORY	uncrypt encrypted folder
+  * --version		display version information
 
 
 ==Examples==
 
-keyes@kirk:~$ sudo -s
+  * keyes@kirk:~$ sudo -s
 Password:
-root@kirk:~/Projects/crypt-manager# mkdir test
-root@kirk:~/Projects/crypt-manager# echo "Bonjour" > test/bonjour
-root@kirk:~/Projects/crypt-manager# echo "Aurevoir" > test/aurevoir
+  * root@kirk:~/Projects/crypt-manager# mkdir test
+  * root@kirk:~/Projects/crypt-manager# echo "Bonjour" > test/bonjour
+  * root@kirk:~/Projects/crypt-manager# echo "Aurevoir" > test/aurevoir
 
-root@kirk:~/Projects/crypt-manager# ./crypt-manager --crypt test 60
-Password: azerty
+  * root@kirk:~/Projects/crypt-manager# ./crypt-manager --crypt test 60
+  * Password: azerty
 
 [...]
 
-root@kirk:~/Projects/crypt-manager# ls test
-root@kirk:~/Projects/crypt-manager# ./crypt-manager --open test
-Password: azerty
-root@kirk:~/Projects/crypt-manager# ls test
-aurevoir  bonjour  lost+found
+  * root@kirk:~/Projects/crypt-manager# ls test
+  * root@kirk:~/Projects/crypt-manager# ./crypt-manager --open test
+  * Password: azerty
+  * root@kirk:~/Projects/crypt-manager# ls test
+  * aurevoir  bonjour  lost+found
 
-root@kirk:~/Projects/crypt-manager# ./crypt-manager --close test
-root@kirk:~/Projects/crypt-manager# ls test
-root@kirk:~/Projects/crypt-manager# ./crypt-manager --uncrypt test
-Password: azerty
-root@kirk:~/Projects/crypt-manager# ls test
-aurevoir  bonjour  lost+found
+  * root@kirk:~/Projects/crypt-manager# ./crypt-manager --close test
+  * root@kirk:~/Projects/crypt-manager# ls test
+  * root@kirk:~/Projects/crypt-manager# ./crypt-manager --uncrypt test
+  * Password: azerty
+  * root@kirk:~/Projects/crypt-manager# ls test
+  * aurevoir  bonjour  lost+found
