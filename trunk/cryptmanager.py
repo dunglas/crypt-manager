@@ -225,13 +225,15 @@ class Manage:
             Util().rm(self.folder.path)
             # Create the mount point if needed
             os.makedirs(self.folder.path)
+            
+            # Can also use Debian specific /sbin/luksformat to do next steps
+            
             # Crypt the disk image
             p1 = subprocess.Popen(["echo", "\"" + password + "\""],\
                 stdout=subprocess.PIPE)
             p2 = subprocess.Popen([CRYPTSETUP, "--batch-mode", "luksFormat",\
                 self.folder.loop], stdin=p1.stdout, stdout=subprocess.PIPE)
             p2.communicate()[0]
-            #p2 = subprocess.check_call([CRYPTSETUP, "--batch-mode", "luksFormat", self.folder.loop])
 
             self.open_img(password)
             
@@ -261,6 +263,7 @@ class Manage:
         except BadPassword:
             raise BadPassword()
             return
+        # Maybe can we also use HAL and/or gnome-mount
         # Mount
         subprocess.check_call([MOUNT, self.mapper, self.folder.path])
         self.folder.opened = True
