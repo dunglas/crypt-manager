@@ -1,0 +1,16 @@
+#summary gcrypt-manager: a GTK interface to manage encrypted folders
+#labels GT
+
+==Launch the GUI==
+
+  * keyes@kirk:~$ gksu gcrypt-manager
+
+==Options==
+
+Options:
+  * --crypt [DIRECTORY] [SIZE]  encrypt directory
+  * --open DIRECTORY          open an encrypted folder
+  * --info                      display this help message
+  * --close DIRECTORY         close an encrypted folder
+  * --uncrypt DIRECTORY       uncrypt encrypted folder
+  * --version                   display version information
