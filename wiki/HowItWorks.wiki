@@ -7,7 +7,40 @@ _Crypt Manager_ maintain a list of encrypted folders, and stock encrypted images
 
 = Details =
 
+==Process==
 
+===Folder encryption===
+
+   * Creation of the image in ~/.config/crypmanager/img/
+   * Allocation of a loopback device (using the sha256 hash of the path name to have a unique ID)
+   * Move of existing data in a temporary directory
+   * Encryption with cryptsetup/LUKS
+   * Mapping of the encrypted folder
+   * Format using ext3 FS
+   * Mounting
+   * Copy of files in the temporary dir
+   * Unmount
+   * Add the folder to the list (object Folders)
+
+===Open an encrypted folder===
+
+  * Allocation of the loopback device
+  * Opening of the disk image
+  * Mount
+
+===Close an encrypted folder===
+  * Unmount
+  * Close the disk image
+  * Delete the loopback device
+
+===Uncrypt a folder===
+
+  * Open the folder
+  * Copy data in a temporary directory
+  * Close the folder
+  * Delete the encrypted disk image
+  * Remove the folder from the list (object Folders)
+  
 
 ==Files==
 ===~/.config/crypmanager/img/===
