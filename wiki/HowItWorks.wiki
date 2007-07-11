@@ -1,5 +1,5 @@
 #summary Detailed crypt manager process and files
-#labels Phase-Implementation
+#labels Phase-Implementation,Featured
 = Introduction =
 
 _Crypt Manager_ maintain a list of encrypted folders, and stock encrypted images on a specific format.
