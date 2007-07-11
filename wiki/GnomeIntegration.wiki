@@ -1,0 +1,10 @@
+#summary Integration of Crypt Manager with GNOME and Nautilus
+= Introduction =
+
+As an Ubuntu project, the GTK interface must be easy as possible to use with the Gnome Desktop.
+
+Here are features envisaged:
+  * Right click menu entry on a folder in nautilus to encrypt it.
+  * Automatic detection of an encrypted folder (not opened) in Nautilus when clicking on it
+  * Right click menu entry to close an encrypted folder
+  * Integration with gnome-keyring to save folders password
