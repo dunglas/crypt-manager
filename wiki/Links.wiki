@@ -1,5 +1,5 @@
 #summary Useful links about encryption on Linux
-#labels Featured
+#labels Related,Links
 
   * cryptsetup: http://www.saout.de/misc/dm-crypt/
   * LUKS: http://luks.endorphin.org/
