@@ -14,7 +14,9 @@ Gnome Crypt Manager
 - Finish it [OK]
 - Respect the Gnome Human Interface Guidelines
 - Solve the progress bar problem
+- Add support for Gnome Keyring
+- Replace the crypt_path label by a gtk.FileChooserButton
 
 Other
-- Integration of Gnome Crypt Manager with Nautilus
+- Write a python extension for Nautilus
 - a QT GUI ?

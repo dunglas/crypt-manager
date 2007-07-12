@@ -30,8 +30,8 @@ import pygtk
 pygtk.require('2.0')
 import gtk
 import gtk.glade
-import threading
 import time
+from threading import Thread
 import cryptmanager
 
 APPNAME="gcrypt-manager"
@@ -44,6 +44,7 @@ class GladeHandlers:
         WidgetsWrapper.quit(widgets)
 
     def on_manager_add_clicked(event):
+        widgets["manager"].set_sensitive(False)
         Crypt()
 
     def on_crypt_apply_clicked(event):
@@ -52,7 +53,7 @@ class GladeHandlers:
         size = widgets["crypt_size"].get_value_as_int()
         if Util().crypt(path, size):
             Encrypt(path, size, password)
-            WidgetsWrapper.hide_or_quit(widgets, "crypt")
+            #WidgetsWrapper.hide_or_quit(widgets, "crypt")
 
     def on_crypt_cancel_clicked(event):
         WidgetsWrapper.hide_or_quit(widgets, "crypt")
@@ -93,6 +94,7 @@ class GladeHandlers:
         widgets["manager_open_close"].set_sensitive(True)
     
     def on_manager_open_close_clicked(event):
+        widgets["manager"].set_sensitive(False)
         (m, i) = widgets["manager_list"].get_selection().get_selected()
         path = m.get_value(i, 3)
         if m.get_value(i, 2) == "Yes":
@@ -101,6 +103,7 @@ class GladeHandlers:
             Open(path)
     
     def on_manager_decrypt_clicked(event):
+        widgets["manager"].set_sensitive(False)
         (m, i) = widgets["manager_list"].get_selection().get_selected()
         path = m.get_value(i, 3)
         Decrypt(path)
@@ -122,6 +125,7 @@ class WidgetsWrapper:
         """Hide or quit the window"""
         if widgets["manager"].get_property("visible"):
             widgets[name].hide()
+            widgets["manager"].set_sensitive(True)
         else:
             self.quit()
 
@@ -158,6 +162,41 @@ class Util:
             return False
         return True
 
+    def progress_bar_start(self, msg=None):
+        """Display a progress bar"""
+        widgets["progressbar"].show()
+        #gtk.gdk.threads_init()
+        #Creating and starting the thread
+        #self.pulser = Pulser()
+        #self.pulser.start()
+    
+    def progress_bar_stop(self):
+        #self.pulser.stop()
+        widgets["progressbar"].hide()
+
+
+class TestIt(Thread):
+    def __init__ (self):
+        Thread.__init__(self)
+
+    def run(self):
+        #pingaling = os.popen("ping -q -c2 "+self.ip,"r")
+        i = 0
+        while i < 1000:
+            print i
+            i = i + 1
+
+
+class Encrypt:
+    def __init__(self, x, y, z):
+        print "Test..."
+        widgets["crypt"].set_sensitive(False)
+        widgets["progressbar"].set_title("Encrypting...")
+        widgets["progressbar_progressbar"].set_text("Encrypting...")
+        widgets["progressbar"].show()
+
+        widgets["progressbar"].hide()
+        widgets["crypt"].set_sensitive(True)
 
 class Manager:
     """Main window"""
@@ -219,32 +258,30 @@ class Crypt:
             widgets["crypt_size"].set_sensitive(False)
         widgets["crypt"].show()
 
-    
-class Encrypt:
+
+class TEncrypt:
     """Ask for the password and encrypt a folder while displaying a progress bar"""
     def __init__(self, path, size, password):
-        self.folder = cryptmanager.Folder(path, size)
-        self.processing = True
-        #t = threading.Thread(target=self.progress_bar)
-        #t.start()
+        self.folder = cryptmanager.Folder(path, size)      
+        #u = Util()
+        widgets["crypt"].hide()
+        #u.progress_bar_start()
         try:
             cryptmanager.Manage(self.folder).crypt(password)
-            self.processing = False
         except cryptmanager.IMGexists:
+            #u.progress_bar_stop()
+            widgets["crypt"].show()
             Util().error_box(self.folder.path + " is already a crypted folder.")
         except cryptmanager.LoError:
+            #u.progress_bar_stop()
+            widgets["crypt"].show()
             Util().error_box("No loopback device available.")
         else:
             folders.add(self.folder)
+            #u.progress_bar_stop()
             if widgets["manager"].get_property("visible"):
                 manager.update()
 
-    def progress_bar(self):
-        """Display a progress Bar while processing operations on a folder"""
-        widgets["progressbar"].show()
-        while self.processing:
-            widgets["progressbar_progressbar"].pulse()
-        widgets["progressbar"].hide()
 
 class Open:
     """Open an encrypted folder"""
@@ -252,6 +289,7 @@ class Open:
         widgets["open_password"].set_text("")
         widgets["open_path"].set_text(path)
         widgets["open"].show()
+
 
 class Decrypt:
     """Decrypt a folder"""
