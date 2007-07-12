@@ -26,14 +26,15 @@
 import os
 import sys
 import cPickle
+import pygtk
+pygtk.require('2.0')
 import gtk
-import gnome.ui
 import gtk.glade
 import threading
 import time
 import cryptmanager
 
-APPNAME="gnome-crypt-manager"
+APPNAME="gcrypt-manager"
 APPVERSION="0.1"
 CACHE = os.environ['HOME'] + "/.config/cryptmanager/cache"
 
@@ -51,7 +52,7 @@ class GladeHandlers:
         size = widgets["crypt_size"].get_value_as_int()
         if Util().crypt(path, size):
             Encrypt(path, size, password)
-            widgets["crypt"].hide()
+            WidgetsWrapper.hide_or_quit(widgets, "crypt")
 
     def on_crypt_cancel_clicked(event):
         WidgetsWrapper.hide_or_quit(widgets, "crypt")
@@ -61,14 +62,13 @@ class GladeHandlers:
     
     def on_open_apply_clicked(event):
         Mount(widgets["open_path"].get_text(), widgets["open_password"].get_text())
-        widgets["open"].hide()
     
-    def on_uncrypt_cancel_clicked(event):
-        WidgetsWrapper.hide_or_quit(widgets, "uncrypt")
+    def on_decrypt_cancel_clicked(event):
+        WidgetsWrapper.hide_or_quit(widgets, "decrypt")
     
-    def on_uncrypt_apply_clicked(event):
-        Runcrypt(widgets["uncrypt_path"].get_text(), widgets["uncrypt_password"].get_text())
-        widgets["uncrypt"].hide()
+    def on_decrypt_apply_clicked(event):
+        Rdecrypt(widgets["decrypt_path"].get_text(), widgets["decrypt_password"].get_text())
+        WidgetsWrapper.hide_or_quit(widgets, "decrypt")
     
     def on_crypt_open_clicked(event):
         widgets["filechooserdialog"].show()
@@ -100,18 +100,18 @@ class GladeHandlers:
         else:
             Open(path)
     
-    def on_manager_uncrypt_clicked(event):
+    def on_manager_decrypt_clicked(event):
         (m, i) = widgets["manager_list"].get_selection().get_selected()
         path = m.get_value(i, 3)
-        Uncrypt(path)
+        Decrypt(path)
 
 
 class WidgetsWrapper:
     """Wrapper for GTK/Galde widgets"""
     def __init__(self):
         """Display a window"""
-        gnome.init(APPNAME, APPVERSION)
-        self.widgets = gtk.glade.XML("gnome-crypt-manager.glade")
+        #gnome.init(APPNAME, APPVERSION)
+        self.widgets = gtk.glade.XML("gcrypt-manager.glade")
         self.widgets.signal_autoconnect(GladeHandlers.__dict__)
 
     def __getitem__(self, key):
@@ -130,6 +130,35 @@ class WidgetsWrapper:
         gtk.main_quit()
 
 
+class Util:
+    """Utilities"""
+    def error_box(self, msg):
+        """Display an error box"""
+        widgets["error_label"].set_markup("<span weight=\"bold\">" + msg + "</span>")
+        widgets["error"].show()
+    
+    def warning_box(self, msg):
+        """Display a warning box"""
+        widgets["warning_label"].set_markup("<span weight=\"bold\">" + msg + "</span>")
+        widgets["warning"].show()
+
+    def crypt(self, path, size):
+        """Validation for the crypt window"""
+        
+        if not os.path.exists(path):
+            self.error_box("You must select a valid folder")
+            return False
+        if size == 0:
+            self.error_box("The size of your crypted folder cannot be null")
+            return False
+        ms = cryptmanager.Util().min_size(path, size)
+        if ms != 0:
+            widgets["crypt_size"].set_value(ms)
+            self.error_box("Size too small, cannot contain current data")
+            return False
+        return True
+
+
 class Manager:
     """Main window"""
     def __init__(self, folders):
@@ -139,7 +168,7 @@ class Manager:
         column0.set_resizable(True)
         column0.set_sort_column_id(0)
         
-        column1 = gtk.TreeViewColumn("Size", gtk.CellRendererText(), text=1)
+        column1 = gtk.TreeViewColumn("Size (in MB)", gtk.CellRendererText(), text=1)
         column1.set_resizable(True)
         column1.set_sort_column_id(1)
         
@@ -183,56 +212,38 @@ class Crypt:
     def __init__(self, path=None, size=None):
         if path is not None and os.path.exists(path):
             widgets["crypt_path"].set_text(path)
+            widgets["crypt_path"].set_sensitive(False)
+            widgets["crypt_open"].set_sensitive(False)
         if size is not None and size.isdigit():
-            widgets["crypt_size"].set_value(size)
+            widgets["crypt_size"].set_value(float(size))
+            widgets["crypt_size"].set_sensitive(False)
         widgets["crypt"].show()
-    
-class Util:
-    """Utilities"""
-    def error_box(self, msg):
-        """Display an error box"""
-        widgets["error_label"].set_text(msg)
-        widgets["error"].show()
-    
-    def warning_box(self, msg):
-        """Display a warning box"""
-        widgets["warning_label"].set_text(msg)
-        widgets["warning"].show()
 
-    def crypt(self, path, size):
-        """Validation for the crypt window"""
-        
-        if not os.path.exists(path):
-            self.error_box("You must select a valid folder")
-            return False
-        if size == 0:
-            self.error_box("The size of your crypted folder cannot be null")
-            return False
-        return True
     
 class Encrypt:
     """Ask for the password and encrypt a folder while displaying a progress bar"""
     def __init__(self, path, size, password):
         self.folder = cryptmanager.Folder(path, size)
-        self.folder.processing = True
+        self.processing = True
         #t = threading.Thread(target=self.progress_bar)
         #t.start()
         try:
-            cryptmanager.Manage(self.folder).crypt(password) 
+            cryptmanager.Manage(self.folder).crypt(password)
+            self.processing = False
         except cryptmanager.IMGexists:
-            Valid().error_box(self.folder.path + " is already a crypted folder.")
+            Util().error_box(self.folder.path + " is already a crypted folder.")
         except cryptmanager.LoError:
-            Valid().error_box("No loopback device available.")
+            Util().error_box("No loopback device available.")
         else:
             folders.add(self.folder)
-            manager.update()
+            if widgets["manager"].get_property("visible"):
+                manager.update()
 
     def progress_bar(self):
         """Display a progress Bar while processing operations on a folder"""
         widgets["progressbar"].show()
-        while self.folder.processing == True:
+        while self.processing:
             widgets["progressbar_progressbar"].pulse()
-            time.sleep(1)
         widgets["progressbar"].hide()
 
 class Open:
@@ -242,15 +253,15 @@ class Open:
         widgets["open_path"].set_text(path)
         widgets["open"].show()
 
-class Uncrypt:
-    """Uncrypt a folder"""
+class Decrypt:
+    """Decrypt a folder"""
     def __init__(self, path):
-        widgets["uncrypt_password"].set_text("")
-        widgets["uncrypt_path"].set_text(path)
-        widgets["uncrypt"].show()
+        widgets["decrypt_password"].set_text("")
+        widgets["decrypt_path"].set_text(path)
+        widgets["decrypt"].show()
 
 
-class Runcrypt:
+class Rdecrypt:
     """Do really the unencryption"""  
     def __init__(self, path, password):
         try:
@@ -258,23 +269,24 @@ class Runcrypt:
         except cryptmanager.AlreadyOpened:
             Util().error_box(folder.path + " is already opened.")
         try:
-            cryptmanager.Manage(folder).uncrypt(password)
+            cryptmanager.Manage(folder).decrypt(password)
         except cryptmanager.BadPassword:
             Util().error_box("Your password is wrong.")
         except cryptmanager.LoError:
-            Valid().error_box("No loopback device available.")
+            Util().error_box("No loopback device available.")
         else:
             folders.rem(folder)
+            WidgetsWrapper.hide_or_quit(widgets, "decrypt")
+            if widgets["manager"].get_property("visible"):
+                manager.update()
 
 
 class Mount:
     """Mount an encrypted folder"""
     def __init__(self, path, password):
-        print path
-        print password
         try:
             folder = folders.get(path)
-        except cryptmanager.Uncrypted:
+        except cryptmanager.NoEncrypted:
             Util().error_box("This is not a crypted directory.")
             return
         try:
@@ -284,24 +296,27 @@ class Mount:
         except cryptmanager.BadPassword:
             Util().error_box("Your password is wrong.")
         except cryptmanager.LoError:
-            Valid().error_box("No loopback device available.")
+            Util().error_box("No loopback device available.")
         else:
             folders.update(folder)
-            manager.update()
+            WidgetsWrapper.hide_or_quit(widgets, "open")
+            if widgets["manager"].get_property("visible"):
+                manager.update()
 
 class Unmount:
     def __init__(self, path):
         """Unmount an encrypted folder"""
         try:
             folder = folders.get(path)
-        except cryptmanager.Uncrypted:
+        except cryptmanager.NoEncrypted:
             Util().error_box("This is not a crypted directory.")
         try:
             folder = cryptmanager.Manage(folder).unmount()
         except cryptmanager.NotOpened:
             Util().error_box("This folder is not opened.")
         folders.update(folder)
-        manager.update()
+        if widgets["manager"].get_property("visible"):
+            manager.update()
 
 
 def save_data():
@@ -330,6 +345,7 @@ def exit(para=0):
 
 if __name__ == '__main__':
     folders = load_data()
+    folders.clean()
     widgets = WidgetsWrapper()
     
     # Command Line Interface
@@ -339,11 +355,11 @@ if __name__ == '__main__':
     elif len(sys.argv) == 2 and sys.argv[1] == "--info":
         msg = APPNAME + """, an encrypted folder manager
 Options:
---crypt [DIRECTORY] [SIZE]  encrypt directory
---open DIRECTORY          open an encrypted folder
+--crypt [DIRECTORY] [SIZE]  encrypt directory, size in MB
+--open DIRECTORY            open an encrypted folder
 --info                      display this help message
---close DIRECTORY         close an encrypted folder
---uncrypt DIRECTORY       uncrypt encrypted folder
+--close DIRECTORY           close an encrypted folder
+--decrypt DIRECTORY         decrypt encrypted folder
 --version                   display version information"""
         exit(msg)
         
@@ -360,7 +376,12 @@ Options:
         exit()
 
     elif len(sys.argv) >= 2 and len(sys.argv) <= 4 and sys.argv[1] == "--crypt":
-        c = Crypt()
+        if len(sys.argv) == 3:
+            c = Crypt(sys.argv[2])
+        elif len(sys.argv) == 4:
+            c = Crypt(sys.argv[2], sys.argv[3])
+        else:
+            c = Crypt()
 
     elif len(sys.argv) == 3 and sys.argv[1] == "--close":
         Unmount(sys.argv[2])
@@ -368,8 +389,8 @@ Options:
     elif len(sys.argv) == 3 and sys.argv[1] == "--open":
         Open(sys.argv[2])
 
-    elif len(sys.argv) == 3 and sys.argv[1] == "--uncrypt":
-        Uncrypt(sys.argv[2])
+    elif len(sys.argv) == 3 and sys.argv[1] == "--decrypt":
+        Decrypt(sys.argv[2])
 
     else:
         msg = """Invalid option
