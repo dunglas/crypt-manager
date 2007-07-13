@@ -36,7 +36,7 @@ import cryptmanager
 
 APPNAME="gcrypt-manager"
 APPVERSION="0.1"
-CACHE = os.environ['HOME'] + "/.config/cryptmanager/cache"
+CACHE = os.environ['HOME'] + "/.cryptmanager/cache"
 
 class GladeHandlers:
     """Connectors to GTK/Glade events"""

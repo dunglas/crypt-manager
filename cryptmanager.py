@@ -29,8 +29,8 @@ import hashlib
 import shutil
 import math
 
-IMGDIR = os.environ['HOME'] + "/.config/cryptmanager/img"
-BACKUP = os.environ['HOME'] + "/.config/cryptmanager/backup"
+IMGDIR = os.environ['HOME'] + "/.cryptmanager/img"
+BACKUP = os.environ['HOME'] + "/.cryptmanager/backup"
 TMPDIR = "/tmp/cryptmanager"
 DD = "/bin/dd"
 LOSETUP = "/sbin/losetup"
