@@ -59,6 +59,7 @@ def exit(para=0):
 
 if __name__ == '__main__':
     folders = load_data()
+    folders.clean()
     
     # Command Line Interface
     if len(sys.argv) == 2 and sys.argv[1] == "--help":
@@ -80,10 +81,6 @@ Options:
     elif len(sys.argv) == 2 and sys.argv[1] == "--version":
         msg = APPNAME + " " + APPVERSION
         exit(msg)
-    
-    elif len(sys.argv) == 2 and sys.argv[1] == "--restore":
-        folders.restore()
-        exit()
     
     elif len(sys.argv) == 2 and sys.argv[1] == "--clean":
         folders.clean()
