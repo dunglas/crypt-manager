@@ -133,7 +133,7 @@ class Util:
             if os.path.isdir(os.path.join(path, f)):
                 self.du2(os.path.join(path, f))
             if os.path.isfile(os.path.join(path, f)):
-               self.size += os.path.getsize(s.path.join(path, f))
+               self.size += os.path.getsize(os.path.join(path, f))
     
     def min_size(self, path, size):
         """Test if the crypted folder can contain the current data.
