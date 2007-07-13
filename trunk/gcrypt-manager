@@ -68,7 +68,7 @@ class GladeHandlers:
         WidgetsWrapper.hide_or_quit(widgets, "decrypt")
     
     def on_decrypt_apply_clicked(event):
-        Rdecrypt(widgets["decrypt_path"].get_text(), widgets["decrypt_password"].get_text())
+        Sdecrypt(widgets["decrypt_path"].get_text(), widgets["decrypt_password"].get_text())
         WidgetsWrapper.hide_or_quit(widgets, "decrypt")
     
     def on_crypt_open_clicked(event):
@@ -181,7 +181,6 @@ class Pulser(threading.Thread):
     stopthread = threading.Event()
     
     def run(self):
-        print "pulser..."
         while not self.stopthread.isSet() :
             gtk.gdk.threads_enter()
             widgets["progressbar_progressbar"].pulse()
@@ -194,19 +193,21 @@ class Pulser(threading.Thread):
 
 
 class Progressbar:
+    """Display a pulsing progressbar"""
     def __init__(self, msg=None):
         self.msg = msg
 
     def start(self):
+        """Start the progress bar"""
         if self.msg is not None:
             widgets["progressbar"].set_title(self.msg)
             widgets["progressbar_progressbar"].set_text(self.msg)
-        print "Progresbar......."
         widgets["progressbar"].show()
         self.pulser = Pulser()
         self.pulser.start()
 
     def stop(self):
+        """Stop the progressbar"""
         widgets["progressbar"].hide()
         self.pulser.stop()
     
@@ -242,7 +243,7 @@ class Manager:
         self.update()
 
     def update(self):
-        """Update the tree view with the content of folders"""
+        """Update the tree view with the folders list"""
         self.folderList.clear()
         for f in folders.li:
             path = f.path.split("/")
@@ -268,15 +269,17 @@ class Crypt:
 
 
 class Rencrypt(threading.Thread):
+    """Encrypt while displaying a progressbar"""
     #def setFolder(self, folder):
     #    self.folder = folder
     
     def set_para(self, folder, password):
+        """Set what folder and password to use"""
         self.folder = folder
         self.password = password
 
     def run(self):
-        print "hahahaha"
+        """Main"""
         try:
             cryptmanager.Manage(self.folder).crypt(self.password)
         except cryptmanager.IMGexists:
@@ -297,16 +300,8 @@ class Rencrypt(threading.Thread):
                 widgets["manager"].set_sensitive(True)
 
 
-class Test1(threading.Thread):
-    def run(self):
-        i = 0
-        while i < 100000:
-            print "test1 " + str(i)
-            i += 1
-        progressbar.stop()
-
-
 class Encrypt:
+    """Threads initiation for encrypting"""
     def __init__(self, path, size, password):
         global progressbar
         folder = cryptmanager.Folder(path, size)
@@ -327,30 +322,59 @@ class Open:
 
 
 class Decrypt:
-    """Decrypt a folder"""
+    """Decrypt window"""
     def __init__(self, path):
         widgets["decrypt_password"].set_text("")
         widgets["decrypt_path"].set_text(path)
         widgets["decrypt"].show()
 
-
-class Rdecrypt:
-    """Do really the unencryption"""  
+class Sdecrypt:
+    """Decryption initiation"""
     def __init__(self, path, password):
+        global progressbar
+        progressbar = Progressbar()
+        r = Rdecrypt()
+        r.set_para(path, password)
+        widgets["decrypt"].hide()
+        progressbar.start()
+        r.start()
+
+
+class Rdecrypt(threading.Thread):
+    """Real decryption"""  
+    
+    def set_para(self, path, password):
+        """Set what path and password to use"""
+        self.path = path
+        self.password = password
+
+    def run(self):
+        """Main"""
         try:
-            folder = folders.get(path)
+            folder = folders.get(self.path)
         except cryptmanager.AlreadyOpened:
+            progressbar.stop()
+            if widgets["manager"].get_property("visible"):
+                manager.set_sensitive(True)
             Util().error_box(folder.path + " is already opened.")
         try:
-            cryptmanager.Manage(folder).decrypt(password)
+            cryptmanager.Manage(folder).decrypt(self.password)
         except cryptmanager.BadPassword:
+            progressbar.stop()
+            if widgets["manager"].get_property("visible"):
+                widgets["manager"].set_sensitive(True)
             Util().error_box("Your password is wrong.")
         except cryptmanager.LoError:
+            progressbar.stop()
+            if widgets["manager"].get_property("visible"):
+                widgets["manager"].set_sensitive(True)
             Util().error_box("No loopback device available.")
         else:
             folders.rem(folder)
+            progressbar.stop()
             WidgetsWrapper.hide_or_quit(widgets, "decrypt")
             if widgets["manager"].get_property("visible"):
+                widgets["manager"].set_sensitive(True)
                 manager.update()
 
 
@@ -375,6 +399,7 @@ class Mount:
             WidgetsWrapper.hide_or_quit(widgets, "open")
             if widgets["manager"].get_property("visible"):
                 manager.update()
+
 
 class Unmount:
     def __init__(self, path):
