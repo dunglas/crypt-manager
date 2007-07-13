@@ -31,7 +31,7 @@ import cryptmanager
 
 APPNAME="crypt-manager"
 APPVERSION="0.1"
-CACHE = os.environ['HOME'] + "/.config/cryptmanager/cache"
+CACHE = os.environ['HOME'] + "/.cryptmanager/cache"
 
 def save_data():
     if folders == None:
