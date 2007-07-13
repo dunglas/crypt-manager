@@ -183,16 +183,17 @@ class Folders:
                 return f
         raise NoEncrypted()
     
-    def restore(self):
-        """Restore the state of the folders (i.e: after a reboot)"""
-        for f in self.li:
-            if f.opened == True:
-                if not os.path.exists ("/dev/mapper/" + f.digest):
-                    f.opened = False
-                    Manage(f).mount()
+#    def restore(self):
+#        """Restore the state of the folders (i.e: after a reboot)"""
+#        for f in self.li:
+#            if f.opened:
+#                if not os.path.exists ("/dev/mapper/" + f.digest):
+#                    f.opened = False
+#                    Manage(f).mount()
     
     def close_all(self):
         """Close all the open folders (i.e: before a reboot)"""
+        self.clean()
         for f in self.li:
             if f.opened:
                 Manage(f).unmount()
@@ -202,10 +203,13 @@ class Folders:
         for f in self.li:
             if not os.path.exists(IMGDIR + "/" + f.digest):
                 self.li.remove(f)
+            elif f.opened:
+                if not os.path.exists ("/dev/mapper/" + f.digest):
+                    f.opened = False
 
-        if not os.path.exists(BACKUP):
-            os.makedirs(BACKUP)
-
+#        if not os.path.exists(BACKUP):
+#            os.makedirs(BACKUP)
+#
 #        for f in os.listdir(IMGDIR):
 #            if os.path.isfile(os.path.join(IMGDIR, f)):
 #                ok = False
