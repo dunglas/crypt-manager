@@ -1,60 +1,102 @@
-This the Google Summer of Code project of Kévin Dunglas.
-Crypt manager is a command line tool we allow to encrypt, uncrypt,open and
-close directories.
-Gnome crypt manager is a crypt manager GUI for the Gnome desktop .
-This software use Cryptsetup as backend and is wrote in Python using Pygtk and
-Glade.
+Crypt manager is a encrypted folder management tool.
+This the Ubuntu Google Summer of Code project of Kévin Dunglas,
+mentored by Jani Monoses.
 
-See
+See http://code.google.com/p/crypt-manager/ for details.
+Informations about Ubuntu Linux: http://www.ubuntu.com
+Informations about Google Summer of Code: http://code.google.com/soc/
+
+
+!!! READ THIS BEFORE ANY USE !!!
+================================
+This is a BETA software pulished ONLY FOR TEST !
+It can DESTROY your data.
+Test it only on BACKUPED directories.
+
+Please send us report using our issues tracker at code.google.com. Don't forget
+to attach the traceback (everything displayed in the terminal window).
+
+
+INSTALL
+=======
+Depends of:
+- Python 2.5
+- cryptsetup with LUKS support (apt-get install cryptsetup)
+
+To use gcrypt-manager you also need gtk and pygtk.glade Python modules
+(provided by PyGTK)
+
+
+GRYPT-MANAGER
+=============
+Go into the installation directory (i.e: cd ~/cryptmanager-0.1) and type
+in a shell:
+gksu ./gcrypt-manager
+
+
+Options:
+--crypt [DIRECTORY] [SIZE]  encrypt directory
+--open DIRECTORY            open an encrypted folder
+--info                      display this help message
+--close DIRECTORY           close an encrypted folder
+--decrypt DIRECTORY         decrypt encrypted folder
+--version                   display version information
+
 
 CRYPT-MANAGER
 =============
-
-You must run this command as root !
+Go into the installation directory (i.e: cd ~/cryptmanager-0.1)
+You must use this command as root.
 
 Options:
---crypt DIRECTORY SIZE	encrypt directory
---open DIRECTORY	open an encrypted folder
---help			display this help message
---close DIRECTORY	close an encrypted folder
---uncrypt DIRECTORY	uncrypt encrypted folder
---version		display version information
+--crypt DIRECTORY SIZE  encrypt directory
+--open DIRECTORY        open an encrypted folder
+--help                  display this help message
+--close DIRECTORY       close an encrypted folder
+--decrypt DIRECTORY     decrypt encrypted folder
+--version               display version information
+
 
 Examples :
 
+# Got root
 keyes@kirk:~$ sudo -s
 Password:
+
+# Create some samples
 root@kirk:~/Projects/crypt-manager# mkdir test
 root@kirk:~/Projects/crypt-manager# echo "Bonjour" > test/bonjour
 root@kirk:~/Projects/crypt-manager# echo "Aurevoir" > test/aurevoir
 
+# Encrypt a directory
 root@kirk:~/Projects/crypt-manager# ./crypt-manager --crypt test 60
 Password: azerty
 
 [...]
 
+# List the content of the directory unmounted
 root@kirk:~/Projects/crypt-manager# ls test
+
+# Open the encrypted directory
 root@kirk:~/Projects/crypt-manager# ./crypt-manager --open test
 Password: azerty
+
+# List the content of the mounted encrypted directory
 root@kirk:~/Projects/crypt-manager# ls test
 aurevoir  bonjour  lost+found
 
+# Close it
 root@kirk:~/Projects/crypt-manager# ./crypt-manager --close test
+# List if content
 root@kirk:~/Projects/crypt-manager# ls test
-root@kirk:~/Projects/crypt-manager# ./crypt-manager --uncrypt test
+
+# Decrypt it
+root@kirk:~/Projects/crypt-manager# ./crypt-manager --decrypt test
 Password: azerty
-root@kirk:~/Projects/crypt-manager# ls test
 aurevoir  bonjour  lost+found
 
 
-
-GRYPT-MANAGER
-===================
-
-Options:
---crypt [DIRECTORY] [SIZE]  encrypt directory
---open DIRECTORY          open an encrypted folder
---info                      display this help message
---close DIRECTORY         close an encrypted folder
---uncrypt DIRECTORY       uncrypt encrypted folder
---version                   display version information
+CRYPTMANAGER PYTHON MODULE
+==========================
+See documentation on the project's website:
+http://code.google.com/p/crypt-manager/wiki/CryptManagerModule
