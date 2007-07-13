@@ -1,9 +1,9 @@
 import threading
 import gtk
+import gtk.glade
 from time import sleep
 # Example of working progressbar using threads...
 #Initializing the gtk's thread engine
-gtk.gdk.threads_init()
 
 class Test1(threading.Thread):
     def run(self):
@@ -11,49 +11,67 @@ class Test1(threading.Thread):
         while i < 100000:
             print "test1 " + str(i)
             i += 1
-        pulser.stop()
-        
+        p.stop()
 
 class Pulser(threading.Thread):
-	"""This class sets the fraction of the progressbar"""
-	
-	def run(self):
-		"""Run method, this is the code that runs while thread is alive."""
-		
-		#While the stopthread event isn't setted, the thread keeps going on
-		while not self.stopthread.isSet() :
-			# Acquiring the gtk global mutex
-			gtk.gdk.threads_enter()
-			#Setting a random value for the fraction
-			progressbar.pulse()
-			# Releasing the gtk global mutex
-			gtk.gdk.threads_leave()
-			
-			#Delaying 100ms until the next iteration
-			sleep(0.1)
-			
-	def stop(self):
-		"""Stop method, sets the event to terminate the thread's main loop"""
-		threading.Event().set()
+    """Pulse the progressbar"""
+    
+    stopthread = threading.Event()
+    
+    def run(self):
+        while not self.stopthread.isSet() :
+            gtk.gdk.threads_enter()
+            widgets["progressbar_progressbar"].pulse()
+            gtk.gdk.threads_leave()
+            sleep(0.1)
 
-def main_quit(obj):
-	"""main_quit function, it stops the thread and the gtk's main loop"""
-	#Stopping the thread and the gtk's main loop
-	pulser.stop()
-	gtk.main_quit()
+    def stop(self):
+        """Stop method, sets the event to terminate the thread's main loop"""
+        self.stopthread.set()
 
-#Gui bootstrap: window and progressbar
-window = gtk.Window()
-progressbar = gtk.ProgressBar()
-window.add(progressbar)
-window.show_all()
-#Connecting the 'destroy' event to the main_quit function
-window.connect('destroy', main_quit)
+class WidgetsWrapper:
+    """Wrapper for GTK/Galde widgets"""
+    def __init__(self):
+        """Display a window"""
+        #gnome.init(APPNAME, APPVERSION)
+        self.widgets = gtk.glade.XML("gcrypt-manager.glade")
+
+    def __getitem__(self, key):
+        """Allow to use widgets['widget_name'].action()"""
+        return self.widgets.get_widget(key)
+
+    def hide_or_quit(self, name):
+        """Hide or quit the window"""
+        if widgets["manager"].get_property("visible"):
+            widgets[name].hide()
+            widgets["manager"].set_sensitive(True)
+        else:
+            self.quit()
+
+    def quit(self):
+        """Quit the program"""
+        gtk.main_quit()
+
+class Progressbar:
+    def start(self):
+        widgets["progressbar"].show()
+        self.pulser = Pulser()
+        self.pulser.start()
+
+    def stop(self):
+        widgets["progressbar"].hide()
+        self.pulser.stop()
 
 #Creating and starting the thread
-pulser = Pulser()
-pulser.start()
-t = Test1()
-t.start()
+#pulser = Pulser()
+#pulser.start()
+class Encrypt:
+    def __init__(self):
+        p = Progressbar()
+        p.start()
+        t = Test1()
+        t.start()
 
+widgets = WidgetsWrapper()
+Encrypt()
 gtk.main()
