@@ -26,6 +26,10 @@ Depends of:
 To use gcrypt-manager you also need gtk and pygtk.glade Python modules
 (provided by PyGTK)
 
+Type in a shell:
+tar xvjpf crypt-manager-0.1.tar.bz2
+cd crypt-manager-0.1
+
 
 GRYPT-MANAGER
 =============
