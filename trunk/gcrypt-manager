@@ -50,9 +50,8 @@ class GladeHandlers:
     def on_crypt_apply_clicked(event):
         path = widgets["crypt_path"].get_text()
         password = widgets["crypt_password"].get_text()
-        size = widgets["crypt_size"].get_value_as_int()
-        if Util().crypt(path, size):
-            Encrypt(path, size, password)
+        if Util().crypt(path, password):
+            Encrypt(path, password)
             #WidgetsWrapper.hide_or_quit(widgets, "crypt")
 
     def on_crypt_cancel_clicked(event):
@@ -87,17 +86,18 @@ class GladeHandlers:
     
     def on_manager_list_cursor_changed(event):
         (m, i) = widgets["manager_list"].get_selection().get_selected()
-        if m.get_value(i, 2) == "Yes":
+        if m.get_value(i, 1) == "Yes":
             widgets["manager_open_close"].set_label("gtk-close")
         else:
             widgets["manager_open_close"].set_label("gtk-open")
         widgets["manager_open_close"].set_sensitive(True)
+        widgets["manager_decrypt"].set_sensitive(True)
     
     def on_manager_open_close_clicked(event):
-        widgets["manager"].set_sensitive(False)
+        #widgets["manager"].set_sensitive(False)
         (m, i) = widgets["manager_list"].get_selection().get_selected()
-        path = m.get_value(i, 3)
-        if m.get_value(i, 2) == "Yes":
+        path = m.get_value(i, 2)
+        if m.get_value(i, 1) == "Yes":
             Unmount(path)
         else:
             Open(path)
@@ -105,7 +105,7 @@ class GladeHandlers:
     def on_manager_decrypt_clicked(event):
         widgets["manager"].set_sensitive(False)
         (m, i) = widgets["manager_list"].get_selection().get_selected()
-        path = m.get_value(i, 3)
+        path = m.get_value(i, 2)
         Decrypt(path)
 
 
@@ -146,19 +146,14 @@ class Util:
         widgets["warning_label"].set_markup("<span weight=\"bold\">" + msg + "</span>")
         widgets["warning"].show()
 
-    def crypt(self, path, size):
+    def crypt(self, path, password):
         """Validation for the crypt window"""
         
         if not os.path.exists(path):
             self.error_box("You must select a valid folder")
             return False
-        if size == 0:
-            self.error_box("The size of your crypted folder cannot be null")
-            return False
-        ms = cryptmanager.Util().min_size(path, size)
-        if ms != 0:
-            widgets["crypt_size"].set_value(ms)
-            self.error_box("Size too small, cannot contain current data")
+        if len(password) == 0:
+            self.error_box("Password can not be null")
             return False
         return True
 
@@ -220,25 +215,20 @@ class Manager:
         column0 = gtk.TreeViewColumn("Folder name", gtk.CellRendererText(), text=0)
         column0.set_resizable(True)
         column0.set_sort_column_id(0)
-        
-        column1 = gtk.TreeViewColumn("Size (in MB)", gtk.CellRendererText(), text=1)
+                
+        column1 = gtk.TreeViewColumn("Open", gtk.CellRendererText(), text=1)
         column1.set_resizable(True)
-        column1.set_sort_column_id(1)
+        column1.set_sort_column_id(2)
         
-        column2 = gtk.TreeViewColumn("Open", gtk.CellRendererText(), text=2)
+        column2 = gtk.TreeViewColumn("Full path", gtk.CellRendererText(), text=2)
         column2.set_resizable(True)
-        column2.set_sort_column_id(2)
-        
-        column3 = gtk.TreeViewColumn("Full path", gtk.CellRendererText(), text=3)
-        column3.set_resizable(True)
-        column3.set_sort_column_id(3)
+        column2.set_sort_column_id(3)
         
         widgets["manager_list"].append_column(column0)
         widgets["manager_list"].append_column(column1)
         widgets["manager_list"].append_column(column2)
-        widgets["manager_list"].append_column(column3)
         
-        self.folderList = gtk.ListStore(str, str, str, str)
+        self.folderList = gtk.ListStore(str, str, str)
         widgets["manager_list"].set_model(self.folderList)
         self.update()
 
@@ -252,19 +242,16 @@ class Manager:
                 o = "Yes"
             else:
                 o = "No"
-            self.folderList.append([path, f.size, o, f.path])
+            self.folderList.append([path, o, f.path])
 
 
 class Crypt:
     """Encrypted folder chooser"""
-    def __init__(self, path=None, size=None):
+    def __init__(self, path=None):
         if path is not None and os.path.exists(path):
             widgets["crypt_path"].set_text(path)
             widgets["crypt_path"].set_sensitive(False)
             widgets["crypt_open"].set_sensitive(False)
-        if size is not None and size.isdigit():
-            widgets["crypt_size"].set_value(float(size))
-            widgets["crypt_size"].set_sensitive(False)
         widgets["crypt"].show()
 
 
@@ -282,14 +269,10 @@ class Rencrypt(threading.Thread):
         """Main"""
         try:
             cryptmanager.Manage(self.folder).crypt(self.password)
-        except cryptmanager.IMGexists:
+        except cryptmanager.AlreadyEncrypted:
             progressbar.stop()
             widgets["crypt"].set_sensitive(True)
             Util().error_box(self.folder.path + " is already a crypted folder.")
-        except cryptmanager.LoError:
-            progressbar.stop()
-            widgets["crypt"].set_sensitive(True)
-            Util().error_box("No loopback device available.")
         else:
             folders.add(self.folder)
             progressbar.stop()
@@ -302,9 +285,9 @@ class Rencrypt(threading.Thread):
 
 class Encrypt:
     """Threads initiation for encrypting"""
-    def __init__(self, path, size, password):
+    def __init__(self, path, password):
         global progressbar
-        folder = cryptmanager.Folder(path, size)
+        folder = cryptmanager.Folder(path)
         progressbar = Progressbar()
         r = Rencrypt()
         r.set_para(folder, password)
@@ -364,11 +347,6 @@ class Rdecrypt(threading.Thread):
             if widgets["manager"].get_property("visible"):
                 widgets["manager"].set_sensitive(True)
             Util().error_box("Your password is wrong.")
-        except cryptmanager.LoError:
-            progressbar.stop()
-            if widgets["manager"].get_property("visible"):
-                widgets["manager"].set_sensitive(True)
-            Util().error_box("No loopback device available.")
         else:
             folders.rem(folder)
             progressbar.stop()
@@ -392,8 +370,6 @@ class Mount:
             Util().error_box(folder.path + " is already opened.")
         except cryptmanager.BadPassword:
             Util().error_box("Your password is wrong.")
-        except cryptmanager.LoError:
-            Util().error_box("No loopback device available.")
         else:
             folders.update(folder)
             WidgetsWrapper.hide_or_quit(widgets, "open")
@@ -453,7 +429,7 @@ if __name__ == '__main__':
     elif len(sys.argv) == 2 and sys.argv[1] == "--info":
         msg = APPNAME + """, an encrypted folder manager
 Options:
---crypt [DIRECTORY] [SIZE]  encrypt directory, size in MB
+--crypt [DIRECTORY]         encrypt directory
 --open DIRECTORY            open an encrypted folder
 --info                      display this help message
 --close DIRECTORY           close an encrypted folder
@@ -464,20 +440,14 @@ Options:
     elif len(sys.argv) == 2 and sys.argv[1] == "--version":
         msg = APPNAME + " " + APPVERSION
         exit(msg)
-
-    elif len(sys.argv) == 2 and sys.argv[1] == "--test":
-        p = Progressbar("test")
-        p.start()
     
     elif len(sys.argv) == 2 and sys.argv[1] == "--clean":
         folders.clean()
         exit()
 
-    elif len(sys.argv) >= 2 and len(sys.argv) <= 4 and sys.argv[1] == "--crypt":
+    elif len(sys.argv) >= 2 and len(sys.argv) <= 3 and sys.argv[1] == "--crypt":
         if len(sys.argv) == 3:
             c = Crypt(sys.argv[2])
-        elif len(sys.argv) == 4:
-            c = Crypt(sys.argv[2], sys.argv[3])
         else:
             c = Crypt()
 

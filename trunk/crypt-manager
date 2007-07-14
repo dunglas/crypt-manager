@@ -65,7 +65,7 @@ if __name__ == '__main__':
     if len(sys.argv) == 2 and sys.argv[1] == "--help":
         msg = APPNAME + """, an encrypted folder manager
 Options:
---crypt DIRECTORY SIZE  encrypt directory, size in MB
+--crypt DIRECTORY       encrypt directory
 --open DIRECTORY        open an encrypted folder
 --help                  display this help message
 --close DIRECTORY       close an encrypted folder
@@ -86,17 +86,13 @@ Options:
         folders.clean()
         exit()
 
-    elif len(sys.argv) == 4 and sys.argv[1] == "--crypt":
+    elif len(sys.argv) == 3 and sys.argv[1] == "--crypt":
         password = raw_input("Password: ")
-        folder = cryptmanager.Folder(sys.argv[2], sys.argv[3])
+        folder = cryptmanager.Folder(sys.argv[2])
         try:
             cryptmanager.Manage(folder).crypt(password)
-        except cryptmanager.IMGexists:
+        except cryptmanager.AlreadyEncrypted:
             exit(folder.path + " is already a crypted folder.")
-        except cryptmanager.LoError:
-            exit("No loopback device available.")
-        except cryptmanager.TooSmall:
-            exit("Size too small, cannot contain current data")
         else:
             folders.add(folder)
             exit()
@@ -125,8 +121,6 @@ Options:
             exit(folder.path + " is already opened.")
         except cryptmanager.BadPassword:
             exit("Your password is wrong.")
-        except cryptmanager.LoError:
-            exit("No loopback device available.")
         else:
             folders.update(folder)
             exit()
@@ -141,9 +135,7 @@ Options:
             cryptmanager.Manage(folder).decrypt(password)
         except cryptmanager.BadPassword:
             exit("Your password is wrong.")
-        except cryptmanager.LoError:
-            exit("No loopback device available.")
-        folders.rem(folder)
+        #folders.rem(folder)
         exit()
 
     else:
