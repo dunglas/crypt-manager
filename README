@@ -21,25 +21,30 @@ INSTALL
 =======
 Depends of:
 - Python 2.5
-- cryptsetup with LUKS support (apt-get install cryptsetup)
+- encfs (apt-get install encfs)
 
-To use gcrypt-manager you also need gtk and pygtk.glade Python modules
-(provided by PyGTK)
+To use gcrypt-manager you need:
+- gtk
+- pygtk.glade Python modules (provided by PyGTK)
+
+To use the nautilus extension you need:
+- nautilus
+- nautilus-python (apt-get install nautilus-python)
 
 Type in a shell:
-tar xvjpf crypt-manager-0.1.tar.bz2
-cd crypt-manager-0.1
+tar xvjpf crypt-manager-0.2.tar.bz2
+cd crypt-manager-0.2
+sudo ./install.sh
 
 
 GRYPT-MANAGER
 =============
-Go into the installation directory (i.e: cd ~/cryptmanager-0.1) and type
-in a shell:
-gksu ./gcrypt-manager
+Command: gcrypt-manager
+Just type "gcrypt-manager" (as normal user) in a shell to start it.
 
 
 Options:
---crypt [DIRECTORY] [SIZE]  encrypt directory
+--crypt [DIRECTORY]         encrypt directory
 --open DIRECTORY            open an encrypted folder
 --info                      display this help message
 --close DIRECTORY           close an encrypted folder
@@ -49,11 +54,10 @@ Options:
 
 CRYPT-MANAGER
 =============
-Go into the installation directory (i.e: cd ~/cryptmanager-0.1)
-You must use this command as root.
+Command: crypt-manager
 
 Options:
---crypt DIRECTORY SIZE  encrypt directory
+--crypt DIRECTORY       encrypt directory
 --open DIRECTORY        open an encrypted folder
 --help                  display this help message
 --close DIRECTORY       close an encrypted folder
@@ -63,17 +67,13 @@ Options:
 
 Examples :
 
-# Got root
-keyes@kirk:~$ sudo -s
-Password:
-
 # Create some samples
 root@kirk:~/Projects/crypt-manager# mkdir test
 root@kirk:~/Projects/crypt-manager# echo "Bonjour" > test/bonjour
 root@kirk:~/Projects/crypt-manager# echo "Aurevoir" > test/aurevoir
 
 # Encrypt a directory
-root@kirk:~/Projects/crypt-manager# ./crypt-manager --crypt test 60
+root@kirk:~/Projects/crypt-manager# ./crypt-manager --crypt test
 Password: azerty
 
 [...]
