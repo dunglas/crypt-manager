@@ -63,7 +63,7 @@ class GladeHandlers:
     
     def on_open_apply_clicked(event):
         if widgets["open_autoclose"].get_active():
-            idle = widgets["open_time"].get_value_as_int()()
+            idle = widgets["open_time"].get_value_as_int()
         else:
             idle = None
         Mount(widgets["open_path"].get_text(),\
