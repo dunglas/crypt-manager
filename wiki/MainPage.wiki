@@ -2,7 +2,7 @@
 #labels Phase-Requirements,Phase-Design,Featured
 = Introduction =
 
-_Crypt Manager_ is the Google Summer of Code project of *Kévin Dunglas* [1] for *Ubuntu* [2] mentore by *Jani Monoses* [3].
+_Crypt Manager_ is the Google Summer of Code project of *Kévin Dunglas* [1] for *Ubuntu*, [2] mentored by *Jani Monoses* [3].
 The goal of this project is to *increase security of sensitives data* especially on computers which can be thieved (like laptops).  
 _Crypt manager_ is a compilation of tools which allow to *easily encrypt, open, close and uncrypt folders* in a Desktop environment.
 It is wrote in Python [4], it EncFS [5] as backend.
