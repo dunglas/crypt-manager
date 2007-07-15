@@ -25,7 +25,6 @@
 
 import os
 import sys
-import cPickle
 import pygtk
 pygtk.require('2.0')
 import gtk
@@ -133,7 +132,7 @@ class WidgetsWrapper:
     def quit(self, para=0):
         """Quit the program"""
         gtk.main_quit()
-        sys.exit(para)
+        exit(para)
 
 class Util:
     """Utilities"""
@@ -394,32 +393,14 @@ class Unmount:
             manager.update()
 
 
-def save_data():
-    if folders == None:
-        return
-    if not os.path.exists(CACHE):
-        os.makedirs(CACHE)
-    f = open(os.path.join(CACHE, "folders"), "w")
-    cPickle.dump(folders, f, protocol = cPickle.HIGHEST_PROTOCOL)
-    f.close()
-
-
-def load_data():
-    if not os.path.exists(os.path.join(CACHE, "folders")):
-        return cryptmanager.Folders()
-    f = open(os.path.join(CACHE, "folders"), "r")
-    folders = cPickle.load(f)
-    f.close()
-    return folders
-
-
 def exit(para=0):
-    save_data()
+    data.save()
     sys.exit(para)
 
 
 if __name__ == '__main__':
-    folders = load_data()
+    data = cryptmanager.Data()
+    folders = data.folders
     folders.clean()
     gtk.gdk.threads_init()
     widgets = WidgetsWrapper()

@@ -25,7 +25,6 @@
 
 import os
 import sys
-import cPickle
 import cryptmanager
 
 
@@ -33,32 +32,15 @@ APPNAME="crypt-manager"
 APPVERSION="0.1"
 CACHE = os.environ['HOME'] + "/.cryptmanager/cache"
 
-def save_data():
-    if folders == None:
-        return
-    if not os.path.exists(CACHE):
-        os.makedirs(CACHE)
-    f = open(os.path.join(CACHE, "folders"), "w")
-    cPickle.dump(folders, f, protocol = cPickle.HIGHEST_PROTOCOL)
-    f.close()
-
-
-def load_data():
-    if not os.path.exists(os.path.join(CACHE, "folders")):
-        return cryptmanager.Folders()
-    f = open(os.path.join(CACHE, "folders"), "r")
-    folders = cPickle.load(f)
-    f.close()
-    return folders
-
 
 def exit(para=0):
-    save_data()
+    data.save()
     sys.exit(para)
 
 
 if __name__ == '__main__':
-    folders = load_data()
+    data = cryptmanager.Data()
+    folders = data.folders
     folders.clean()
     
     # Command Line Interface
@@ -73,10 +55,15 @@ Options:
 --version               display version information"""
         exit(msg)
 
-    elif len(sys.argv) >= 2 and sys.argv[1] == "--test":
-        print folders.li
+    elif len(sys.argv) >= 2 and sys.argv[1] == "--info":
+        if len(sys.argv) == 2:
+            print "Folder list:"
+            print folders.li
         if len(sys.argv) == 3:
+            print "Open:"
             print folders.get(sys.argv[2]).opened
+            print "Digest:"
+            print folders.get(sys.argv[2]).digest
         
     elif len(sys.argv) == 2 and sys.argv[1] == "--version":
         msg = APPNAME + " " + APPVERSION
