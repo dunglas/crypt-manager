@@ -30,8 +30,10 @@ import shutil
 import math
 import re
 import time
+import cPickle
 
 CRYPTDIR = os.environ['HOME'] + "/.cryptmanager/crypt"
+CACHE = os.environ['HOME'] + "/.cryptmanager/cache"
 TMPDIR ="/tmp/cryptmanager"
 FUSERMOUNT = "/usr/bin/fusermount"
 ENCFS = "/usr/bin/encfs"
@@ -110,6 +112,22 @@ class Util:
                 except OSError:
                     pass
 
+class Data:
+    def __init__(self):
+        if not os.path.exists(os.path.join(CACHE, "folders")):
+            self.folders = Folders()
+        f = open(os.path.join(CACHE, "folders"), "r")
+        self.folders = cPickle.load(f)
+        f.close()
+        
+    def save(self):
+        if self.folders == None:
+            return
+        if not os.path.exists(CACHE):
+            os.makedirs(CACHE)
+        f = open(os.path.join(CACHE, "folders"), "w")
+        cPickle.dump(self.folders, f, protocol = cPickle.HIGHEST_PROTOCOL)
+        f.close()
 
 class Folders:
     """Folders list"""
@@ -138,12 +156,8 @@ class Folders:
     def get(self, path):
         """Get a folder"""
         path = Util().fullpath(path)
-        print path
-        print "haha"
         for f in self.li:
-            print f
             if f.path == path:
-                print "OOooOOOOOooOOOOoo"
                 return f
         raise NoEncrypted()
 

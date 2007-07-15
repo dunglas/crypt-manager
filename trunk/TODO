@@ -17,3 +17,4 @@ Nautilus Extension
 - Create or find a specific emblem
 - Change the emblem if the folder is open or close
   (is there a way to remove an emblem ?)
+- Ask password when entering in an unmounted crypted folder

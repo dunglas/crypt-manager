@@ -2,7 +2,6 @@ import nautilus
 import os
 import urllib
 import cryptmanager
-import cPickle
 import subprocess
 
 # Crypt Manager extension for nautilus
@@ -14,12 +13,9 @@ class CryptManagerExtension(nautilus.InfoProvider, nautilus.MenuProvider):
         pass
 
     def _load_data(self):
-        if not os.path.exists(os.path.join(CACHE, "folders")):
-            return cryptmanager.Folders()
-        f = open(os.path.join(CACHE, "folders"), "r")
-        folders = cPickle.load(f)
-        f.close()
-        return folders
+        data = cryptmanager.Data()
+        self.folders = data.folders
+        self.folders.clean()
      
     def _clicked(self, menu, file):
         if self.status == 1:
@@ -55,16 +51,14 @@ class CryptManagerExtension(nautilus.InfoProvider, nautilus.MenuProvider):
             self.desc = "Open this encrypted folder"
 
     def update_file_info(self, file):
-        self.folders = self._load_data()
-        self.folders.clean()
+        self._load_data()
         self.filename = urllib.unquote(file.get_uri()[7:])
         self._get_status()
         if self.status == 2 or self.status == 3:
             file.add_emblem(EMBLEM)
 
     def get_file_items(self, window, files):
-        self.folders = self._load_data()
-        self.folders.clean()
+        self._load_data()
         if len(files) != 1:
             return
 
