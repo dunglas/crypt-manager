@@ -37,6 +37,7 @@ import cryptmanager
 APPNAME="gcrypt-manager"
 APPVERSION="0.1"
 CACHE = os.environ['HOME'] + "/.cryptmanager/cache"
+GLADE = "/usr/share/gcrypt-manager/gcrypt-manager.glade"
 
 class GladeHandlers:
     """Connectors to GTK/Glade events"""
@@ -114,7 +115,7 @@ class WidgetsWrapper:
     def __init__(self):
         """Display a window"""
         #gnome.init(APPNAME, APPVERSION)
-        self.widgets = gtk.glade.XML("gcrypt-manager.glade")
+        self.widgets = gtk.glade.XML(GLADE)
         self.widgets.signal_autoconnect(GladeHandlers.__dict__)
 
     def __getitem__(self, key):
