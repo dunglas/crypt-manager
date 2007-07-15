@@ -10,31 +10,23 @@ _Crypt Manager_ maintain a list of encrypted folders, and stock encrypted images
 ==Process==
 
 ===Folder encryption===
-
-   * Creation of the image in ~/.config/crypmanager/img/
-   * Allocation of a loopback device (using the sha256 hash of the path name to have a unique ID)
+   * Creation of the encrypted folder in ~/.cryptmanager/crypt/SHA256_DIGEST
    * Move of existing data in a temporary directory
-   * Encryption with cryptsetup/LUKS
-   * Mapping of the encrypted folder
-   * Format using ext3 FS
-   * Mounting
+   * Setup with encfs
    * Copy of files in the temporary dir
    * Unmount
    * Add the folder to the list (object Folders)
 
-===Open an encrypted folder===
 
-  * Allocation of the loopback device
-  * Opening of the disk image
-  * Mount
+===Open an encrypted folder===
+  * Mounting
+
 
 ===Close an encrypted folder===
   * Unmount
-  * Close the disk image
-  * Delete the loopback device
+
 
 ===Uncrypt a folder===
-
   * Open the folder
   * Copy data in a temporary directory
   * Close the folder
@@ -43,9 +35,9 @@ _Crypt Manager_ maintain a list of encrypted folders, and stock encrypted images
   
 
 ==Files==
-===~/.config/crypmanager/img/===
+===~/.config/crypmanager/crypt/===
 
-_~/.config/crypmanager/img/_ contain all encrypted disk images of folders. The name of the image is the sha256 hash of the folder full path name. It allow to test if a folder is encrypted because a sha256 hash is unique (low collision risk).
+_~/.config/crypmanager/crypt/_ contain all encrypted data. The name of the encrypted folder is the sha256 hash of the mount point full path name. It allow to test if a folder is encrypted because a sha256 hash is unique (low collision risk).
 
 ===~/.config/crypmanager/cache/folders===
 
