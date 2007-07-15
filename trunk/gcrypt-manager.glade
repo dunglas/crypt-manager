@@ -474,7 +474,7 @@
 	      <property name="active">False</property>
 	      <property name="inconsistent">False</property>
 	      <property name="draw_indicator">True</property>
-	      <signal name="toggled" handler="on_open_autoclose_toggled" last_modification_time="Sun, 15 Jul 2007 19:14:35 GMT"/>
+	      <signal name="toggled" handler="on_open_autoclose_toggled" last_modification_time="Sun, 15 Jul 2007 19:44:33 GMT"/>
 	    </widget>
 	    <packing>
 	      <property name="padding">0</property>
@@ -494,7 +494,7 @@
 	      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 	      <property name="snap_to_ticks">False</property>
 	      <property name="wrap">False</property>
-	      <property name="adjustment">4 0 1000 1 10 10</property>
+	      <property name="adjustment">1 1 1000 1 10 10</property>
 	    </widget>
 	    <packing>
 	      <property name="padding">0</property>

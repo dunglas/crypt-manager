@@ -188,7 +188,8 @@ class Encfs:
         """Change password"""
         p1 = subprocess.Popen([ECHO, "-e", "\"" + old + "\n" + new + "\""],\
             stdout=subprocess.PIPE)
-        p2 = subprocess.Popen([ENCFSCTL, "autopasswd", self.folder.crypt], stdin=p1.stdout, stdout=subprocess.PIPE)
+        p2 = subprocess.Popen([ENCFSCTL, "autopasswd", self.folder.crypt],\
+            stdin=p1.stdout, stdout=subprocess.PIPE)
         p2.communicate()[0]
         
         if p2.poll() is not 0:
@@ -200,9 +201,9 @@ class Encfs:
         os.makedirs(self.folder.crypt)
         p1 = subprocess.Popen([ECHO, "-e", "\"p\n" + password + "\n\""],\
             stdout=subprocess.PIPE)
-        p2 = subprocess.Popen([ENCFS, "-S", self.folder.crypt, self.folder.path], stdin=p1.stdout, stdout=subprocess.PIPE)
+        p2 = subprocess.Popen([ENCFS, "-S", self.folder.crypt,\
+            self.folder.path], stdin=p1.stdout, stdout=subprocess.PIPE)
         p2.communicate()[0]
-        print p2.poll()
         if p2.poll() is not 0:
             raise BadPassword()
 
@@ -218,7 +219,6 @@ class Encfs:
             p2 = subprocess.Popen([ENCFS, "-S", self.folder.crypt, "-i", idle,\
                 self.folder.path], stdin=p1.stdout, stdout=subprocess.PIPE)
         p3 = p2.communicate()[0]
-        print p2.poll()
         if p2.poll() is not 0:
             raise BadPassword()
 
@@ -301,7 +301,7 @@ class Manage:
         Util().cp(tmp, self.folder.path)
         Util().rm(tmp)
 
-    def mount(self, password):
+    def mount(self, password, idle=None):
         """Mount an encrypted folder"""
         # if .crypt exists and contain a ref to ~/.crypt/XXX
         # this an unmounted crypted directory
@@ -310,7 +310,7 @@ class Manage:
             raise AlreadyOpened()
             return
         try:
-            self.encfs.mount(password)
+            self.encfs.mount(password, idle)
         except BadPassword:
             raise BadPassword()
             return
