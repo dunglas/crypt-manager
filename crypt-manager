@@ -48,7 +48,8 @@ if __name__ == '__main__':
         msg = APPNAME + """, an encrypted folder manager
 Options:
 --crypt DIRECTORY       encrypt directory
---open DIRECTORY        open an encrypted folder
+--change-pass DIRECTORY change a password
+--open DIRECTORY [IDLE] open an encrypted folder, close after IDLE (in minutes)
 --help                  display this help message
 --close DIRECTORY       close an encrypted folder
 --decrypt DIRECTORY     decrypt encrypted folder
@@ -84,6 +85,22 @@ Options:
             folders.add(folder)
             exit()
 
+    elif len(sys.argv) == 3 and sys.argv[1] == "--change-pass":
+        try:
+            folder = folders.get(sys.argv[2])
+        except cryptmanager.NoEncrypted:
+            exit("This is not a crypted directory.")
+        old = raw_input("Old password: ")
+        new = raw_input("New password: ")
+        confirmation = raw_input("Confirmation: ")
+        if not new == confirmation:
+            exit("Password do not match with is confirmation.")
+        try:
+            cryptmanager.Manage(folder).change_password(old, new)
+        except cryptmanager.BadPassword:
+            exit("Wrong password.")
+            
+
     elif len(sys.argv) == 3 and sys.argv[1] == "--close":
         try:
             folder = folders.get(sys.argv[2])
@@ -96,14 +113,18 @@ Options:
         folders.update(folder)
         exit()
 
-    elif len(sys.argv) == 3 and sys.argv[1] == "--open":
+    elif (len(sys.argv) == 3 or len(sys.argv) == 4) and sys.argv[1] == "--open":
         try:
             folder = folders.get(sys.argv[2])
         except cryptmanager.NoEncrypted:
             exit("This is not a crypted directory.")
         password = raw_input("Password: ")
+        if len(sys.argv) == 4 and sys.argv[3].isdigit():
+            idle = 4
+        else:
+            idle = None
         try:
-            folder = cryptmanager.Manage(folder).mount(password)
+            folder = cryptmanager.Manage(folder).mount(password, idle)
         except cryptmanager.AlreadyOpened:
             exit(folder.path + " is already opened.")
         except cryptmanager.BadPassword:
