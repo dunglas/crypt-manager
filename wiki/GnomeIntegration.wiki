@@ -16,9 +16,8 @@ Features:
 
 = Project =
 
-Here are features envisaged:
+Envisaged features:
   * Right click menu entry on a folder in nautilus to encrypt it. *[OK]*
   * Automatic detection of an encrypted folder (not opened) in Nautilus when clicking on it
   * Right click menu entry to close an encrypted folder *[OK]*
   * Integration with gnome-keyring to save folders password
-
