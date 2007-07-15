@@ -216,8 +216,9 @@ class Encfs:
             p2 = subprocess.Popen([ENCFS, "-S", self.folder.crypt,\
                 self.folder.path], stdin=p1.stdout, stdout=subprocess.PIPE)
         else:
-            p2 = subprocess.Popen([ENCFS, "-S", self.folder.crypt, "-i", idle,\
-                self.folder.path], stdin=p1.stdout, stdout=subprocess.PIPE)
+            p2 = subprocess.Popen([ENCFS, "-S", self.folder.crypt, "-i",\
+                str(idle), self.folder.path], stdin=p1.stdout,\
+                    stdout=subprocess.PIPE)
         p3 = p2.communicate()[0]
         if p2.poll() is not 0:
             raise BadPassword()
