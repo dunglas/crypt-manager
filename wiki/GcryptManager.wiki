@@ -6,6 +6,7 @@ Just type "gcrypt-manager" (as normal user) in a shell to start it.
 
 
 Options:
+
 --crypt [DIRECTORY]         encrypt directory
 
 --open DIRECTORY            open an encrypted folder
