@@ -116,9 +116,10 @@ class Data:
     def __init__(self):
         if not os.path.exists(os.path.join(CACHE, "folders")):
             self.folders = Folders()
-        f = open(os.path.join(CACHE, "folders"), "r")
-        self.folders = cPickle.load(f)
-        f.close()
+        else:
+            f = open(os.path.join(CACHE, "folders"), "r")
+            self.folders = cPickle.load(f)
+            f.close()
         
     def save(self):
         if self.folders == None:
