@@ -186,7 +186,7 @@ class Encfs:
 
     def change_password(self, old, new):
         """Change password"""
-        p1 = subprocess.Popen([ECHO, "-e", "\"" + old + "\n" + new + "\""],\
+        p1 = subprocess.Popen([ECHO, "-e", old + "\n" + new + "\n"],\
             stdout=subprocess.PIPE)
         p2 = subprocess.Popen([ENCFSCTL, "autopasswd", self.folder.crypt],\
             stdin=p1.stdout, stdout=subprocess.PIPE)
@@ -303,8 +303,6 @@ class Manage:
 
     def mount(self, password, idle=None):
         """Mount an encrypted folder"""
-        # if .crypt exists and contain a ref to ~/.crypt/XXX
-        # this an unmounted crypted directory
         
         if self.folder.opened:
             raise AlreadyOpened()
@@ -351,3 +349,11 @@ class Manage:
         Util().rm(self.folder.crypt)
         Util().cp(tmp, self.folder.path)
         Util().rm(tmp)
+    
+    def change_password(self, old, new):
+        """Change a folder password"""
+        
+        try:
+            self.encfs.change_password(old, new)
+        except BadPassword:
+            raise BadPassword()
