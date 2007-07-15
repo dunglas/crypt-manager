@@ -1,11 +1,9 @@
 import nautilus
-import os
 import urllib
 import cryptmanager
 import subprocess
 
 # Crypt Manager extension for nautilus
-CACHE = os.environ['HOME'] + "/.cryptmanager/cache"
 EMBLEM = "readonly"
 
 class CryptManagerExtension(nautilus.InfoProvider, nautilus.MenuProvider):
@@ -54,6 +52,7 @@ class CryptManagerExtension(nautilus.InfoProvider, nautilus.MenuProvider):
         self._load_data()
         self.filename = urllib.unquote(file.get_uri()[7:])
         self._get_status()
+        print file.get_parent_uri()
         if self.status == 2 or self.status == 3:
             file.add_emblem(EMBLEM)
 
@@ -64,13 +63,12 @@ class CryptManagerExtension(nautilus.InfoProvider, nautilus.MenuProvider):
 
         file = files[0]
         self.filename = urllib.unquote(file.get_uri()[7:]) 
-        if not os.path.isdir(self.filename):
+        if not file.is_directory():
             return
         
         self._get_status()
         self._get_messages()
-        
-        print self.status
+
         
         menu = nautilus.MenuItem(
             "NautilusPython::CryptManagerExtension",
