@@ -37,11 +37,12 @@ _Folder_ has no public method._
 _Folders()_
   * _li_ is a list of _Folder_
 
-_Folder has 4 publics methods:_
+_Folder has 5 publics methods:_
   * _add(folder)_ add a _Folder_ to the list _li_. Raise an _AlreadyExists_ exception if the _Folder_ is already in the list.
   * _rem(folder)_ remvoe a _Folder_ of the list _li_.
   * _update(folder)_ update a _Folder_ which the list _li_ contain.
   * _get(path)_ return a _Folder_ if it is in the list. Either raise an _Uncrypted_ exception.
+ * _clean()_ update the object to the current real status and remove out of dates entries.
 
 == Manage ==
 
