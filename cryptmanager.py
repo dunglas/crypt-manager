@@ -202,17 +202,25 @@ class Encfs:
             stdout=subprocess.PIPE)
         p2 = subprocess.Popen([ENCFS, "-S", self.folder.crypt, self.folder.path], stdin=p1.stdout, stdout=subprocess.PIPE)
         p2.communicate()[0]
+        print p2.poll()
         if p2.poll() is not 0:
-            raise BadPassword
+            raise BadPassword()
 
-    def mount(self, password):
+    def mount(self, password, idle=None):
         """Mount an encrypted folder"""
         print "Mounting..."
         p1 = subprocess.Popen([ECHO, password],\
             stdout=subprocess.PIPE)
-        p2 = subprocess.Popen([ENCFS, "-S", self.folder.crypt, self.folder.path], stdin=p1.stdout, stdout=subprocess.PIPE)
+        if idle == None:
+            p2 = subprocess.Popen([ENCFS, "-S", self.folder.crypt,\
+                self.folder.path], stdin=p1.stdout, stdout=subprocess.PIPE)
+        else:
+            p2 = subprocess.Popen([ENCFS, "-S", self.folder.crypt, "-i", idle,\
+                self.folder.path], stdin=p1.stdout, stdout=subprocess.PIPE)
         p3 = p2.communicate()[0]
-        print p3
+        print p2.poll()
+        if p2.poll() is not 0:
+            raise BadPassword()
 
     def unmount(self):
         """Unmount an encrypted directory"""
