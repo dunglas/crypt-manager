@@ -138,8 +138,12 @@ class Folders:
     def get(self, path):
         """Get a folder"""
         path = Util().fullpath(path)
+        print path
+        print "haha"
         for f in self.li:
+            print f
             if f.path == path:
+                print "OOooOOOOOooOOOOoo"
                 return f
         raise NoEncrypted()
 

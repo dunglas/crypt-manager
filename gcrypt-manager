@@ -56,16 +56,16 @@ class GladeHandlers:
             #WidgetsWrapper.hide_or_quit(widgets, "crypt")
 
     def on_crypt_cancel_clicked(event):
-        WidgetsWrapper.hide_or_quit(widgets, "crypt")
+        WidgetsWrapper.hide_or_quit(widgets, "crypt", 1)
 
     def on_open_cancel_clicked(event):
-        WidgetsWrapper.hide_or_quit(widgets, "open")
+        WidgetsWrapper.hide_or_quit(widgets, "open", 1)
     
     def on_open_apply_clicked(event):
         Mount(widgets["open_path"].get_text(), widgets["open_password"].get_text())
     
     def on_decrypt_cancel_clicked(event):
-        WidgetsWrapper.hide_or_quit(widgets, "decrypt")
+        WidgetsWrapper.hide_or_quit(widgets, "decrypt", 1)
     
     def on_decrypt_apply_clicked(event):
         Sdecrypt(widgets["decrypt_path"].get_text(), widgets["decrypt_password"].get_text())
@@ -122,18 +122,18 @@ class WidgetsWrapper:
         """Allow to use widgets['widget_name'].action()"""
         return self.widgets.get_widget(key)
 
-    def hide_or_quit(self, name):
+    def hide_or_quit(self, name, para=0):
         """Hide or quit the window"""
         if widgets["manager"].get_property("visible"):
             widgets[name].hide()
             widgets["manager"].set_sensitive(True)
         else:
-            self.quit()
+            self.quit(para)
 
-    def quit(self):
+    def quit(self, para=0):
         """Quit the program"""
         gtk.main_quit()
-
+        sys.exit(para)
 
 class Util:
     """Utilities"""
