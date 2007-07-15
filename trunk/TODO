@@ -1,22 +1,15 @@
 TODO
 
 Cryptmanager module
+- Import load_data and save_data into the module
 
-- Add a restore option to restore the state after a reboot
-- Add a clean option
-- Test if the selected size for the crypted folder is >= to current directory size
-
-Crypt manager
-[OK]
 
 Gnome Crypt Manager
-
-- Finish it [OK]
 - Respect the Gnome Human Interface Guidelines
-- Solve the progress bar problem
 - Add support for Gnome Keyring
 - Replace the crypt_path label by a gtk.FileChooserButton
 
-Other
-- Write a python extension for Nautilus
-- a QT GUI ?
+Nautilus Extension
+- Create or find a specific emblem
+- Change the emblem if the folder is open or close
+  (is there a way to remove an emblem ?)
