@@ -8,19 +8,29 @@ _cryptmanger.py_ is a Python module wich allow to manage an encrypted folder lis
 = Details =
 
 _cryptmanager.py_ is composed of 3 public classes (and some privates classes, see the code for details):
-  * Folder: basics data representing a folder
-  * Folders: list of folders and operations on list
-  * Manage: operations on a folder
+  * Data: access to main folder list.
+  * Folder: structure representing a folder.
+  * Folders: list of folders and operations on list.
+  * Manage: operations on a folder.
+
+== Data ==
+
+_Data()_
+  * Return a _Folders_ object (pickeling).
+
+  * _folders_ is the current _Folders_ object.
+
+Data has one public method:
+  * _save()_ save the current _Folders object.
 
 == Folder ==
 
-_Folder(path, size, loop=None)_
-  * _path_ represent the full path to the mount point (the encrypted directory)
-  * _size_ is the size (in Mb) of the encrypted image
-  * _loop_ is the loopback device used when the encrypted image is mounted on the mountpoint
+_Folder(path)_
+  * _path_ represent the full path to the mount point (the encrypted directory).
+  * _crypt_ is the place where encrypted data are stored.
+  * _digest_ contain the sha256 hash of the path name.
 
-_Folder_ has one public method:_
-  * _digest()_ return the sha256 hash of the path name.
+_Folder_ has no public method._
 
 == Folders ==
 
@@ -29,8 +39,8 @@ _Folders()_
 
 _Folder has 4 publics methods:_
   * _add(folder)_ add a _Folder_ to the list _li_. Raise an _AlreadyExists_ exception if the _Folder_ is already in the list.
-  * _rem(folder)_ remvoe a _Folder_ of the list _li_
-  * _update(folder)_ update a _Folder_ which the list _li_ contain
+  * _rem(folder)_ remvoe a _Folder_ of the list _li_.
+  * _update(folder)_ update a _Folder_ which the list _li_ contain.
   * _get(path)_ return a _Folder_ if it is in the list. Either raise an _Uncrypted_ exception.
 
 == Manage ==
