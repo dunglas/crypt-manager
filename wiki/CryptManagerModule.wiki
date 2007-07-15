@@ -7,7 +7,7 @@ _cryptmanger.py_ is a Python module wich allow to manage an encrypted folder lis
 
 = Details =
 
-_cryptmanager.py_ is composed of 3 public classes (and some privates classes, see the code for details):
+_cryptmanager.py_ is composed of 4 public classes (and some privates classes, see the code for details):
   * Data: access to main folder list.
   * Folder: structure representing a folder.
   * Folders: list of folders and operations on list.
