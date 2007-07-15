@@ -41,7 +41,7 @@ GLADE = "/usr/share/gcrypt-manager/gcrypt-manager.glade"
 class GladeHandlers:
     """Connectors to GTK/Glade events"""
     def gtk_main_quit(event):
-        WidgetsWrapper.quit(widgets)
+        widgets.quit()
 
     def on_manager_add_clicked(event):
         widgets["manager"].set_sensitive(False)
@@ -56,10 +56,10 @@ class GladeHandlers:
             #WidgetsWrapper.hide_or_quit(widgets, "crypt")
 
     def on_crypt_cancel_clicked(event):
-        WidgetsWrapper.hide_or_quit(widgets, "crypt", 1)
+        widgets.hide_or_quit("crypt", 1)
 
     def on_open_cancel_clicked(event):
-        WidgetsWrapper.hide_or_quit(widgets, "open", 1)
+        widgets.hide_or_quit("open", 1)
     
     def on_open_apply_clicked(event):
         if widgets["open_autoclose"].get_active():
@@ -70,7 +70,7 @@ class GladeHandlers:
             widgets["open_password"].get_text(), idle)
     
     def on_decrypt_cancel_clicked(event):
-        WidgetsWrapper.hide_or_quit(widgets, "decrypt", 1)
+        widgets.hide_or_quit("decrypt", 1)
     
     def on_open_autoclose_toggled(event):
         if widgets["open_autoclose"].get_active():
@@ -81,7 +81,7 @@ class GladeHandlers:
     def on_decrypt_apply_clicked(event):
         Sdecrypt(widgets["decrypt_path"].get_text(),\
             widgets["decrypt_password"].get_text())
-        WidgetsWrapper.hide_or_quit(widgets, "decrypt")
+        widgets.hide_or_quit("decrypt")
     
     def on_crypt_open_clicked(event):
         widgets["filechooserdialog"].show()
@@ -108,12 +108,12 @@ class GladeHandlers:
         widgets["manager_properties"].set_sensitive(True)
     
     def on_manager_open_close_clicked(event):
-        #widgets["manager"].set_sensitive(False)
         (m, i) = widgets["manager_list"].get_selection().get_selected()
         path = m.get_value(i, 2)
         if m.get_value(i, 1) == "Yes":
             Unmount(path)
         else:
+            widgets["manager"].set_sensitive(False)
             Open(path)
     
     def on_manager_properties_clicked(event):
@@ -133,7 +133,7 @@ class GladeHandlers:
         Decrypt(path)
 
     def on_properties_cancel_clicked(event):
-        WidgetsWrapper.hide_or_quit(widgets, "properties", 1)
+        widgets.hide_or_quit("properties", 1)
     
     def on_properties_apply_clicked(event):
         old = widgets["properties_old"].get_text()
@@ -159,6 +159,10 @@ class WidgetsWrapper:
         """Hide or quit the window"""
         if widgets["manager"].get_property("visible"):
             widgets[name].hide()
+            manager.update()
+            widgets["manager_open_close"].set_sensitive(False)
+            widgets["manager_properties"].set_sensitive(False)
+            widgets["manager_decrypt"].set_sensitive(False)
             widgets["manager"].set_sensitive(True)
         else:
             self.quit(para)
@@ -401,10 +405,7 @@ class Rdecrypt(threading.Thread):
         else:
             folders.rem(folder)
             progressbar.stop()
-            WidgetsWrapper.hide_or_quit(widgets, "decrypt")
-            if widgets["manager"].get_property("visible"):
-                widgets["manager"].set_sensitive(True)
-                manager.update()
+            widgets.hide_or_quit("decrypt")
 
 
 class Mount:
@@ -423,9 +424,7 @@ class Mount:
             Util().error_box("Your password is wrong.")
         else:
             folders.update(folder)
-            WidgetsWrapper.hide_or_quit(widgets, "open")
-            if widgets["manager"].get_property("visible"):
-                manager.update()
+            widgets.hide_or_quit("open")
 
 
 class Unmount:
@@ -457,7 +456,7 @@ class ChangePassword:
         except cryptmanager.BadPassword:
             Util().error_box("Bad password.")
         else:
-            WidgetsWrapper.hide_or_quit(widgets, "properties")
+            widgets.hide_or_quit("properties")
 
 
 def exit(para=0):
