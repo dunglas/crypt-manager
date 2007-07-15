@@ -105,6 +105,7 @@ class GladeHandlers:
             widgets["manager_open_close"].set_label("gtk-open")
         widgets["manager_open_close"].set_sensitive(True)
         widgets["manager_decrypt"].set_sensitive(True)
+        widgets["manager_properties"].set_sensitive(True)
     
     def on_manager_open_close_clicked(event):
         #widgets["manager"].set_sensitive(False)
@@ -115,15 +116,35 @@ class GladeHandlers:
         else:
             Open(path)
     
+    def on_manager_properties_clicked(event):
+        (m, i) = widgets["manager_list"].get_selection().get_selected()
+        path = m.get_value(i, 2)
+        widgets["properties_old"].set_text("")
+        widgets["properties_new"].set_text("")
+        widgets["properties_confirmation"].set_text("")
+        widgets["properties_path"].set_text(path)
+        widgets["manager"].set_sensitive(False)
+        widgets["properties"].show()
+        
     def on_manager_decrypt_clicked(event):
         widgets["manager"].set_sensitive(False)
         (m, i) = widgets["manager_list"].get_selection().get_selected()
         path = m.get_value(i, 2)
         Decrypt(path)
 
+    def on_properties_cancel_clicked(event):
+        WidgetsWrapper.hide_or_quit(widgets, "properties", 1)
+    
+    def on_properties_apply_clicked(event):
+        old = widgets["properties_old"].get_text()
+        new = widgets["properties_new"].get_text()
+        confirmation = widgets["properties_confirmation"].get_text()
+        if Util().valid_properties(new, confirmation):
+            ChangePassword(widgets["properties_path"].get_text(), old, new)
+
 
 class WidgetsWrapper:
-    """Wrapper for GTK/Galde widgets"""
+    """Wrapper for GTK/Glade widgets"""
     def __init__(self):
         """Display a window"""
         #gnome.init(APPNAME, APPVERSION)
@@ -170,10 +191,18 @@ class Util:
         if len(password) == 0:
             self.error_box("Password can not be null")
             return False
-        print password
-        print confirmation
         if not password == confirmation:
             self.error_box("Password do not match with the confirmation")
+            return False
+        return True
+    
+    def valid_properties(self, new, confirmation):
+        """Validation for the crypt window"""
+        if len(new) == 0:
+            self.error_box("Password can not be null")
+            return False
+        if not new == confirmation:
+            self.error_box("New password do not match with the confirmation")
             return False
         return True
 
@@ -400,8 +429,8 @@ class Mount:
 
 
 class Unmount:
+    """Unmount an encrypted folder"""
     def __init__(self, path):
-        """Unmount an encrypted folder"""
         try:
             folder = folders.get(path)
         except cryptmanager.NoEncrypted:
@@ -410,9 +439,25 @@ class Unmount:
             folder = cryptmanager.Manage(folder).unmount()
         except cryptmanager.NotOpened:
             Util().error_box("This folder is not opened.")
-        folders.update(folder)
-        if widgets["manager"].get_property("visible"):
-            manager.update()
+        else:
+            folders.update(folder)
+            if widgets["manager"].get_property("visible"):
+                manager.update()
+
+
+class ChangePassword:
+    """Change a folder password"""
+    def __init__(self, path, old, new):
+        try:
+            folder = folders.get(path)
+        except cryptmanager.NoEncrypted:
+            Util().error_box("This is not a crypted directory.")
+        try:
+            folder = cryptmanager.Manage(folder).change_password(old, new)
+        except cryptmanager.BadPassword:
+            Util().error_box("Bad password.")
+        else:
+            WidgetsWrapper.hide_or_quit(widgets, "properties")
 
 
 def exit(para=0):
