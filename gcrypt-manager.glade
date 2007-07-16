@@ -5,6 +5,7 @@
 
 <widget class="GtkWindow" id="crypt">
   <property name="border_width">6</property>
+  <property name="visible">True</property>
   <property name="title" translatable="yes">Encrypt Folder</property>
   <property name="type">GTK_WINDOW_TOPLEVEL</property>
   <property name="window_position">GTK_WIN_POS_NONE</property>
@@ -18,6 +19,7 @@
   <property name="gravity">GDK_GRAVITY_NORTH_WEST</property>
   <property name="focus_on_map">True</property>
   <property name="urgency_hint">False</property>
+  <signal name="destroy" handler="on_crypt_destroy" last_modification_time="Mon, 16 Jul 2007 13:45:43 GMT"/>
 
   <child>
     <widget class="GtkVBox" id="vbox1">
@@ -312,6 +314,7 @@
 </widget>
 
 <widget class="GtkWindow" id="open">
+  <property name="visible">True</property>
   <property name="title" translatable="yes">Open a folder</property>
   <property name="type">GTK_WINDOW_TOPLEVEL</property>
   <property name="window_position">GTK_WIN_POS_NONE</property>
@@ -325,6 +328,7 @@
   <property name="gravity">GDK_GRAVITY_NORTH_WEST</property>
   <property name="focus_on_map">True</property>
   <property name="urgency_hint">False</property>
+  <signal name="destroy" handler="on_open_destroy" last_modification_time="Mon, 16 Jul 2007 13:50:06 GMT"/>
 
   <child>
     <widget class="GtkVBox" id="vbox6">
@@ -580,6 +584,7 @@
 
 <widget class="GtkWindow" id="manager">
   <property name="border_width">6</property>
+  <property name="visible">True</property>
   <property name="title" translatable="yes">Encrypted Folders</property>
   <property name="type">GTK_WINDOW_TOPLEVEL</property>
   <property name="window_position">GTK_WIN_POS_NONE</property>
@@ -869,6 +874,7 @@
 </widget>
 
 <widget class="GtkFileChooserDialog" id="filechooserdialog">
+  <property name="visible">True</property>
   <property name="action">GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER</property>
   <property name="local_only">True</property>
   <property name="select_multiple">False</property>
@@ -941,6 +947,7 @@
 
 <widget class="GtkDialog" id="error">
   <property name="border_width">6</property>
+  <property name="visible">True</property>
   <property name="title" translatable="yes">Error</property>
   <property name="type">GTK_WINDOW_TOPLEVEL</property>
   <property name="window_position">GTK_WIN_POS_NONE</property>
@@ -1048,6 +1055,7 @@
 </widget>
 
 <widget class="GtkWindow" id="progressbar">
+  <property name="visible">True</property>
   <property name="title" translatable="yes"></property>
   <property name="type">GTK_WINDOW_TOPLEVEL</property>
   <property name="window_position">GTK_WIN_POS_NONE</property>
@@ -1061,6 +1069,7 @@
   <property name="gravity">GDK_GRAVITY_NORTH_WEST</property>
   <property name="focus_on_map">True</property>
   <property name="urgency_hint">False</property>
+  <signal name="destroy" handler="on_progressbar_destroy" last_modification_time="Mon, 16 Jul 2007 13:52:40 GMT"/>
 
   <child>
     <widget class="GtkProgressBar" id="progressbar_progressbar">
@@ -1076,6 +1085,7 @@
 
 <widget class="GtkWindow" id="decrypt">
   <property name="border_width">6</property>
+  <property name="visible">True</property>
   <property name="title" translatable="yes">Decrypt a folder</property>
   <property name="type">GTK_WINDOW_TOPLEVEL</property>
   <property name="window_position">GTK_WIN_POS_NONE</property>
@@ -1089,6 +1099,7 @@
   <property name="gravity">GDK_GRAVITY_NORTH_WEST</property>
   <property name="focus_on_map">True</property>
   <property name="urgency_hint">False</property>
+  <signal name="destroy" handler="on_decrypt_destroy" last_modification_time="Mon, 16 Jul 2007 13:53:29 GMT"/>
 
   <child>
     <widget class="GtkTable" id="table3">
@@ -1289,6 +1300,7 @@
 </widget>
 
 <widget class="GtkDialog" id="warning">
+  <property name="visible">True</property>
   <property name="title" translatable="yes">Warning</property>
   <property name="type">GTK_WINDOW_TOPLEVEL</property>
   <property name="window_position">GTK_WIN_POS_NONE</property>
@@ -1396,6 +1408,7 @@
 </widget>
 
 <widget class="GtkWindow" id="properties">
+  <property name="visible">True</property>
   <property name="title" translatable="yes">Properties</property>
   <property name="type">GTK_WINDOW_TOPLEVEL</property>
   <property name="window_position">GTK_WIN_POS_NONE</property>
@@ -1409,6 +1422,7 @@
   <property name="gravity">GDK_GRAVITY_NORTH_WEST</property>
   <property name="focus_on_map">True</property>
   <property name="urgency_hint">False</property>
+  <signal name="delete_event" handler="on_properties_delete_event" last_modification_time="Mon, 16 Jul 2007 13:59:43 GMT"/>
 
   <child>
     <widget class="GtkVBox" id="vbox5">

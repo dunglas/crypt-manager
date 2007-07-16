@@ -89,8 +89,19 @@ class Util:
     """Utilities"""    
     def rm(self, path):
         """Remove recursively a directory"""
-        if os.path.exists(path):
-            shutil.rmtree(path)
+        #if os.path.exists(path):
+        #    print "héhé"
+        #    for f in os.listdir(path):
+        #        print f
+        #        if os.path.isdir(os.path.join(path, f)):
+        #            print os.path.join(path, f)
+        #            self.rm(os.path.join(path, f))
+        #            os.rmdir(os.path.join(path, f))
+        #        if os.path.isfile(os.path.join(path, f)):
+        #            print os.path.join(path, f)
+        #            os.unlink(os.path.join(path, f))
+        #    os.rmdir(path)
+        shutil.rmtree(path)
 
     def fullpath(self, path):
         """Expand a path"""
