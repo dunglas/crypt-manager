@@ -280,7 +280,7 @@ class Widgets:
     """Wrapper for GTK/Glade widgets"""
     def __init__(self, window):
         """Display a window"""
-        self.widgets = gtk.glade.XML("gcrypt-manager.glade", window)
+        self.widgets = gtk.glade.XML(GLADE, window)
         self.widgets.signal_autoconnect(GladeHandlers.__dict__)
 
     def __getitem__(self, key):
@@ -403,8 +403,6 @@ class Manager:
             else:
                 o = "No"
             image = gtk.gdk.pixbuf_new_from_file(ICON)
-            print ICON
-            print image
             self.folderList.append([image, f.path, o])
 
 
