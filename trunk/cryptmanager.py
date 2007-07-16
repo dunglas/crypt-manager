@@ -101,7 +101,8 @@ class Util:
         #            print os.path.join(path, f)
         #            os.unlink(os.path.join(path, f))
         #    os.rmdir(path)
-        shutil.rmtree(path)
+        if os.path.exists(path):
+            shutil.rmtree(path)
 
     def fullpath(self, path):
         """Expand a path"""
