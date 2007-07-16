@@ -205,8 +205,11 @@ class GladeHandlers:
     def on_manager_open_close_clicked(event):
         (m, i) = windows["manager"]["manager_list"].get_selection().\
             get_selected()
-        path = m.get_value(i, 2)
-        if m.get_value(i, 1) == "Yes":
+        path = m.get_value(i, 0)
+        if m.get_value(i, 1) == "Yes": 
+            windows["manager"]["manager_open_close"].set_sensitive(False)
+            windows["manager"]["manager_properties"].set_sensitive(False)
+            windows["manager"]["manager_decrypt"].set_sensitive(False)
             Unmount(path)
         else:
             windows["manager"]["manager"].set_sensitive(False)
@@ -214,11 +217,8 @@ class GladeHandlers:
     
     def on_manager_properties_clicked(event):
         (m, i) = windows["manager"]["manager_list"].get_selection().get_selected()
-        path = m.get_value(i, 2)
+        path = m.get_value(i, 0)
         windows.load("properties")
-        windows["properties"]["properties_old"].set_text("")
-        windows["properties"]["properties_new"].set_text("")
-        windows["properties"]["properties_confirmation"].set_text("")
         windows["properties"]["properties_path"].set_text(path)
         windows["manager"]["manager"].set_sensitive(False)
         
@@ -226,7 +226,7 @@ class GladeHandlers:
         windows["manager"]["manager"].set_sensitive(False)
         (m, i) = windows["manager"]["manager_list"].get_selection().\
             get_selected()
-        path = m.get_value(i, 2)
+        path = m.get_value(i, 0)
         Decrypt(path)
 
     def on_properties_cancel_clicked(event):
@@ -369,25 +369,19 @@ class Manager:
     def __init__(self, folders):
         """Launch the Cypted Folder manager"""
         windows.load("manager")
-        column0 = gtk.TreeViewColumn("Folder name", gtk.CellRendererText(),\
+        column0 = gtk.TreeViewColumn("Folder", gtk.CellRendererText(),\
             text=0)
         column0.set_resizable(True)
         column0.set_sort_column_id(0)
                 
         column1 = gtk.TreeViewColumn("Open", gtk.CellRendererText(), text=1)
         column1.set_resizable(True)
-        column1.set_sort_column_id(2)
-        
-        column2 = gtk.TreeViewColumn("Full path", gtk.CellRendererText(),\
-            text=2)
-        column2.set_resizable(True)
-        column2.set_sort_column_id(3)
+        column1.set_sort_column_id(1)
         
         windows["manager"]["manager_list"].append_column(column0)
         windows["manager"]["manager_list"].append_column(column1)
-        windows["manager"]["manager_list"].append_column(column2)
         
-        self.folderList = gtk.ListStore(str, str, str)
+        self.folderList = gtk.ListStore(str, str)
         windows["manager"]["manager_list"].set_model(self.folderList)
         self.update()
 
@@ -395,13 +389,13 @@ class Manager:
         """Update the tree view with the folders list"""
         self.folderList.clear()
         for f in folders.li:
-            path = f.path.split("/")
-            path = path[len(path) - 1]
+            #path = f.path.split("/")
+            #path = path[len(path) - 1]
             if f.opened == True:
                 o = "Yes"
             else:
                 o = "No"
-            self.folderList.append([path, o, f.path])
+            self.folderList.append([f.path, o])
 
 
 class Crypt:
