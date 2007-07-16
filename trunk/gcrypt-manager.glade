@@ -76,7 +76,7 @@
 		  <property name="max_length">0</property>
 		  <property name="text" translatable="yes"></property>
 		  <property name="has_frame">True</property>
-		  <property name="invisible_char">●</property>
+		  <property name="invisible_char">â</property>
 		  <property name="activates_default">False</property>
 		</widget>
 		<packing>
@@ -529,6 +529,56 @@
 	      <property name="padding">0</property>
 	      <property name="expand">False</property>
 	      <property name="fill">False</property>
+	    </packing>
+	  </child>
+	</widget>
+	<packing>
+	  <property name="padding">0</property>
+	  <property name="expand">False</property>
+	  <property name="fill">False</property>
+	</packing>
+      </child>
+
+      <child>
+	<widget class="GtkHBox" id="hbox16">
+	  <property name="visible">True</property>
+	  <property name="homogeneous">False</property>
+	  <property name="spacing">0</property>
+
+	  <child>
+	    <widget class="GtkCheckButton" id="open_savepass">
+	      <property name="border_width">6</property>
+	      <property name="visible">True</property>
+	      <property name="can_focus">True</property>
+	      <property name="label" translatable="yes">Remind my password</property>
+	      <property name="use_underline">True</property>
+	      <property name="relief">GTK_RELIEF_NORMAL</property>
+	      <property name="focus_on_click">True</property>
+	      <property name="active">False</property>
+	      <property name="inconsistent">False</property>
+	      <property name="draw_indicator">True</property>
+	      <signal name="toggled" handler="on_open_savepass_toggled" last_modification_time="Mon, 16 Jul 2007 15:58:04 GMT"/>
+	    </widget>
+	    <packing>
+	      <property name="padding">0</property>
+	      <property name="expand">False</property>
+	      <property name="fill">False</property>
+	    </packing>
+	  </child>
+
+	  <child>
+	    <widget class="GtkComboBox" id="open_savechoice">
+	      <property name="visible">True</property>
+	      <property name="sensitive">False</property>
+	      <property name="items" translatable="yes">just for this session
+forever</property>
+	      <property name="add_tearoffs">False</property>
+	      <property name="focus_on_click">True</property>
+	    </widget>
+	    <packing>
+	      <property name="padding">0</property>
+	      <property name="expand">True</property>
+	      <property name="fill">True</property>
 	    </packing>
 	  </child>
 	</widget>
@@ -1529,7 +1579,7 @@
 	      <property name="max_length">0</property>
 	      <property name="text" translatable="yes"></property>
 	      <property name="has_frame">True</property>
-	      <property name="invisible_char">●</property>
+	      <property name="invisible_char">â</property>
 	      <property name="activates_default">False</property>
 	    </widget>
 	    <packing>
@@ -1606,7 +1656,7 @@
 	      <property name="max_length">0</property>
 	      <property name="text" translatable="yes"></property>
 	      <property name="has_frame">True</property>
-	      <property name="invisible_char">●</property>
+	      <property name="invisible_char">â</property>
 	      <property name="activates_default">False</property>
 	    </widget>
 	    <packing>
@@ -1627,7 +1677,7 @@
 	      <property name="max_length">0</property>
 	      <property name="text" translatable="yes"></property>
 	      <property name="has_frame">True</property>
-	      <property name="invisible_char">●</property>
+	      <property name="invisible_char">â</property>
 	      <property name="activates_default">False</property>
 	    </widget>
 	    <packing>
