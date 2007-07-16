@@ -41,150 +41,181 @@ GLADE = "/usr/share/gcrypt-manager/gcrypt-manager.glade"
 class GladeHandlers:
     """Connectors to GTK/Glade events"""
     def gtk_main_quit(event):
-        widgets.quit()
+        quit()
 
     def on_manager_add_clicked(event):
-        widgets["manager"].set_sensitive(False)
+        windows["manager"]["manager"].set_sensitive(False)
         Crypt()
 
     def on_crypt_apply_clicked(event):
-        path = widgets["crypt_path"].get_text()
-        password = widgets["crypt_password"].get_text()
-        confirmation = widgets["crypt_confirmation"].get_text()
+        path = windows["crypt"]["crypt_path"].get_text()
+        password = windows["crypt"]["crypt_password"].get_text()
+        confirmation = windows["crypt"]["crypt_confirmation"].get_text()
         if Util().valid_crypt(path, password, confirmation):
             Encrypt(path, password)
             #WidgetsWrapper.hide_or_quit(widgets, "crypt")
 
+    def on_crypt_destroy(event):
+        windows.hide_or_quit("crypt", 1)
+
     def on_crypt_cancel_clicked(event):
-        widgets.hide_or_quit("crypt", 1)
+        windows.hide_or_quit("crypt", 1)
+    
+    def on_open_destroy(event):
+        windows.hide_or_quit("open", 1)
 
     def on_open_cancel_clicked(event):
-        widgets.hide_or_quit("open", 1)
+        windows.hide_or_quit("open", 1)
     
     def on_open_apply_clicked(event):
-        if widgets["open_autoclose"].get_active():
-            idle = widgets["open_time"].get_value_as_int()
+        if windows["open"]["open_autoclose"].get_active():
+            idle = windows["open"]["open_time"].get_value_as_int()
         else:
             idle = None
-        Mount(widgets["open_path"].get_text(),\
-            widgets["open_password"].get_text(), idle)
+        Mount(windows["open"]["open_path"].get_text(),\
+            windows["open"]["open_password"].get_text(), idle)
+    
+    def on_decrypt_destroy(event):
+        windows.hide_or_quit("decrypt", 1)
     
     def on_decrypt_cancel_clicked(event):
-        widgets.hide_or_quit("decrypt", 1)
+        windows.hide_or_quit("decrypt", 1)
     
     def on_open_autoclose_toggled(event):
-        if widgets["open_autoclose"].get_active():
-            widgets["open_time"].set_sensitive(True)
+        if windows["open"]["open_autoclose"].get_active():
+            windows["open"]["open_time"].set_sensitive(True)
         else:
-             widgets["open_time"].set_sensitive(False)
+             windows["open"]["open_time"].set_sensitive(False)
     
     def on_decrypt_apply_clicked(event):
-        Sdecrypt(widgets["decrypt_path"].get_text(),\
-            widgets["decrypt_password"].get_text())
-        widgets.hide_or_quit("decrypt")
+        Sdecrypt(windows["decrypt"]["decrypt_path"].get_text(),\
+            windows["decrypt"]["decrypt_password"].get_text())
+        windows.hide_or_quit("decrypt")
     
     def on_crypt_open_clicked(event):
-        widgets["filechooserdialog"].show()
+        windows.load("filechooserdialog")
         
     def on_filechooserdialog_cancel_clicked(event):
-        widgets["filechooserdialog"].hide()
+        windows["filechooserdialog"]["filechooserdialog"].destroy()
     
     def on_filechooserdialog_open_clicked(event):
-        path = widgets["filechooserdialog"].get_filename()
-        widgets["crypt_path"].set_text(path)
-        widgets["filechooserdialog"].hide()
+        path = windows["filechooserdialog"]["filechooserdialog"].get_filename()
+        windows["crypt"]["crypt_path"].set_text(path)
+        windows["filechooserdialog"]["filechooserdialog"].destroy()
 
     def on_error_close_clicked(event):
-        widgets["error"].hide()
+        windows["error"]["error"].destroy()
     
     def on_manager_list_cursor_changed(event):
-        (m, i) = widgets["manager_list"].get_selection().get_selected()
+        (m, i) = windows["manager"]["manager_list"].get_selection().\
+            get_selected()
         if m.get_value(i, 1) == "Yes":
-            widgets["manager_open_close"].set_label("gtk-close")
+            windows["manager"]["manager_open_close"].set_label("gtk-close")
         else:
-            widgets["manager_open_close"].set_label("gtk-open")
-        widgets["manager_open_close"].set_sensitive(True)
-        widgets["manager_decrypt"].set_sensitive(True)
-        widgets["manager_properties"].set_sensitive(True)
+            windows["manager"]["manager_open_close"].set_label("gtk-open")
+        windows["manager"]["manager_open_close"].set_sensitive(True)
+        windows["manager"]["manager_decrypt"].set_sensitive(True)
+        windows["manager"]["manager_properties"].set_sensitive(True)
     
     def on_manager_open_close_clicked(event):
-        (m, i) = widgets["manager_list"].get_selection().get_selected()
+        (m, i) = windows["manager"]["manager_list"].get_selection().\
+            get_selected()
         path = m.get_value(i, 2)
         if m.get_value(i, 1) == "Yes":
             Unmount(path)
         else:
-            widgets["manager"].set_sensitive(False)
+            windows["manager"]["manager"].set_sensitive(False)
             Open(path)
     
     def on_manager_properties_clicked(event):
-        (m, i) = widgets["manager_list"].get_selection().get_selected()
+        (m, i) = windows["manager"]["manager_list"].get_selection().get_selected()
         path = m.get_value(i, 2)
-        widgets["properties_old"].set_text("")
-        widgets["properties_new"].set_text("")
-        widgets["properties_confirmation"].set_text("")
-        widgets["properties_path"].set_text(path)
-        widgets["manager"].set_sensitive(False)
-        widgets["properties"].show()
+        windows.load("properties")
+        windows["properties"]["properties_old"].set_text("")
+        windows["properties"]["properties_new"].set_text("")
+        windows["properties"]["properties_confirmation"].set_text("")
+        windows["properties"]["properties_path"].set_text(path)
+        windows["manager"]["manager"].set_sensitive(False)
         
     def on_manager_decrypt_clicked(event):
-        widgets["manager"].set_sensitive(False)
-        (m, i) = widgets["manager_list"].get_selection().get_selected()
+        windows["manager"]["manager"].set_sensitive(False)
+        (m, i) = windows["manager"]["manager_list"].get_selection().\
+            get_selected()
         path = m.get_value(i, 2)
         Decrypt(path)
 
     def on_properties_cancel_clicked(event):
-        widgets.hide_or_quit("properties", 1)
+        windows.hide_or_quit("properties")
+    
+    def on_properties_destroy(event):
+        windows.hide_or_quit("properties")
     
     def on_properties_apply_clicked(event):
-        old = widgets["properties_old"].get_text()
-        new = widgets["properties_new"].get_text()
-        confirmation = widgets["properties_confirmation"].get_text()
+        old = windows["properties"]["properties_old"].get_text()
+        new = windows["properties"]["properties_new"].get_text()
+        confirmation = windows["properties"]["properties_confirmation"].\
+            get_text()
         if Util().valid_properties(new, confirmation):
-            ChangePassword(widgets["properties_path"].get_text(), old, new)
+            ChangePassword(windows["properties"]["properties_path"].get_text(),\
+                old, new)
+    
+    def on_properties_delete_event(event):
+        return False
 
 
-class WidgetsWrapper:
-    """Wrapper for GTK/Glade widgets"""
+class Windows:
+    """Wrapper for GTK/Glade windows"""
     def __init__(self):
+        self.win = {}
+    
+    def load(self, name):
+        self.win[name] = Widgets(name)
+        
+    def __getitem__(self, key):
+        """Alow to use windows['window']['widget']"""
+        return self.win[key]
+
+    def hide_or_quit(self, name, para=0):
+        """Hide the window if manager is still active, either quit"""
+        try:
+            manager.update()
+            windows["manager"]["manager_open_close"].set_sensitive(False)
+            windows["manager"]["manager_properties"].set_sensitive(False)
+            windows["manager"]["manager_decrypt"].set_sensitive(False)
+            windows["manager"]["manager"].set_sensitive(True)
+            try:
+                windows[name][name].destroy()
+            except:
+                pass
+        except:
+            quit(para)
+
+
+class Widgets:
+    """Wrapper for GTK/Glade widgets"""
+    def __init__(self, window):
         """Display a window"""
-        #gnome.init(APPNAME, APPVERSION)
-        self.widgets = gtk.glade.XML(GLADE)
+        self.widgets = gtk.glade.XML("gcrypt-manager.glade", window)
         self.widgets.signal_autoconnect(GladeHandlers.__dict__)
 
     def __getitem__(self, key):
-        """Allow to use widgets['widget_name'].action()"""
+        """Allow to use windows['windows']['widget'].action()"""
         return self.widgets.get_widget(key)
 
-    def hide_or_quit(self, name, para=0):
-        """Hide or quit the window"""
-        if widgets["manager"].get_property("visible"):
-            widgets[name].hide()
-            manager.update()
-            widgets["manager_open_close"].set_sensitive(False)
-            widgets["manager_properties"].set_sensitive(False)
-            widgets["manager_decrypt"].set_sensitive(False)
-            widgets["manager"].set_sensitive(True)
-        else:
-            self.quit(para)
-
-    def quit(self, para=0):
-        """Quit the program"""
-        gtk.main_quit()
-        exit(para)
 
 class Util:
     """Utilities"""
     def error_box(self, msg):
         """Display an error box"""
-        widgets["error_label"].set_markup("<span weight=\"bold\">" + msg +\
-            "</span>")
-        widgets["error"].show()
+        windows.load("error")
+        windows["error"]["error_label"].set_markup("<span weight=\"bold\">" +\
+            msg + "</span>")
     
     def warning_box(self, msg):
         """Display a warning box"""
-        widgets["warning_label"].set_markup("<span weight=\"bold\">" + msg +\
-            "</span>")
-        widgets["warning"].show()
+        windows.load("warning")
+        windows["warning"]["warning_label"].set_markup("<span weight=\"bold\">"\
+            + msg + "</span>")
 
     def valid_crypt(self, path, password, confirmation):
         """Validation for the crypt window"""
@@ -210,18 +241,6 @@ class Util:
             return False
         return True
 
-    def progress_bar_start(self, msg=None):
-        """Display a progress bar"""
-        widgets["progressbar"].show()
-        #gtk.gdk.threads_init()
-        #Creating and starting the thread
-        #self.pulser = Pulser()
-        #self.pulser.start()
-    
-    def progress_bar_stop(self):
-        #self.pulser.stop()
-        widgets["progressbar"].hide()
-
 
 class Pulser(threading.Thread):
     """Pulse the progressbar"""
@@ -231,7 +250,7 @@ class Pulser(threading.Thread):
     def run(self):
         while not self.stopthread.isSet() :
             gtk.gdk.threads_enter()
-            widgets["progressbar_progressbar"].pulse()
+            windows["progressbar"]["progressbar_progressbar"].pulse()
             gtk.gdk.threads_leave()
             sleep(0.1)
 
@@ -247,24 +266,24 @@ class Progressbar:
 
     def start(self):
         """Start the progress bar"""
+        windows.load("progressbar")
         if self.msg is not None:
-            widgets["progressbar"].set_title(self.msg)
-            widgets["progressbar_progressbar"].set_text(self.msg)
-        widgets["progressbar"].show()
+            windows["progressbar"]["progressbar"].set_title(self.msg)
+            windows["progressbar"]["progressbar_progressbar"].set_text(self.msg)
         self.pulser = Pulser()
         self.pulser.start()
 
     def stop(self):
         """Stop the progressbar"""
-        widgets["progressbar"].hide()
         self.pulser.stop()
+        windows["progressbar"]["progressbar"].destroy()
     
 
 class Manager:
     """Main window"""
     def __init__(self, folders):
         """Launch the Cypted Folder manager"""
-        widgets["manager"].show()
+        windows.load("manager")
         column0 = gtk.TreeViewColumn("Folder name", gtk.CellRendererText(),\
             text=0)
         column0.set_resizable(True)
@@ -279,12 +298,12 @@ class Manager:
         column2.set_resizable(True)
         column2.set_sort_column_id(3)
         
-        widgets["manager_list"].append_column(column0)
-        widgets["manager_list"].append_column(column1)
-        widgets["manager_list"].append_column(column2)
+        windows["manager"]["manager_list"].append_column(column0)
+        windows["manager"]["manager_list"].append_column(column1)
+        windows["manager"]["manager_list"].append_column(column2)
         
         self.folderList = gtk.ListStore(str, str, str)
-        widgets["manager_list"].set_model(self.folderList)
+        windows["manager"]["manager_list"].set_model(self.folderList)
         self.update()
 
     def update(self):
@@ -303,11 +322,11 @@ class Manager:
 class Crypt:
     """Encrypted folder chooser"""
     def __init__(self, path=None):
+        windows.load("crypt")
         if path is not None and os.path.exists(path):
-            widgets["crypt_path"].set_text(path)
-            widgets["crypt_path"].set_sensitive(False)
-            widgets["crypt_open"].set_sensitive(False)
-        widgets["crypt"].show()
+            windows["crypt"]["crypt_path"].set_text(path)
+            windows["crypt"]["crypt_path"].set_sensitive(False)
+            windows["crypt"]["crypt_open"].set_sensitive(False)
 
 
 class Rencrypt(threading.Thread):
@@ -326,16 +345,13 @@ class Rencrypt(threading.Thread):
             cryptmanager.Manage(self.folder).crypt(self.password)
         except cryptmanager.AlreadyEncrypted:
             progressbar.stop()
-            widgets["crypt"].set_sensitive(True)
+            windows["crypt"]["crypt"].set_sensitive(True)
             Util().error_box(self.folder.path + " is already a crypted folder.")
         else:
             folders.add(self.folder)
             progressbar.stop()
-            widgets["crypt"].set_sensitive(True)
-            widgets["crypt"].hide()
-            if widgets["manager"].get_property("visible"):
-                manager.update()
-                widgets["manager"].set_sensitive(True)
+            windows["crypt"]["crypt"].set_sensitive(True)
+            windows.hide_or_quit("crypt")
 
 
 class Encrypt:
@@ -346,7 +362,7 @@ class Encrypt:
         progressbar = Progressbar()
         r = Rencrypt()
         r.set_para(folder, password)
-        widgets["crypt"].set_sensitive(False)
+        windows["crypt"]["crypt"].set_sensitive(False)
         progressbar.start()
         r.start()
 
@@ -354,17 +370,17 @@ class Encrypt:
 class Open:
     """Open an encrypted folder"""
     def __init__(self, path):
-        widgets["open_password"].set_text("")
-        widgets["open_path"].set_text(path)
-        widgets["open"].show()
+        windows.load("open")
+        windows["open"]["open_path"].set_text(path)
 
 
 class Decrypt:
     """Decrypt window"""
     def __init__(self, path):
-        widgets["decrypt_password"].set_text("")
-        widgets["decrypt_path"].set_text(path)
-        widgets["decrypt"].show()
+        windows.load("decrypt")
+        windows["decrypt"]["decrypt_password"].set_text("")
+        windows["decrypt"]["decrypt_path"].set_text(path)
+
 
 class Sdecrypt:
     """Decryption initiation"""
@@ -373,7 +389,7 @@ class Sdecrypt:
         progressbar = Progressbar()
         r = Rdecrypt()
         r.set_para(path, password)
-        widgets["decrypt"].hide()
+        windows["decrypt"]["decrypt"].destroy()
         progressbar.start()
         r.start()
 
@@ -392,20 +408,24 @@ class Rdecrypt(threading.Thread):
             folder = folders.get(self.path)
         except cryptmanager.AlreadyOpened:
             progressbar.stop()
-            if widgets["manager"].get_property("visible"):
-                manager.set_sensitive(True)
+            try:
+                windows["manager"].set_sensitive(True)
+            except:
+                pass
             Util().error_box(folder.path + " is already opened.")
         try:
             cryptmanager.Manage(folder).decrypt(self.password)
         except cryptmanager.BadPassword:
             progressbar.stop()
-            if widgets["manager"].get_property("visible"):
-                widgets["manager"].set_sensitive(True)
+            try:
+                windows["manager"].set_sensitive(True)
+            except:
+                pass
             Util().error_box("Your password is wrong.")
         else:
             folders.rem(folder)
             progressbar.stop()
-            widgets.hide_or_quit("decrypt")
+            windows.hide_or_quit("decrypt")
 
 
 class Mount:
@@ -424,7 +444,7 @@ class Mount:
             Util().error_box("Your password is wrong.")
         else:
             folders.update(folder)
-            widgets.hide_or_quit("open")
+            windows.hide_or_quit("open")
 
 
 class Unmount:
@@ -440,8 +460,10 @@ class Unmount:
             Util().error_box("This folder is not opened.")
         else:
             folders.update(folder)
-            if widgets["manager"].get_property("visible"):
+            try:
                 manager.update()
+            except:
+                pass
 
 
 class ChangePassword:
@@ -456,7 +478,12 @@ class ChangePassword:
         except cryptmanager.BadPassword:
             Util().error_box("Bad password.")
         else:
-            widgets.hide_or_quit("properties")
+            windows.hide_or_quit("properties")
+
+def quit(para=0):
+    """Quit the program"""
+    gtk.main_quit()
+    exit(para)
 
 
 def exit(para=0):
@@ -469,7 +496,7 @@ if __name__ == '__main__':
     folders = data.folders
     folders.clean()
     gtk.gdk.threads_init()
-    widgets = WidgetsWrapper()
+    windows = Windows()
     # Command Line Interface
     if len(sys.argv) == 1:
         manager = Manager(folders)
