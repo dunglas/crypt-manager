@@ -86,7 +86,21 @@ class NotDir(Exception):
 
 
 class Util:
-    """Utilities"""    
+    """Utilities"""
+    
+    def is_writable(self, path):
+        """Test recursively if all the files in path are writable"""
+        if os.path.exists(path):
+            for f in os.listdir(path):
+                p = os.path.join(path, p)
+                if os.path.isdir(p):
+                    if not self.is_writable(p):
+                        return False
+                if os.path.isfile(p):
+                    if not os.access(p, os.W_OK):
+                        return False
+            return True
+
     def rm(self, path):
         """Remove recursively a directory"""
         #if os.path.exists(path):
@@ -264,6 +278,7 @@ class Folder:
         self.digest = self.digest()
         self.crypt = os.path.join(CRYPTDIR, self.digest)
         self.opened = True
+        self.attributes = {}
         
     def __repr__(self):
         return repr(self.path)

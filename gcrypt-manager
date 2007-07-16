@@ -32,12 +32,80 @@ import gtk.glade
 from time import sleep
 import threading
 import cryptmanager
+import gnomekeyring
 
 APPNAME="gcrypt-manager"
 APPVERSION="0.1"
 CACHE = os.environ['HOME'] + "/.cryptmanager/cache"
 GLADE = "/usr/share/gcrypt-manager/gcrypt-manager.glade"
 
+class Keyring:
+    """Store passwords using GNOME Keyring if available"""
+    
+    # No documentation available for the Python binding of GNOME Keyring
+    # Inspirated from the the following Gajim code
+    # http://trac.gajim.org/browser/trunk/src/common/passwords.py
+    
+    def __init__(self, keyring):
+        self.available = False
+        self.keyring = keyring # Must be "default" or "session"
+        
+        # Test if the gnomekeyring module is installed
+        try:
+            import gnomekeyring
+        except ImportError:
+            self.available = False
+            return
+
+        # Test if GNOME Keyring is available
+        if gnomekeyring.is_available():
+            self.available = True
+        else:
+            return
+        
+        # Sync with the default keyring
+        try:
+            gnomekeyring.create_sync(self.keyring, None)
+        except gnomekeyring.AlreadyExistsError:
+            pass
+    
+    def save_password(self, folder, password):
+        """Save a password for an encrypted folder identified by his digest"""
+        
+        if not self.available:
+            return None
+        
+        attributes = {"path":folder.path, "crypt-manager":True}
+        
+        try:
+        # Add an item
+            return gnomekeyring.item_create_sync(
+                self.keyring, # Keyring
+                gnomekeyring.ITEM_GENERIC_SECRET, # Item type
+                folder.digest, # Item name
+                attributes, # Attributes
+                password, # Password
+                False) # Update if already exists
+        except gnomekeyring.NoKeyringDaemonError:
+            self.available = False
+            return None
+    
+    def get_password(self, auth):
+        """Get the password of an encrypted folder, return None if not stored"""
+        
+        if not self.available:
+            return None
+        
+        try:
+            return gnomekeyring.item_get_info_sync(self.keyring,
+                auth).get_secret()
+        except gnomekeyring.DeniedError:
+            return None
+        except gnomekeyring.NoKeyringDaemonError:
+            self.available = False
+            return None
+
+ 
 class GladeHandlers:
     """Connectors to GTK/Glade events"""
     def gtk_main_quit(event):
@@ -72,8 +140,18 @@ class GladeHandlers:
             idle = windows["open"]["open_time"].get_value_as_int()
         else:
             idle = None
+        
+        if windows["open"]["open_savepass"].get_active():
+            i = windows["open"]["open_savechoice"].get_active()
+            if i == 0:
+                keyring = "session"
+            else:
+                keyring = "default"
+        else:
+            keyring = None
+        
         Mount(windows["open"]["open_path"].get_text(),\
-            windows["open"]["open_password"].get_text(), idle)
+            windows["open"]["open_password"].get_text(), idle, keyring)
     
     def on_decrypt_destroy(event):
         windows.hide_or_quit("decrypt", 1)
@@ -86,6 +164,13 @@ class GladeHandlers:
             windows["open"]["open_time"].set_sensitive(True)
         else:
              windows["open"]["open_time"].set_sensitive(False)
+    
+    def on_open_savepass_toggled(event):
+        if windows["open"]["open_savepass"].get_active():
+            windows["open"]["open_savechoice"].set_sensitive(True)
+            windows["open"]["open_savechoice"].set_active(0)
+        else:
+            windows["open"]["open_savechoice"].set_sensitive(False)
     
     def on_decrypt_apply_clicked(event):
         Sdecrypt(windows["decrypt"]["decrypt_path"].get_text(),\
@@ -370,9 +455,37 @@ class Encrypt:
 class Open:
     """Open an encrypted folder"""
     def __init__(self, path):
-        windows.load("open")
-        windows["open"]["open_path"].set_text(path)
-
+        try:
+            folder = folders.get(path)
+        except cryptmanager.NoEncrypted:
+            Util().error_box("This is not an encrypted directory.")
+            return
+        
+        # Try to get password in default keyring
+        password = None
+        k = Keyring("default")
+        # Test if gnomekeyring is available
+        if k.available:
+            # Test if a "gnomekeyring_id" attribute is set
+            try:
+                # Get the gnomekeyring id
+                auth = folder.attributes["gnomekeyring_id"]
+            except:
+                pass
+            else:
+                # Get the password
+                password = k.get_password(auth)
+                # If no password, try in the session keyring
+                if password == None:
+                    k = Keyring("session")
+                    password = k.get_password(auth)
+        
+        if password == None:
+            # If the password is always Null, prompt for the password
+            windows.load("open")
+            windows["open"]["open_path"].set_text(path)
+        else:
+            Mount(path, password)
 
 class Decrypt:
     """Decrypt window"""
@@ -430,7 +543,7 @@ class Rdecrypt(threading.Thread):
 
 class Mount:
     """Mount an encrypted folder"""
-    def __init__(self, path, password, idle=None):
+    def __init__(self, path, password, idle=None, keyring=None):
         try:
             folder = folders.get(path)
         except cryptmanager.NoEncrypted:
@@ -443,6 +556,10 @@ class Mount:
         except cryptmanager.BadPassword:
             Util().error_box("Your password is wrong.")
         else:
+            if not keyring == None:
+                k = Keyring(keyring)
+                folder.attributes["gnomekeyring_id"] =\
+                    int(k.save_password(folder, password))
             folders.update(folder)
             windows.hide_or_quit("open")
 
