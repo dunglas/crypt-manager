@@ -3,7 +3,7 @@
 # Copyright (C) 2007 Kévin Dunglas <dunglas@gmail.com>
 #
 # Authors:
-#  Kévin Dunglas
+#  KÃ©vin Dunglas
 #
 # This program is a part of a the Google Summer Of Code 2007
 # For futher information see :
@@ -148,5 +148,6 @@ Options:
 
     else:
         msg = """Invalid option
-Try « """ + APPNAME + """ --help » to get more information"""
+Try Â« """ + APPNAME + """ --help Â» to get more information"""
         exit(msg)
+

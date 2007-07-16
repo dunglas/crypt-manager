@@ -38,7 +38,7 @@ APPNAME="gcrypt-manager"
 APPVERSION="0.1"
 CACHE = os.environ['HOME'] + "/.cryptmanager/cache"
 GLADE = "/usr/share/gcrypt-manager/gcrypt-manager.glade"
-
+ICON = "/usr/share/gcrypt-manager/icon.png"
 class Keyring:
     """Store passwords using GNOME Keyring if available"""
     
@@ -194,7 +194,7 @@ class GladeHandlers:
     def on_manager_list_cursor_changed(event):
         (m, i) = windows["manager"]["manager_list"].get_selection().\
             get_selected()
-        if m.get_value(i, 1) == "Yes":
+        if m.get_value(i, 2) == "Yes":
             windows["manager"]["manager_open_close"].set_label("gtk-close")
         else:
             windows["manager"]["manager_open_close"].set_label("gtk-open")
@@ -205,8 +205,8 @@ class GladeHandlers:
     def on_manager_open_close_clicked(event):
         (m, i) = windows["manager"]["manager_list"].get_selection().\
             get_selected()
-        path = m.get_value(i, 0)
-        if m.get_value(i, 1) == "Yes": 
+        path = m.get_value(i, 1)
+        if m.get_value(i, 2) == "Yes": 
             windows["manager"]["manager_open_close"].set_sensitive(False)
             windows["manager"]["manager_properties"].set_sensitive(False)
             windows["manager"]["manager_decrypt"].set_sensitive(False)
@@ -217,7 +217,7 @@ class GladeHandlers:
     
     def on_manager_properties_clicked(event):
         (m, i) = windows["manager"]["manager_list"].get_selection().get_selected()
-        path = m.get_value(i, 0)
+        path = m.get_value(i, 1)
         windows.load("properties")
         windows["properties"]["properties_path"].set_text(path)
         windows["manager"]["manager"].set_sensitive(False)
@@ -226,7 +226,7 @@ class GladeHandlers:
         windows["manager"]["manager"].set_sensitive(False)
         (m, i) = windows["manager"]["manager_list"].get_selection().\
             get_selected()
-        path = m.get_value(i, 0)
+        path = m.get_value(i, 1)
         Decrypt(path)
 
     def on_properties_cancel_clicked(event):
@@ -369,19 +369,26 @@ class Manager:
     def __init__(self, folders):
         """Launch the Cypted Folder manager"""
         windows.load("manager")
-        column0 = gtk.TreeViewColumn("Folder", gtk.CellRendererText(),\
-            text=0)
-        column0.set_resizable(True)
+        
+        column0 = gtk.TreeViewColumn(None, gtk.CellRendererPixbuf(), pixbuf=0)
+        column0.set_resizable(False)
         column0.set_sort_column_id(0)
-                
-        column1 = gtk.TreeViewColumn("Open", gtk.CellRendererText(), text=1)
+        
+        
+        column1 = gtk.TreeViewColumn("Folder", gtk.CellRendererText(),\
+            text=1)
         column1.set_resizable(True)
         column1.set_sort_column_id(1)
+                
+        column2 = gtk.TreeViewColumn("Open", gtk.CellRendererText(), text=2)
+        column2.set_resizable(True)
+        column2.set_sort_column_id(2)
         
         windows["manager"]["manager_list"].append_column(column0)
         windows["manager"]["manager_list"].append_column(column1)
+        windows["manager"]["manager_list"].append_column(column2)
         
-        self.folderList = gtk.ListStore(str, str)
+        self.folderList = gtk.ListStore(gtk.gdk.Pixbuf, str, str)
         windows["manager"]["manager_list"].set_model(self.folderList)
         self.update()
 
@@ -395,7 +402,10 @@ class Manager:
                 o = "Yes"
             else:
                 o = "No"
-            self.folderList.append([f.path, o])
+            image = gtk.gdk.pixbuf_new_from_file(ICON)
+            print ICON
+            print image
+            self.folderList.append([image, f.path, o])
 
 
 class Crypt:
