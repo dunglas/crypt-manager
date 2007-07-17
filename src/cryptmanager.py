@@ -242,6 +242,8 @@ class Encfs:
     def mount(self, password, idle=None):
         """Mount an encrypted folder"""
         print "Mounting..."
+        if not os.path.exists(self.folder.path):
+            os.makedirs(self.folder.path)
         p1 = subprocess.Popen([ECHO, password],\
             stdout=subprocess.PIPE)
         if idle == None:
@@ -266,7 +268,7 @@ class Encfs:
         p = p.communicate()[0]
         p = p.split("\n")
         
-        r = re.compile("^encfs on " + self.folder.path + " type fuse")
+        r = re.compile("^encfs on %s type fuse" % self.folder.path)
         for l in p:
             if r.match(l):
                 return True
