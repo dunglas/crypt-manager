@@ -121,7 +121,7 @@ class GladeHandlers:
         Crypt()
 
     def on_crypt_apply_clicked(event):
-        path = windows["crypt"]["crypt_path"].get_text()
+        path = windows["crypt"]["crypt_folder"].get_filename()
         password = windows["crypt"]["crypt_password"].get_text()
         confirmation = windows["crypt"]["crypt_confirmation"].get_text()
         if Util().valid_crypt(path, password, confirmation):
@@ -181,17 +181,6 @@ class GladeHandlers:
         Sdecrypt(windows["decrypt"]["decrypt_path"].get_text(),\
             windows["decrypt"]["decrypt_password"].get_text())
         windows.hide_or_quit("decrypt")
-    
-    def on_crypt_open_clicked(event):
-        windows.load("filechooserdialog")
-        
-    def on_filechooserdialog_cancel_clicked(event):
-        windows["filechooserdialog"]["filechooserdialog"].destroy()
-    
-    def on_filechooserdialog_open_clicked(event):
-        path = windows["filechooserdialog"]["filechooserdialog"].get_filename()
-        windows["crypt"]["crypt_path"].set_text(path)
-        windows["filechooserdialog"]["filechooserdialog"].destroy()
 
     def on_error_close_clicked(event):
         windows["error"]["error"].destroy()
