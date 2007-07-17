@@ -97,6 +97,8 @@ class Util:
     
     def writable(self, path):
         """Test recursively if all the files in path are writable"""
+        if path == os.environ['HOME']:
+            return False
         if os.path.exists(path):
             for f in os.listdir(path):
                 p = os.path.join(path, f)
