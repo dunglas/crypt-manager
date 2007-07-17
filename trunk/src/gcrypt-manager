@@ -472,7 +472,7 @@ class Open:
             folder = folders.get(path)
         except cryptmanager.NoEncrypted:
             Util().error_box(_("%s is not an encrypted directory.")
-                %s folder.path)
+                % folder.path)
             return
         
         # Try to get password in default keyring
