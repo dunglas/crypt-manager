@@ -99,9 +99,9 @@ class Util:
         """Test recursively if all the files in path are writable"""
         if os.path.exists(path):
             for f in os.listdir(path):
-                p = os.path.join(path, p)
+                p = os.path.join(path, f)
                 if os.path.isdir(p):
-                    if not self.is_writable(p):
+                    if not self.writable(p):
                         return False
                 if os.path.isfile(p):
                     if not os.access(p, os.W_OK):
