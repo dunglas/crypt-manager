@@ -84,11 +84,18 @@ class NotDir(Exception):
     def __str__(self):
             return "This is not a directory"
 
+class NotDir(Exception):
+    def __str__(self):
+            return "Your not allowed to do this operation"
+
+class NotWritable(Exception):
+    def __str__(self):
+        return "This directory and all his files must be writable"
 
 class Util:
     """Utilities"""
     
-    def is_writable(self, path):
+    def writable(self, path):
         """Test recursively if all the files in path are writable"""
         if os.path.exists(path):
             for f in os.listdir(path):
@@ -308,6 +315,10 @@ class Manage:
         # Test if the disk images (sha256 hash of the path name) already exists
         if os.path.exists(self.folder.crypt):
             raise AlreadyEncrypted()
+            return
+            
+        if not Util().writable(self.folder.path):
+            raise NotWritable()
             return
 
         tmp = os.path.join(TMPDIR, self.folder.digest)
