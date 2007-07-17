@@ -2,7 +2,6 @@ TODO
 
 Ggrypt Manager graphical interface
 - Respect the Gnome Human Interface Guidelines
-- Replace the crypt_path label by a gtk.FileChooserButton
 
 Nautilus Extension
 - Create or find a specific emblem or icon
