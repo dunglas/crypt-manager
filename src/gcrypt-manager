@@ -434,6 +434,11 @@ class Rencrypt(threading.Thread):
             progressbar.stop()
             windows["crypt"]["crypt"].set_sensitive(True)
             Util().error_box(self.folder.path + " is already a crypted folder.")
+        except cryptmanager.NotWritable:
+            windows["crypt"]["crypt"].set_sensitive(True)
+            Util().error_box(
+                "This directory and all his files must be writable"
+                )
         else:
             folders.add(self.folder)
             progressbar.stop()
