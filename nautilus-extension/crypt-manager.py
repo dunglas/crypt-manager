@@ -1,7 +1,12 @@
 import nautilus
 import urllib
+import gettext
+import locale
 import cryptmanager
 import subprocess
+
+import __builtin__
+__builtin__._ = gettext.gettext
 
 # Crypt Manager extension for nautilus
 EMBLEM = "readonly"
@@ -39,20 +44,19 @@ class CryptManagerExtension(nautilus.InfoProvider, nautilus.MenuProvider):
     def _get_messages(self):
         """1: unencrypted, 2: opened, 3: closed"""
         if self.status == 1:
-            self.entry = "Encrypt"
-            self.desc = "Encrypt this folder using Crypt Manager"
+            self.entry = _("Encrypt")
+            self.desc = _("Encrypt this folder using Crypt Manager")
         elif self.status == 2:
-            self.entry = "Close"
-            self.desc = "Close this encrypted folder"""
+            self.entry = _("Close")
+            self.desc = _("Close this encrypted folder")
         else:
-            self.entry = "Open"
-            self.desc = "Open this encrypted folder"
+            self.entry = _("Open")
+            self.desc = _("Open this encrypted folder")
 
     def update_file_info(self, file):
         self._load_data()
         self.filename = urllib.unquote(file.get_uri()[7:])
         self._get_status()
-        print file.get_parent_uri()
         if self.status == 2 or self.status == 3:
             file.add_emblem(EMBLEM)
 
