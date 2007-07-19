@@ -4,6 +4,7 @@ import gettext
 import locale
 import cryptmanager
 import subprocess
+import os
 
 import __builtin__
 __builtin__._ = gettext.gettext
@@ -54,9 +55,29 @@ class CryptManagerExtension(nautilus.InfoProvider, nautilus.MenuProvider):
             self.desc = _("Open this encrypted folder")
 
     def update_file_info(self, file):
-        self._load_data()
         self.filename = urllib.unquote(file.get_uri()[7:])
+        f = self.filename.split("/")[-1]
+        if not file.is_directory():
+            # Workaround to ask the password
+            # when entering in an encrypted folder
+            if f == "cryptmanager":
+                parent = urllib.unquote(file.get_parent_uri()[7:])
+                os.unlink(self.filename)
+                print parent
+                p = subprocess.Popen(["gcrypt-manager", "--open",
+                    parent])
+            return
+        self._load_data()
         self._get_status()
+        
+        print self.filename
+        if self.status == 3 and not os.path.exists(os.path.join(self.filename,
+            "cryptmanager")):
+            print "Workaround"
+            f = open (os.path.join(self.filename, "cryptmanager"), "w")
+            f.write("")
+            f.close()
+
         if self.status == 2 or self.status == 3:
             file.add_emblem(EMBLEM)
 
@@ -66,9 +87,9 @@ class CryptManagerExtension(nautilus.InfoProvider, nautilus.MenuProvider):
             return
 
         file = files[0]
-        self.filename = urllib.unquote(file.get_uri()[7:]) 
         if not file.is_directory():
             return
+        self.filename = urllib.unquote(file.get_uri()[7:]) 
         
         self._get_status()
         self._get_messages()

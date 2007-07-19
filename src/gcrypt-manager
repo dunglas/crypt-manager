@@ -608,7 +608,8 @@ class ChangePassword:
 
 def quit(para=0):
     """Quit the program"""
-    gtk.main_quit()
+    if loop:
+        gtk.main_quit()
     exit(para)
 
 
@@ -618,6 +619,7 @@ def exit(para=0):
 
 
 if __name__ == '__main__':
+    loop = False
     data = cryptmanager.Data()
     folders = data.folders
     folders.clean()
@@ -666,5 +668,6 @@ Options:
 Try « %s --info » to get more information""" % APPNAME
         Util().error_box(msg)
     
+    loop = True
     gtk.main()
     exit()
