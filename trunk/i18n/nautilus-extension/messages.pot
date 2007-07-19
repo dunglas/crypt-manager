@@ -1,0 +1,41 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR ORGANIZATION
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2007-07-17 15:57+CEST\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: ENCODING\n"
+"Generated-By: pygettext.py 1.5\n"
+
+
+#: crypt-manager.py:47
+msgid "Encrypt"
+msgstr ""
+
+#: crypt-manager.py:48
+msgid "Encrypt this folder using Crypt Manager"
+msgstr ""
+
+#: crypt-manager.py:50
+msgid "Close"
+msgstr ""
+
+#: crypt-manager.py:51
+msgid "Close this encrypted folder"
+msgstr ""
+
+#: crypt-manager.py:53
+msgid "Open"
+msgstr ""
+
+#: crypt-manager.py:54
+msgid "Open this encrypted folder"
+msgstr ""
+
