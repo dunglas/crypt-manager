@@ -144,6 +144,13 @@ class Util:
                     shutil.copy2(os.path.join(src, f), os.path.join(dst, f))
                 except OSError:
                     pass
+    
+    def mv(self, src, dst):
+        """Move recursively"""
+        if not os.path.exists(dst):
+            os.makedirs(dst)
+        for f in os.listdir(src):
+            shutil.move(os.path.join(src, f), os.path.join(dst, f))
 
 class Data:
     def __init__(self):
@@ -329,10 +336,8 @@ class Manage:
         # Delete /tmp/cryptmanager/DIGEST if already exists
         Util().rm(tmp)
         # Move the existing content in a tmp directory
-        Util().cp(self.folder.path, tmp)
-        Util().rm(self.folder.path)
+        Util().mv(self.folder.path, tmp)
         # Create the mount point if needed
-        os.makedirs(self.folder.path)
         
         
         # Crypt the disk image
@@ -340,8 +345,7 @@ class Manage:
         self.folder.opened = True
         
         # Copy existing data in the crypted directory
-        Util().cp(tmp, self.folder.path)
-        Util().rm(tmp)
+        Util().mv(tmp, self.folder.path)
 
     def mount(self, password, idle=None):
         """Mount an encrypted folder"""
@@ -386,11 +390,10 @@ class Manage:
             raise BadPassword()
             return
         print tmp
-        Util().cp(self.folder.path, tmp)
+        Util().mv(self.folder.path, tmp)
         self.unmount()
         Util().rm(self.folder.crypt)
-        Util().cp(tmp, self.folder.path)
-        Util().rm(tmp)
+        Util().mv(tmp, self.folder.path)
     
     def change_password(self, old, new):
         """Change a folder password"""
