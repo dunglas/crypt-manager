@@ -223,6 +223,12 @@ class GladeHandlers:
         path = m.get_value(i, 1)
         Decrypt(path)
 
+    def on_manager_close_clicked(event):
+        exit()
+    
+    def on_manager_destroy(event):
+        exit()
+
     def on_properties_cancel_clicked(event):
         windows.hide_or_quit("properties")
     
