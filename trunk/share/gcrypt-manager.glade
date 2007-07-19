@@ -359,6 +359,7 @@ forever</property>
     <property name="border_width">6</property>
     <property name="title" translatable="yes">Encrypted Folders</property>
     <property name="icon_name">gtk-dialog-authentication</property>
+    <signal name="destroy_event" handler="on_manager_destroy"/>
     <child>
       <widget class="GtkVBox" id="vbox2">
         <property name="visible">True</property>
@@ -522,7 +523,7 @@ forever</property>
             <property name="visible">True</property>
             <property name="border_width">6</property>
             <child>
-              <widget class="GtkButton" id="manager_help1">
+              <widget class="GtkButton" id="manager_help">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="can_default">True</property>
@@ -531,12 +532,13 @@ forever</property>
               </widget>
             </child>
             <child>
-              <widget class="GtkButton" id="manager_close1">
+              <widget class="GtkButton" id="manager_close">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="can_default">True</property>
                 <property name="label">gtk-close</property>
                 <property name="use_stock">True</property>
+                <signal name="clicked" handler="on_manager_close_clicked"/>
               </widget>
               <packing>
                 <property name="position">1</property>
