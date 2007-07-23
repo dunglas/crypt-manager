@@ -1,14 +1,14 @@
 Package: crypt-manager
-Version: 0.0.3-1ubuntu0
+Version: 0.0.1-1ubuntu0
 Section: admin
 Priority: optional
 Architecture: i386
-Depends: python-central (>= 0.5.8), python (>= 2.5), python (<< 2.6), encfs, python-gtk2, python-glade2
-Recommends: python2.4-dev, python-nautilus
-Installed-Size: 192
+Depends: python-central (>= 0.5.8), python (>= 2.5), python (<< 2.6), encfs
+Recommends: gcrypt-manager, nautilus-crypt
+Installed-Size: 80
 Maintainer: Kévin Dunglas <dunglas@gmail.com>
 Description: An encrypted folder manager
  Crypt Manager is a set of tools designed to manage encrypted folders on Linux.
- It provide a command line tool, a GTK manager, an extension to the GNOME file
- manager and a Python module to integrate it in other applications.
+ It provide a command line tool and a Python module to integrate it
+ in other applications.
 Python-Version: 2.5

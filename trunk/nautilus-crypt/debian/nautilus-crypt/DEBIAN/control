@@ -1,0 +1,10 @@
+Package: nautilus-crypt
+Version: 0.0.1-1ubuntu0
+Section: gnome
+Priority: optional
+Architecture: all
+Depends: gcrypt-manager
+Installed-Size: 60
+Maintainer: Kévin Dunglas <dunglas@gmail.com>
+Description: A Nautilus extension to manage encrypted folders
+ An extension to the GNOME files manager for encrypted folders.

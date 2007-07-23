@@ -73,12 +73,8 @@ install-arch:
 	# Add here commands to install the arch part of the package into 
 	# debian/tmp.
 	#$(MAKE) DESTDIR=$(CURDIR)/debian/crypt-manager install
-	install share/gcrypt-manager.glade $(CURDIR)/debian/crypt-manager/usr/share/gcrypt-manager/
-	install share/icon.png $(CURDIR)/debian/crypt-manager/usr/share/gcrypt-manager/
-	install share/gcrypt-manager.desktop $(CURDIR)/debian/crypt-manager/usr/share/applications/
-	install src/cryptmanager.py $(CURDIR)/debian/crypt-manager/usr/lib/python2.5/
-	install src/crypt-manager $(CURDIR)/src/gcrypt-manager debian/crypt-manager/usr/bin
-	install src/nautilus-extension/crypt-manager.py $(CURDIR)/debian/crypt-manager/usr/lib/nautilus/extensions-1.0/python/
+	install $(CURDIR)/cryptmanager.py $(CURDIR)/debian/crypt-manager/usr/lib/python2.5/
+	install $(CURDIR)/crypt-manager $(CURDIR)/debian/crypt-manager/usr/bin
     
 	dh_install -s
 # Must not depend on anything. This is to be called by

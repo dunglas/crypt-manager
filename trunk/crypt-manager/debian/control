@@ -9,9 +9,9 @@ XS-Python-Version: all
 
 Package: crypt-manager
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}, encfs, python-gtk2, python-glade2
-Recommends: python2.4-dev, python-nautilus
+Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}, encfs
+Recommends: gcrypt-manager, nautilus-crypt
 Description: An encrypted folder manager
  Crypt Manager is a set of tools designed to manage encrypted folders on Linux.
- It provide a command line tool, a GTK manager, an extension to the GNOME file
- manager and a Python module to integrate it in other applications.
+ It provide a command line tool and a Python module to integrate it
+ in other applications.
