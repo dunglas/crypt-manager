@@ -1,0 +1,43 @@
+Crypt manager is a encrypted folder management tool.
+This the Ubuntu Google Summer of Code project of Kévin Dunglas,
+mentored by Jani Monoses.
+
+See http://code.google.com/p/crypt-manager/ for details.
+Informations about Ubuntu Linux: http://www.ubuntu.com
+Informations about Google Summer of Code: http://code.google.com/soc/
+
+
+!!! READ THIS BEFORE ANY USE !!!
+================================
+This is a BETA software pulished ONLY FOR TEST !
+It can DESTROY your data.
+Test it only on BACKUPED directories.
+
+Please send us report using our issues tracker at code.google.com. Don't forget
+to attach the traceback (everything displayed in the terminal window).
+
+
+INSTALL
+=======
+Depends of:
+- Python 2.5
+- encfs (apt-get install encfs)
+
+To use gcrypt-manager you need:
+- gtk
+- pygtk.glade Python modules (provided by PyGTK)
+
+To use the nautilus extension you need:
+- nautilus
+- nautilus-python (apt-get install nautilus-python)
+
+Type in a shell:
+tar xvjpf crypt-manager-0.2.tar.bz2
+cd crypt-manager-0.2
+sudo ./install.sh
+
+
+CRYPTMANAGER PYTHON MODULE
+==========================
+See documentation on the project's website:
+http://code.google.com/p/crypt-manager/wiki/CryptManagerModule
