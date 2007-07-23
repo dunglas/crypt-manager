@@ -1,0 +1,5 @@
+crypt-manager (0.0.3-1ubuntu0) feisty; urgency=low
+
+  * Initial release
+
+ -- Kévin Dunglas <dunglas@gmail.com>  Mon, 23 Jul 2007 12:43:17 +0200
