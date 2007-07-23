@@ -1,11 +1,5 @@
 4fb5709bd7c6495e33feb10074bacd6c  usr/bin/crypt-manager
-d4690f9fcb98d5397bb7dafbec0827d9  usr/bin/gcrypt-manager
-600f050172270d93da8ee41d16ee2cc3  usr/lib/nautilus/extensions-1.0/python/crypt-manager.py
 6fab7224eeaa142b8b9a589b06242f33  usr/lib/python2.5/cryptmanager.py
-ec8c728f7127b413e27a3175b9fcc939  usr/share/gcrypt-manager/gcrypt-manager.glade
-0d93bdcc11d2db2bbac26b5c3e6ff659  usr/share/gcrypt-manager/icon.png
-fad681b046f7e12a81a5e6e57140fe15  usr/share/applications/gcrypt-manager.desktop
-8d06f9b602313aa2a4e3b8927761eae3  usr/share/doc/crypt-manager/README
-3f37767aecb18846abfe3ec37c58e4e5  usr/share/doc/crypt-manager/TODO
+39df2d9e44db621f8d2b77777a5dcd0c  usr/share/doc/crypt-manager/README
 de03cbf3e4de2fe900587ed0d62783e1  usr/share/doc/crypt-manager/copyright
-67e1c8414f3ad5294050361f423d878c  usr/share/doc/crypt-manager/changelog.Debian.gz
+fd40cad94d187d9c9cc3a754a3060962  usr/share/doc/crypt-manager/changelog.Debian.gz

@@ -37,7 +37,16 @@ cd crypt-manager-0.2
 sudo ./install.sh
 
 
-CRYPTMANAGER PYTHON MODULE
-==========================
-See documentation on the project's website:
-http://code.google.com/p/crypt-manager/wiki/CryptManagerModule
+GRYPT-MANAGER
+=============
+Command: gcrypt-manager
+Just type "gcrypt-manager" (as normal user) in a shell to start it.
+
+
+Options:
+--crypt [DIRECTORY]         encrypt directory
+--open DIRECTORY            open an encrypted folder
+--info                      display this help message
+--close DIRECTORY           close an encrypted folder
+--decrypt DIRECTORY         decrypt encrypted folder
+--version                   display version information
