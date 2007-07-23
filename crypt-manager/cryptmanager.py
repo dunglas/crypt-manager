@@ -40,6 +40,8 @@ ENCFS = "/usr/bin/encfs"
 ENCFSCTL = "/usr/bin/encfsctl"
 ECHO = "/bin/echo"
 MOUNT = "/bin/mount"
+# n for normal mode, p for paranoia mode
+MODE = "p"
 
 class AlreadyEncrypted(Exception):
     def __str__(self):
@@ -240,8 +242,8 @@ class Encfs:
         """Encrypt a directory"""
         print "Encrypting..."
         os.makedirs(self.folder.crypt)
-        p1 = subprocess.Popen([ECHO, "-e", "\"p\n" + password + "\n\""],\
-            stdout=subprocess.PIPE)
+        para = "\"%(mode)s\n%(pass)s\n\"" % {"mode": MODE, "pass": password}
+        p1 = subprocess.Popen([ECHO, "-e", para], stdout=subprocess.PIPE)
         p2 = subprocess.Popen([ENCFS, "-S", self.folder.crypt,\
             self.folder.path], stdin=p1.stdout, stdout=subprocess.PIPE)
         p2.communicate()[0]
@@ -257,11 +259,12 @@ class Encfs:
             stdout=subprocess.PIPE)
         if idle == None:
             p2 = subprocess.Popen([ENCFS, "-S", self.folder.crypt,\
-                self.folder.path], stdin=p1.stdout, stdout=subprocess.PIPE)
+                self.folder.path, "--", "-o", "nonempty"], stdin=p1.stdout,\
+                    stdout=subprocess.PIPE)
         else:
             p2 = subprocess.Popen([ENCFS, "-S", self.folder.crypt, "-i",\
-                str(idle), self.folder.path], stdin=p1.stdout,\
-                    stdout=subprocess.PIPE)
+                str(idle), self.folder.path, "--", "-o", "nonempty"],\
+                    stdin=p1.stdout, stdout=subprocess.PIPE)
         p3 = p2.communicate()[0]
         if p2.poll() is not 0:
             raise BadPassword()
