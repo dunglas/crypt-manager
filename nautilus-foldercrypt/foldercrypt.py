@@ -27,7 +27,7 @@ import nautilus
 import urllib
 import gettext
 import locale
-import cryptmanager
+import foldercrypt
 import subprocess
 import os
 
@@ -37,29 +37,29 @@ __builtin__._ = gettext.gettext
 # Crypt Manager extension for nautilus
 EMBLEM = "readonly"
 
-class CryptManagerExtension(nautilus.InfoProvider, nautilus.MenuProvider):
+class foldercryptExtension(nautilus.InfoProvider, nautilus.MenuProvider):
     def __init__(self):
         pass
 
     def _load_data(self):
-        data = cryptmanager.Data()
+        data = foldercrypt.Data()
         self.folders = data.folders
         self.folders.clean()
      
     def _clicked(self, menu, file):
         if self.status == 1:
-            p = subprocess.Popen(["gcrypt-manager", "--crypt", self.filename])
+            p = subprocess.Popen(["foldercrypt-gtk", "--crypt", self.filename])
             if p.poll() == 0:
                 file.add_emblem(EMBLEM)
         if self.status == 2:
-            p = subprocess.Popen(["gcrypt-manager", "--close", self.filename])
+            p = subprocess.Popen(["foldercrypt-gtk", "--close", self.filename])
         if self.status == 3:
-            p = subprocess.Popen(["gcrypt-manager", "--open", self.filename])
+            p = subprocess.Popen(["foldercrypt-gtk", "--open", self.filename])
 
     def _get_status(self):
         try:
             folder = self.folders.get(self.filename)
-        except cryptmanager.NoEncrypted:
+        except foldercrypt.NoEncrypted:
             self.status = 1
         else:
             if folder.opened:
@@ -71,7 +71,7 @@ class CryptManagerExtension(nautilus.InfoProvider, nautilus.MenuProvider):
         """1: unencrypted, 2: opened, 3: closed"""
         if self.status == 1:
             self.entry = _("Encrypt")
-            self.desc = _("Encrypt this folder using Crypt Manager")
+            self.desc = _("Encrypt this folder using Foldercrypt")
         elif self.status == 2:
             self.entry = _("Close")
             self.desc = _("Close this encrypted folder")
@@ -85,11 +85,11 @@ class CryptManagerExtension(nautilus.InfoProvider, nautilus.MenuProvider):
         if not file.is_directory():
             # Workaround to ask the password
             # when entering in an encrypted folder
-            if f == "cryptmanager":
+            if f == "foldercrypt":
                 parent = urllib.unquote(file.get_parent_uri()[7:])
                 os.unlink(self.filename)
                 print parent
-                p = subprocess.Popen(["gcrypt-manager", "--open",
+                p = subprocess.Popen(["foldercrypt-gtk", "--open",
                     parent])
             return
         self._load_data()
@@ -97,9 +97,9 @@ class CryptManagerExtension(nautilus.InfoProvider, nautilus.MenuProvider):
         
         print self.filename
         if self.status == 3 and not os.path.exists(os.path.join(self.filename,
-            "cryptmanager")):
+            "foldercrypt")):
             print "Workaround"
-            f = open (os.path.join(self.filename, "cryptmanager"), "w")
+            f = open (os.path.join(self.filename, "foldercrypt"), "w")
             f.write("")
             f.close()
 
@@ -121,7 +121,7 @@ class CryptManagerExtension(nautilus.InfoProvider, nautilus.MenuProvider):
 
         
         menu = nautilus.MenuItem(
-            "NautilusPython::CryptManagerExtension",
+            "NautilusPython::foldercryptExtension",
             self.entry,
             self.desc
         )

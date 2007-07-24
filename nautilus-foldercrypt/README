@@ -1,4 +1,4 @@
-Crypt manager is a encrypted folder management tool.
+Foldercrypt is a encrypted folder management tool.
 This the Ubuntu Google Summer of Code project of Kévin Dunglas,
 mentored by Jani Monoses.
 
@@ -23,7 +23,7 @@ Depends of:
 - Python 2.5
 - encfs (apt-get install encfs)
 
-To use gcrypt-manager you need:
+To use foldercrypt-gtk you need:
 - gtk
 - pygtk.glade Python modules (provided by PyGTK)
 
@@ -32,11 +32,11 @@ To use the nautilus extension you need:
 - nautilus-python (apt-get install nautilus-python)
 
 Type in a shell:
-tar xvjpf crypt-manager-0.2.tar.bz2
-cd crypt-manager-0.2
+tar xvjpf foldercrypt-0.2.tar.bz2
+cd foldercrypt-0.2
 sudo ./install.sh
 
-NAUTILUS CRYPT 
+NAUTILUS FOLDERCRYPT 
 ==========================
 Right click on a folder and choose "Encrypt" to encrypt it.
 Right click on an encrypted folder to open or close it.
