@@ -8,7 +8,7 @@ XB-Python-Version: ${python:Versions}
 XS-Python-Version: all
 
 Package: crypt-manager
-Architecture: any
+Architecture: all
 Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}, encfs
 Recommends: gcrypt-manager, nautilus-crypt
 Description: An encrypted folder manager
