@@ -36,6 +36,17 @@ tar xvjpf crypt-manager-0.2.tar.bz2
 cd crypt-manager-0.2
 sudo ./install.sh
 
+For PAM EncFS support add:
+
+auth    sufficient      pam_encfs.so
+auth    required        pam_unix.so nullok_secure use_first_pass
+
+to /etc/pam.d/common-auth and:
+
+user_allow_other
+
+to /etc/fuse.conf
+
 CRYPT-MANAGER
 =============
 Command: crypt-manager
