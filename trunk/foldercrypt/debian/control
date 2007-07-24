@@ -1,4 +1,4 @@
-Source: crypt-manager
+Source: foldercrypt
 Section: admin
 Priority: optional
 Maintainer: Kévin Dunglas <dunglas@gmail.com>
@@ -7,11 +7,11 @@ Standards-Version: 3.7.2
 XB-Python-Version: ${python:Versions}
 XS-Python-Version: all
 
-Package: crypt-manager
+Package: foldercrypt
 Architecture: all
 Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}, encfs
-Recommends: gcrypt-manager, nautilus-crypt
+Recommends: foldercrypt-gtk, nautilus-foldercrypt
 Description: An encrypted folder manager
- Crypt Manager is a set of tools designed to manage encrypted folders on Linux.
+ Foldercrypt is a set of tools designed to manage encrypted folders on Linux.
  It provide a command line tool and a Python module to integrate it
  in other applications.
