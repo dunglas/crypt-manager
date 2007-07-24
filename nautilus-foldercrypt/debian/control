@@ -1,12 +1,12 @@
-Source: nautilus-crypt
+Source: nautilus-foldercrypt
 Section: gnome
 Priority: optional
 Maintainer: Kévin Dunglas <dunglas@gmail.com>
 Build-Depends: debhelper (>= 5)
 Standards-Version: 3.7.2
 
-Package: nautilus-crypt
+Package: nautilus-foldercrypt
 Architecture: all
-Depends: ${shlibs:Depends}, ${misc:Depends}, gcrypt-manager
+Depends: ${shlibs:Depends}, ${misc:Depends}, python, foldercrypt-gtk
 Description: A Nautilus extension to manage encrypted folders
  An extension to the GNOME files manager for encrypted folders.

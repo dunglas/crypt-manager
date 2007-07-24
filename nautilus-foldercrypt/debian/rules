@@ -24,7 +24,7 @@ build-stamp: configure-stamp
 
 	# Add here commands to compile the package.
 	#$(MAKE)
-	#docbook-to-man debian/nautilus-crypt.sgml > nautilus-crypt.1
+	#docbook-to-man debian/nautilus-foldercrypt.sgml > nautilus-foldercrypt.1
 
 	touch $@
 
@@ -44,9 +44,9 @@ install: build
 	dh_clean -k 
 	dh_installdirs
 
-	# Add here commands to install the package into debian/nautilus-crypt.
-	#$(MAKE) DESTDIR=$(CURDIR)/debian/nautilus-crypt install
-	install $(CURDIR)/crypt-manager.py $(CURDIR)/debian/nautilus-crypt/usr/lib/nautilus/extensions-1.0/python/
+	# Add here commands to install the package into debian/nautilus-foldercrypt.
+	#$(MAKE) DESTDIR=$(CURDIR)/debian/nautilus-foldercrypt install
+	install $(CURDIR)/foldercrypt.py $(CURDIR)/debian/nautilus-foldercrypt/usr/lib/nautilus/extensions-1.0/python/
 
 # Build architecture-independent files here.
 binary-indep: build install

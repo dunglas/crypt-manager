@@ -24,7 +24,7 @@ build-stamp: configure-stamp
 
 	# Add here commands to compile the package.
 	#$(MAKE)
-	#docbook-to-man debian/gcrypt-manager.sgml > gcrypt-manager.1
+	#docbook-to-man debian/foldercrypt-gtk.sgml > foldercrypt-gtk.1
 
 	touch $@
 
@@ -44,12 +44,12 @@ install: build
 	dh_clean -k 
 	dh_installdirs
 
-	# Add here commands to install the package into debian/gcrypt-manager.
-	#$(MAKE) DESTDIR=$(CURDIR)/debian/gcrypt-manager install
-	cp $(CURDIR)/share/gcrypt-manager.glade $(CURDIR)/debian/gcrypt-manager/usr/share/gcrypt-manager/
-	cp $(CURDIR)/share/icon.png $(CURDIR)/debian/gcrypt-manager/usr/share/gcrypt-manager/
-	cp $(CURDIR)/share/gcrypt-manager.desktop $(CURDIR)/debian/gcrypt-manager/usr/share/applications/
-	cp $(CURDIR)/gcrypt-manager $(CURDIR)/debian/gcrypt-manager/usr/bin
+	# Add here commands to install the package into debian/foldercrypt-gtk.
+	#$(MAKE) DESTDIR=$(CURDIR)/debian/foldercrypt-gtk install
+	cp $(CURDIR)/share/foldercrypt.glade $(CURDIR)/debian/foldercrypt-gtk/usr/share/foldercrypt/
+	cp $(CURDIR)/share/icon.png $(CURDIR)/debian/foldercrypt-gtk/usr/share/foldercrypt/
+	cp $(CURDIR)/share/foldercrypt.desktop $(CURDIR)/debian/foldercrypt-gtk/usr/share/applications/
+	cp $(CURDIR)/foldercrypt-gtk $(CURDIR)/debian/foldercrypt-gtk/usr/bin
 
 
 # Build architecture-independent files here.

@@ -27,7 +27,7 @@ build-stamp: configure-stamp
 
 	# Add here commands to compile the package.
 	#$(MAKE)
-	#docbook-to-man debian/crypt-manager.sgml > crypt-manager.1
+	#docbook-to-man debian/foldercrypt.sgml > foldercrypt.1
 
 	touch $@
 
@@ -47,11 +47,11 @@ install: build
 	dh_clean -k 
 	dh_installdirs
 
-	# Add here commands to install the package into debian/crypt-manager.
-	#$(MAKE) DESTDIR=$(CURDIR)/debian/crypt-manager install
+	# Add here commands to install the package into debian/foldercrypt.
+	#$(MAKE) DESTDIR=$(CURDIR)/debian/foldercrypt install
 
-	install $(CURDIR)/cryptmanager.py $(CURDIR)/debian/crypt-manager/usr/lib/python2.5
-	install $(CURDIR)/crypt-manager $(CURDIR)/debian/crypt-manager/usr/bin
+	install $(CURDIR)/foldercrypt.py $(CURDIR)/debian/foldercrypt/usr/lib/python2.5
+	install $(CURDIR)/foldercrypt $(CURDIR)/debian/foldercrypt/usr/bin
 
 # Build architecture-independent files here.
 binary-indep: build install
