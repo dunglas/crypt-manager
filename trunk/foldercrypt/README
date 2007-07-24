@@ -1,8 +1,8 @@
-Crypt manager is a encrypted folder management tool.
+Foldercrypt is a encrypted folder management tool.
 This the Ubuntu Google Summer of Code project of Kévin Dunglas,
 mentored by Jani Monoses.
 
-See http://code.google.com/p/crypt-manager/ for details.
+See http://code.google.com/p/foldercrypt/ for details.
 Informations about Ubuntu Linux: http://www.ubuntu.com
 Informations about Google Summer of Code: http://code.google.com/soc/
 
@@ -23,7 +23,7 @@ Depends of:
 - Python 2.5
 - encfs (apt-get install encfs)
 
-To use gcrypt-manager you need:
+To use foldercrypt-gtk you need:
 - gtk
 - pygtk.glade Python modules (provided by PyGTK)
 
@@ -32,8 +32,8 @@ To use the nautilus extension you need:
 - nautilus-python (apt-get install nautilus-python)
 
 Type in a shell:
-tar xvjpf crypt-manager-0.2.tar.bz2
-cd crypt-manager-0.2
+tar xvjpf foldercrypt-0.2.tar.bz2
+cd foldercrypt-0.2
 sudo ./install.sh
 
 For PAM EncFS support add:
@@ -47,9 +47,9 @@ user_allow_other
 
 to /etc/fuse.conf
 
-CRYPT-MANAGER
+FOLDERCRYPT
 =============
-Command: crypt-manager
+Command: foldercrypt
 
 Options:
 --crypt DIRECTORY       encrypt directory
@@ -63,33 +63,33 @@ Options:
 Examples :
 
 # Create some samples
-root@kirk:~/Projects/crypt-manager# mkdir test
-root@kirk:~/Projects/crypt-manager# echo "Bonjour" > test/bonjour
-root@kirk:~/Projects/crypt-manager# echo "Aurevoir" > test/aurevoir
+root@kirk:~/Projects/foldercrypt# mkdir test
+root@kirk:~/Projects/foldercrypt# echo "Bonjour" > test/bonjour
+root@kirk:~/Projects/foldercrypt# echo "Aurevoir" > test/aurevoir
 
 # Encrypt a directory
-root@kirk:~/Projects/crypt-manager# ./crypt-manager --crypt test
+root@kirk:~/Projects/foldercrypt# ./foldercrypt --crypt test
 Password: azerty
 
 [...]
 
 # List the content of the directory unmounted
-root@kirk:~/Projects/crypt-manager# ls test
+root@kirk:~/Projects/foldercrypt# ls test
 
 # Open the encrypted directory
-root@kirk:~/Projects/crypt-manager# ./crypt-manager --open test
+root@kirk:~/Projects/foldercrypt# ./foldercrypt --open test
 Password: azerty
 
 # List the content of the mounted encrypted directory
-root@kirk:~/Projects/crypt-manager# ls test
+root@kirk:~/Projects/foldercrypt# ls test
 aurevoir  bonjour  lost+found
 
 # Close it
-root@kirk:~/Projects/crypt-manager# ./crypt-manager --close test
+root@kirk:~/Projects/foldercrypt# ./foldercrypt --close test
 # List if content
-root@kirk:~/Projects/crypt-manager# ls test
+root@kirk:~/Projects/foldercrypt# ls test
 
 # Decrypt it
-root@kirk:~/Projects/crypt-manager# ./crypt-manager --decrypt test
+root@kirk:~/Projects/foldercrypt# ./foldercrypt --decrypt test
 Password: azerty
 aurevoir  bonjour  lost+found

@@ -32,9 +32,9 @@ import re
 import time
 import cPickle
 
-CRYPTDIR = os.environ['HOME'] + "/.cryptmanager/crypt"
-CACHE = os.environ['HOME'] + "/.cryptmanager/cache"
-TMPDIR ="/tmp/cryptmanager"
+CRYPTDIR = os.environ['HOME'] + "/.foldercrypt/crypt"
+CACHE = os.environ['HOME'] + "/.foldercrypt/cache"
+TMPDIR ="/tmp/foldercrypt"
 FUSERMOUNT = "/usr/bin/fusermount"
 ENCFS = "/usr/bin/encfs"
 ENCFSCTL = "/usr/bin/encfsctl"
@@ -316,7 +316,7 @@ class Manage:
 
     def crypt(self, password):
         """Encrypt a folder"""
-        # Create ~/.config/cryptmanager if needed
+        # Create ~/.config/foldercrypt if needed
         # The disk images are stored here
         if not os.path.exists(CRYPTDIR):
             os.makedirs(CRYPTDIR)
@@ -336,7 +336,7 @@ class Manage:
             return
 
         tmp = os.path.join(TMPDIR, self.folder.digest)
-        # Delete /tmp/cryptmanager/DIGEST if already exists
+        # Delete /tmp/foldercrypt/DIGEST if already exists
         Util().rm(tmp)
         # Move the existing content in a tmp directory
         Util().mv(self.folder.path, tmp)
@@ -382,7 +382,7 @@ class Manage:
         """Decrypt a folder"""
         tmp = os.path.join(TMPDIR, self.folder.digest)
 
-        # Delete /tmp/cryptmanager/DIGEST if already exists
+        # Delete /tmp/foldercrypt/DIGEST if already exists
         Util().rm(tmp)
 
         try:
