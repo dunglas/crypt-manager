@@ -1,0 +1,17 @@
+Source: crypt-manager
+Section: admin
+Priority: optional
+Maintainer: Kévin Dunglas <dunglas@gmail.com>
+Build-Depends: debhelper (>= 5.0.38), python-central (>= 0.5.6)
+Standards-Version: 3.7.2
+XB-Python-Version: ${python:Versions}
+XS-Python-Version: all
+
+Package: crypt-manager
+Architecture: all
+Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}, encfs
+Recommends: gcrypt-manager, nautilus-crypt
+Description: An encrypted folder manager
+ Crypt Manager is a set of tools designed to manage encrypted folders on Linux.
+ It provide a command line tool and a Python module to integrate it
+ in other applications.

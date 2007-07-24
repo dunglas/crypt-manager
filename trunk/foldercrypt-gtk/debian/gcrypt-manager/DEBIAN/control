@@ -1,0 +1,10 @@
+Package: gcrypt-manager
+Version: 0.0.1-1ubuntu0
+Section: gnome
+Priority: optional
+Architecture: all
+Depends: crypt-manager, python-glade2, python-gtk2
+Installed-Size: 132
+Maintainer: Kévin Dunglas <dunglas@gmail.com>
+Description: A graphical encrypted folders manager
+ A GTK encrypted folders manager for Linux and the GNOME desktop.
