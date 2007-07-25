@@ -1,7 +1,0 @@
-d4690f9fcb98d5397bb7dafbec0827d9  usr/bin/gcrypt-manager
-fad681b046f7e12a81a5e6e57140fe15  usr/share/applications/gcrypt-manager.desktop
-ec8c728f7127b413e27a3175b9fcc939  usr/share/gcrypt-manager/gcrypt-manager.glade
-0d93bdcc11d2db2bbac26b5c3e6ff659  usr/share/gcrypt-manager/icon.png
-9d7dce1d321dafe0962b4a740bce5dba  usr/share/doc/gcrypt-manager/README
-afa7e7ab72c009e9f0bbfc2b22d0990d  usr/share/doc/gcrypt-manager/copyright
-7fa4c572ec8b75782c94eab1fa0200a9  usr/share/doc/gcrypt-manager/changelog.Debian.gz
