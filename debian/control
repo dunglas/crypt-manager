@@ -1,0 +1,30 @@
+Source: foldercrypt
+Section: admin
+Priority: optional
+Maintainer: Kévin Dunglas <dunglas@gmail.com>
+Build-Depends: debhelper (>= 5.0.38), python-central (>= 0.5.6), cdbs
+Standards-Version: 3.7.2
+XB-Python-Version: ${python:Versions}
+XS-Python-Version: all
+
+Package: foldercrypt
+Architecture: all
+Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}, python, encfs
+Recommends: foldercrypt-gtk, nautilus-foldercrypt
+Description: An encrypted folder manager
+ Foldercrypt is a set of tools designed to manage encrypted folders on Linux.
+ It provide a command line tool and a Python module to integrate it
+ in other applications.
+
+Package: foldercrypt-gtk
+Architecture: all
+Depends: ${shlibs:Depends}, ${misc:Depends}, foldercrypt, python, python-glade2, python-gtk2
+Recomends: nautilus-foldercrypt
+Description: A graphical encrypted folders manager
+ A GTK encrypted folders manager for Linux and the GNOME desktop.
+
+Package: nautilus-foldercrypt
+Architecture: all
+Depends: ${shlibs:Depends}, ${misc:Depends}, python, foldercrypt-gtk
+Description: A Nautilus extension to manage encrypted folders
+ An extension to the GNOME files manager for encrypted folders.

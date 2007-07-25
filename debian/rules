@@ -1,0 +1,16 @@
+#!/usr/bin/make -f
+				
+include /usr/share/cdbs/1/rules/debhelper.mk
+
+install/foldercrypt::
+	install $(CURDIR)/foldercrypt/foldercrypt.py $(CURDIR)/debian/foldercrypt/usr/lib/python2.5
+	install $(CURDIR)/foldercrypt/foldercrypt $(CURDIR)/debian/foldercrypt/usr/bin
+
+install/foldercrypt-gtk::
+	cp $(CURDIR)/foldercrypt-gtk/share/foldercrypt.glade $(CURDIR)/debian/foldercrypt/usr/share/foldercrypt/
+	cp $(CURDIR)/foldercrypt-gtk/share/icon.png $(CURDIR)/debian/foldercrypt/usr/share/foldercrypt/
+	cp $(CURDIR)/foldercrypt-gtk/share/foldercrypt.desktop $(CURDIR)/debian/foldercrypt/usr/share/applications/
+	cp $(CURDIR)/foldercrypt-gtk/foldercrypt-gtk $(CURDIR)/debian/foldercrypt/usr/bin
+
+install/nautilus-foldercrypt::
+	install $(CURDIR)/nautilus-foldercrypt/foldercrypt.py $(CURDIR)/debian/foldercrypt/usr/lib/nautilus/extensions-1.0/python/
