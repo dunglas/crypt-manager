@@ -37,24 +37,26 @@ __builtin__._ = gettext.gettext
 # Crypt Manager extension for nautilus
 EMBLEM = "readonly"
 
-class foldercryptExtension(nautilus.InfoProvider, nautilus.MenuProvider):
+class FoldercryptExtension(nautilus.InfoProvider, nautilus.MenuProvider):
     def __init__(self):
         pass
 
     def _load_data(self):
+        print "Hoho"
+        print foldercrypt
         data = foldercrypt.Data()
         self.folders = data.folders
         self.folders.clean()
      
     def _clicked(self, menu, file):
         if self.status == 1:
-            p = subprocess.Popen(["foldercrypt-gtk", "--crypt", self.filename])
+            p = subprocess.Popen(["gcrypt-manager", "--crypt", self.filename])
             if p.poll() == 0:
                 file.add_emblem(EMBLEM)
         if self.status == 2:
-            p = subprocess.Popen(["foldercrypt-gtk", "--close", self.filename])
+            p = subprocess.Popen(["gcrypt-manager", "--close", self.filename])
         if self.status == 3:
-            p = subprocess.Popen(["foldercrypt-gtk", "--open", self.filename])
+            p = subprocess.Popen(["gcrypt-manager", "--open", self.filename])
 
     def _get_status(self):
         try:
@@ -71,7 +73,7 @@ class foldercryptExtension(nautilus.InfoProvider, nautilus.MenuProvider):
         """1: unencrypted, 2: opened, 3: closed"""
         if self.status == 1:
             self.entry = _("Encrypt")
-            self.desc = _("Encrypt this folder using Foldercrypt")
+            self.desc = _("Encrypt this folder using Crypt Manager")
         elif self.status == 2:
             self.entry = _("Close")
             self.desc = _("Close this encrypted folder")
@@ -89,7 +91,7 @@ class foldercryptExtension(nautilus.InfoProvider, nautilus.MenuProvider):
                 parent = urllib.unquote(file.get_parent_uri()[7:])
                 os.unlink(self.filename)
                 print parent
-                p = subprocess.Popen(["foldercrypt-gtk", "--open",
+                p = subprocess.Popen(["gcrypt-manager", "--open",
                     parent])
             return
         self._load_data()
@@ -121,7 +123,7 @@ class foldercryptExtension(nautilus.InfoProvider, nautilus.MenuProvider):
 
         
         menu = nautilus.MenuItem(
-            "NautilusPython::foldercryptExtension",
+            "NautilusPython::FoldercryptExtension",
             self.entry,
             self.desc
         )
