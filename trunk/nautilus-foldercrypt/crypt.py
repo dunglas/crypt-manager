@@ -48,13 +48,13 @@ class FoldercryptExtension(nautilus.InfoProvider, nautilus.MenuProvider):
      
     def _clicked(self, menu, file):
         if self.status == 1:
-            p = subprocess.Popen(["gcrypt-manager", "--crypt", self.filename])
+            p = subprocess.Popen(["foldercrypt-gtk", "--crypt", self.filename])
             if p.poll() == 0:
                 file.add_emblem(EMBLEM)
         if self.status == 2:
-            p = subprocess.Popen(["gcrypt-manager", "--close", self.filename])
+            p = subprocess.Popen(["foldercrypt-gtk", "--close", self.filename])
         if self.status == 3:
-            p = subprocess.Popen(["gcrypt-manager", "--open", self.filename])
+            p = subprocess.Popen(["foldercrypt-gtk", "--open", self.filename])
 
     def _get_status(self):
         try:
@@ -88,7 +88,7 @@ class FoldercryptExtension(nautilus.InfoProvider, nautilus.MenuProvider):
             if f == "foldercrypt.lock":
                 parent = urllib.unquote(file.get_parent_uri()[7:])
                 os.unlink(self.filename)
-                p = subprocess.Popen(["gcrypt-manager", "--open",
+                p = subprocess.Popen(["foldercrypt-gtk", "--open",
                     parent])
             return
         self._load_data()
