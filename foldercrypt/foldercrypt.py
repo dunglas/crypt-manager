@@ -172,6 +172,7 @@ class Data:
         cPickle.dump(self.folders, f, protocol = cPickle.HIGHEST_PROTOCOL)
         f.close()
 
+
 class Folders:
     """Folders list"""
     def __init__(self):
