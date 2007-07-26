@@ -412,9 +412,8 @@ class Crypt:
     def __init__(self, path=None):
         windows.load("crypt")
         if path is not None and os.path.exists(path):
-            windows["crypt"]["crypt_path"].set_text(path)
-            windows["crypt"]["crypt_path"].set_sensitive(False)
-            windows["crypt"]["crypt_open"].set_sensitive(False)
+            windows["crypt"]["crypt_folder"].set_current_folder(path)
+            windows["crypt"]["crypt_folder"].set_sensitive(False)
 
 
 class Rencrypt(threading.Thread):
