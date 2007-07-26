@@ -42,8 +42,6 @@ class FoldercryptExtension(nautilus.InfoProvider, nautilus.MenuProvider):
         pass
 
     def _load_data(self):
-        print "Hoho"
-        print foldercrypt
         data = foldercrypt.Data()
         self.folders = data.folders
         self.folders.clean()
@@ -87,21 +85,18 @@ class FoldercryptExtension(nautilus.InfoProvider, nautilus.MenuProvider):
         if not file.is_directory():
             # Workaround to ask the password
             # when entering in an encrypted folder
-            if f == "foldercrypt":
+            if f == "foldercrypt.lock":
                 parent = urllib.unquote(file.get_parent_uri()[7:])
                 os.unlink(self.filename)
-                print parent
                 p = subprocess.Popen(["gcrypt-manager", "--open",
                     parent])
             return
         self._load_data()
         self._get_status()
-        
-        print self.filename
+
         if self.status == 3 and not os.path.exists(os.path.join(self.filename,
-            "foldercrypt")):
-            print "Workaround"
-            f = open (os.path.join(self.filename, "foldercrypt"), "w")
+            "foldercrypt.lock")):
+            f = open (os.path.join(self.filename, "foldercrypt.lock"), "w")
             f.write("")
             f.close()
 
