@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>610</width>
-            <height>610</height>
+            <width>301</width>
+            <height>173</height>
         </rect>
     </property>
     <property name="caption">
@@ -124,20 +124,6 @@
             <property name="spacing">
                 <number>6</number>
             </property>
-            <widget class="QPushButton">
-                <property name="name">
-                    <cstring>crypt_help</cstring>
-                </property>
-                <property name="text">
-                    <string>&amp;Help</string>
-                </property>
-                <property name="accel">
-                    <string>F1</string>
-                </property>
-                <property name="autoDefault">
-                    <bool>true</bool>
-                </property>
-            </widget>
             <spacer>
                 <property name="name">
                     <cstring>Horizontal Spacing2</cstring>
