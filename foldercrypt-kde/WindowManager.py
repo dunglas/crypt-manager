@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'manager.ui'
+# Form implementation generated from reading ui file 'WindowManager.ui'
 #
-# Created: mer jui 25 11:11:32 2007
+# Created: ven jui 27 16:55:25 2007
 #      by: The PyQt User Interface Compiler (pyuic) 3.17
 #
 # WARNING! All changes made in this file will be lost!
@@ -11,13 +11,13 @@
 from qt import *
 
 
-class manager(QMainWindow):
+class WindowManager(QMainWindow):
     def __init__(self,parent = None,name = None,fl = 0):
         QMainWindow.__init__(self,parent,name,fl)
         self.statusBar()
 
         if not name:
-            self.setName("manager")
+            self.setName("WindowManager")
 
 
         self.setCentralWidget(QWidget(self,"qt_central_widget"))
@@ -60,4 +60,4 @@ class manager(QMainWindow):
 
 
     def __tr(self,s,c = None):
-        return qApp.translate("manager",s,c)
+        return qApp.translate("WindowManager",s,c)

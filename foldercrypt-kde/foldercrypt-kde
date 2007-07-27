@@ -28,9 +28,9 @@ import sys
 import gettext
 import locale
 from qt import *
-from manager import *
-from open import *
-from crypt import *
+from WindowManager import *
+from WindowOpen import *
+from WindowCrypt import *
 import foldercrypt
 
 import __builtin__
@@ -40,40 +40,51 @@ APPNAME="foldercrypt-kde"
 APPVERSION="0.1"
 CACHE = os.environ['HOME'] + "/.foldercrypt/cache"
 ICON = "/usr/share/foldercrypt/icon.png"
+wlist = []
 
-class ManagerWindow:
-    def __init__(self, args):
-        # l’application Qt
-        self.qtapp = QApplication(args)
-
+class Manager:
+    def __init__(self):
         # création de la fenêtre principale
-        self.win = manager()
+        self.win = WindowManager()
         # affichage de la liste des clients dans la fenêtre
         #self.update()
         # affichage de la fenêtre
         self.win.show()
+        wlist.append(self.win)
 
         # connection SLOT/SIGNAL de Qt
-        self.qtapp.connect(self.win.manager_crypt,SIGNAL("clicked()"), self.test)
-        self.qtapp.connect(self.win.manager_decrypt,SIGNAL("clicked()"), self.test)
-        self.qtapp.connect(self.win.manager_open_close,SIGNAL("clicked()"), self.test)
-        self.qtapp.connect(self.win.manager_reset,SIGNAL("clicked()"), self.test)
-        self.qtapp.connect(self.win.manager_apply,SIGNAL("clicked()"), self.test)
-        self.qtapp.connect(self.qtapp, SIGNAL("lastWindowClosed()"), self.qtapp, SLOT("quit()"))
-        self.qtapp.exec_loop()
+        qtapp.connect(self.win.manager_crypt,SIGNAL("clicked()"), self.test)
+        qtapp.connect(self.win.manager_decrypt,SIGNAL("clicked()"), self.test)
+        qtapp.connect(self.win.manager_open_close,SIGNAL("clicked()"), Open)
+        qtapp.connect(self.win.manager_reset,SIGNAL("clicked()"), self.test)
+        qtapp.connect(self.win.manager_apply,SIGNAL("clicked()"), self.test)
+        qtapp.connect(qtapp, SIGNAL("lastWindowClosed()"), qtapp, SLOT("quit()"))
     
     def test(self):
         print "hahah"
+
+class Open:
+    def __init__(self):
+        # création de la fenêtre principale
+        self.win = WindowOpen()
+        # affichage de la liste des clients dans la fenêtre
+        #self.update()
+        # affichage de la fenêtre
+        self.win.show()
+        wlist.append(self.win)
+
+        # connection SLOT/SIGNAL de Qt
 
 
 if __name__ == '__main__':
     data = foldercrypt.Data()
     folders = data.folders
     folders.clean()
+    qtapp = QApplication(sys.argv)
 
     # Command Line Interface
     if len(sys.argv) == 1:
-        manager = ManagerWindow(sys.argv)
+        manager = Manager()
         
     elif len(sys.argv) == 2 and sys.argv[1] == "--info":
         msg = _("""%s, an encrypted folder manager
@@ -113,4 +124,5 @@ Options:
         msg = """Invalid option
 Try « %s --info » to get more information""" % APPNAME
         Util().error_box(msg)
+    qtapp.exec_loop()
     exit()
