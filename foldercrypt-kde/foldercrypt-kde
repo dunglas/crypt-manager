@@ -1,0 +1,116 @@
+#!/usr/bin/python
+# vim: set fileencoding=utf-8 :
+# Copyright (C) 2007 Kévin Dunglas <dunglas@gmail.com>
+#
+# Authors:
+#  Kévin Dunglas
+#
+# This program is a part of a the Google Summer Of Code 2007
+# For futher information see :
+# http://code.google.com/soc/ubuntu/appinfo.html?csaid=EF4FCF874D88234
+#
+# This program is free software; you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation; either version 3 of the License, or (at your option) any later
+# version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+# details.
+#
+# You should have received a copy of the GNU General Public License along with
+# this program; if not, write to the Free Software Foundation, Inc., 59 Temple
+# Place, Suite 330, Boston, MA 02111-1307 USA
+
+import os
+import sys
+import gettext
+import locale
+from qt import *
+from manager import *
+from open import *
+from crypt import *
+import foldercrypt
+
+import __builtin__
+__builtin__._ = gettext.gettext
+
+APPNAME="foldercrypt-kde"
+APPVERSION="0.1"
+CACHE = os.environ['HOME'] + "/.foldercrypt/cache"
+ICON = "/usr/share/foldercrypt/icon.png"
+
+class ManagerWindow:
+    def __init__(self, args):
+        # l’application Qt
+        self.qtapp = QApplication(args)
+
+        # création de la fenêtre principale
+        self.win = manager()
+        # affichage de la liste des clients dans la fenêtre
+        #self.update()
+        # affichage de la fenêtre
+        self.win.show()
+
+        # connection SLOT/SIGNAL de Qt
+        self.qtapp.connect(self.win.manager_crypt,SIGNAL("clicked()"), self.test)
+        self.qtapp.connect(self.win.manager_decrypt,SIGNAL("clicked()"), self.test)
+        self.qtapp.connect(self.win.manager_open_close,SIGNAL("clicked()"), self.test)
+        self.qtapp.connect(self.win.manager_reset,SIGNAL("clicked()"), self.test)
+        self.qtapp.connect(self.win.manager_apply,SIGNAL("clicked()"), self.test)
+        self.qtapp.connect(self.qtapp, SIGNAL("lastWindowClosed()"), self.qtapp, SLOT("quit()"))
+        self.qtapp.exec_loop()
+    
+    def test(self):
+        pass
+
+
+if __name__ == '__main__':
+    data = foldercrypt.Data()
+    folders = data.folders
+    folders.clean()
+
+    # Command Line Interface
+    if len(sys.argv) == 1:
+        manager = ManagerWindow(sys.argv)
+        
+    elif len(sys.argv) == 2 and sys.argv[1] == "--info":
+        msg = _("""%s, an encrypted folder manager
+Options:
+--crypt [DIRECTORY]         encrypt directory
+--open DIRECTORY            open an encrypted folder
+--info                      display this help message
+--close DIRECTORY           close an encrypted folder
+--decrypt DIRECTORY         decrypt encrypted folder
+--version                   display version information""") % APPNAME
+        exit(msg)
+        
+    elif len(sys.argv) == 2 and sys.argv[1] == "--version":
+        msg = "%s %s" % APPNAME, APPVERSION
+        exit(msg)
+    
+    elif len(sys.argv) == 2 and sys.argv[1] == "--clean":
+        folders.clean()
+        exit()
+
+    elif len(sys.argv) >= 2 and len(sys.argv) <= 3 and sys.argv[1] == "--crypt":
+        if len(sys.argv) == 3:
+            c = Crypt(sys.argv[2])
+        else:
+            c = Crypt()
+
+    elif len(sys.argv) == 3 and sys.argv[1] == "--close":
+        Unmount(sys.argv[2])
+
+    elif len(sys.argv) == 3 and sys.argv[1] == "--open":
+        Open(sys.argv[2])
+
+    elif len(sys.argv) == 3 and sys.argv[1] == "--decrypt":
+        Decrypt(sys.argv[2])
+
+    else:
+        msg = """Invalid option
+Try « %s --info » to get more information""" % APPNAME
+        Util().error_box(msg)
+    exit()
