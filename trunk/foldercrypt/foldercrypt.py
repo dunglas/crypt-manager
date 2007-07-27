@@ -94,6 +94,12 @@ class NotWritable(Exception):
     def __str__(self):
         return "This directory and all his files must be writable"
 
+
+class UnexpectedError(Exception):
+    def __str__(self):
+        return "Unexpected error"
+
+
 class Util:
     """Utilities"""
     
@@ -237,7 +243,7 @@ class Encfs:
         p2.communicate()[0]
         
         if p2.poll() is not 0:
-            raise BadPassword()
+            raise UnexpectedError()
 
     def encrypt(self, password):
         """Encrypt a directory"""

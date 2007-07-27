@@ -39,7 +39,7 @@ import gnomekeyring
 import __builtin__
 __builtin__._ = gettext.gettext
 
-APPNAME="gfoldercrypt"
+APPNAME="foldercrypt-gtk"
 APPVERSION="0.1"
 CACHE = os.environ['HOME'] + "/.foldercrypt/cache"
 GLADE = "/usr/share/foldercrypt/foldercrypt.glade"
@@ -367,7 +367,7 @@ class Progressbar:
 
 class Manager:
     """Main window"""
-    def __init__(self, folders):
+    def __init__(self):
         """Launch the Cypted Folder manager"""
         windows.load("manager")
         
@@ -626,7 +626,7 @@ if __name__ == '__main__':
     windows = Windows()
     # Command Line Interface
     if len(sys.argv) == 1:
-        manager = Manager(folders)
+        manager = Manager()
         
     elif len(sys.argv) == 2 and sys.argv[1] == "--info":
         msg = _("""%s, an encrypted folder manager
