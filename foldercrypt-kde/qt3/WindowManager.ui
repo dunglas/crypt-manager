@@ -63,6 +63,24 @@
             <string>Encrypt</string>
         </property>
     </widget>
+    <widget class="QListBox">
+        <item>
+            <property name="text">
+                <string>New Item</string>
+            </property>
+        </item>
+        <property name="name">
+            <cstring>manager_list</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>30</x>
+                <y>30</y>
+                <width>450</width>
+                <height>360</height>
+            </rect>
+        </property>
+    </widget>
     <widget class="QPushButton">
         <property name="name">
             <cstring>manager_open_close</cstring>
@@ -86,7 +104,7 @@
         <property name="geometry">
             <rect>
                 <x>490</x>
-                <y>110</y>
+                <y>150</y>
                 <width>90</width>
                 <height>30</height>
             </rect>
@@ -95,22 +113,20 @@
             <string>Decrypt</string>
         </property>
     </widget>
-    <widget class="QListBox">
-        <item>
-            <property name="text">
-                <string>New Item</string>
-            </property>
-        </item>
+    <widget class="QPushButton">
         <property name="name">
-            <cstring>manager_list</cstring>
+            <cstring>manager_properties</cstring>
         </property>
         <property name="geometry">
             <rect>
-                <x>30</x>
-                <y>30</y>
-                <width>450</width>
-                <height>360</height>
+                <x>490</x>
+                <y>110</y>
+                <width>90</width>
+                <height>30</height>
             </rect>
+        </property>
+        <property name="text">
+            <string>Properties</string>
         </property>
     </widget>
 </widget>

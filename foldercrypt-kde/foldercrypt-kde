@@ -31,6 +31,8 @@ from qt import *
 from WindowManager import *
 from WindowOpen import *
 from WindowCrypt import *
+from WindowProperties import *
+from WindowDecrypt import *
 import foldercrypt
 
 import __builtin__
@@ -44,36 +46,69 @@ wlist = []
 
 class Manager:
     def __init__(self):
-        # création de la fenêtre principale
         self.win = WindowManager()
-        # affichage de la liste des clients dans la fenêtre
-        #self.update()
-        # affichage de la fenêtre
         self.win.show()
         wlist.append(self.win)
 
-        # connection SLOT/SIGNAL de Qt
-        qtapp.connect(self.win.manager_crypt,SIGNAL("clicked()"), self.test)
-        qtapp.connect(self.win.manager_decrypt,SIGNAL("clicked()"), self.test)
-        qtapp.connect(self.win.manager_open_close,SIGNAL("clicked()"), Open)
-        qtapp.connect(self.win.manager_reset,SIGNAL("clicked()"), self.test)
-        qtapp.connect(self.win.manager_apply,SIGNAL("clicked()"), self.test)
-        qtapp.connect(qtapp, SIGNAL("lastWindowClosed()"), qtapp, SLOT("quit()"))
+        qtapp.connect(self.win.manager_crypt, SIGNAL("clicked()"), Crypt)
+        qtapp.connect(self.win.manager_decrypt, SIGNAL("clicked()"), Decrypt)
+        qtapp.connect(self.win.manager_open_close, SIGNAL("clicked()"), Open)
+        qtapp.connect(self.win.manager_properties, SIGNAL("clicked()"),\
+            Properties)
+        qtapp.connect(self.win.manager_reset, SIGNAL("clicked()"), self.test)
+        qtapp.connect(self.win.manager_apply, SIGNAL("clicked()"), self.test)
+        qtapp.connect(qtapp, SIGNAL("lastWindowClosed()"), qtapp,\
+            SLOT("quit()"))
     
     def test(self):
         print "hahah"
 
+
 class Open:
     def __init__(self):
-        # création de la fenêtre principale
         self.win = WindowOpen()
-        # affichage de la liste des clients dans la fenêtre
-        #self.update()
-        # affichage de la fenêtre
         self.win.show()
         wlist.append(self.win)
+        qtapp.connect(self.win.open_cancel, SIGNAL("clicked()"), self.win,\
+            SLOT("close()"))
+        qtapp.connect(qtapp, SIGNAL("lastWindowClosed()"), qtapp,\
+            SLOT("quit()"))
 
-        # connection SLOT/SIGNAL de Qt
+
+class Crypt:
+    def __init__(self):
+        self.win = WindowCrypt()
+        self.win.show()
+        wlist.append(self.win)
+        
+        qtapp.connect(self.win.crypt_cancel, SIGNAL("clicked()"),\
+            self.win, SLOT("close()"))
+        qtapp.connect(qtapp, SIGNAL("lastWindowClosed()"), qtapp,\
+            SLOT("quit()"))
+
+
+class Decrypt:
+    def __init__(self):
+        self.win = WindowDecrypt()
+        self.win.show()
+        wlist.append(self.win)
+        
+        qtapp.connect(self.win.decrypt_cancel, SIGNAL("clicked()"), self.win,\
+            SLOT("close()"))
+        qtapp.connect(qtapp, SIGNAL("lastWindowClosed()"), qtapp,\
+            SLOT("quit()"))
+
+
+class Properties:
+    def __init__(self):
+        self.win = WindowProperties()
+        self.win.show()
+        wlist.append(self.win)
+        
+        qtapp.connect(self.win.properties_cancel, SIGNAL("clicked()"),\
+            self.win, SLOT("close()"))
+        qtapp.connect(qtapp, SIGNAL("lastWindowClosed()"), qtapp,\
+            SLOT("quit()"))
 
 
 if __name__ == '__main__':

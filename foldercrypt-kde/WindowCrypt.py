@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'WindowCrypt.ui'
 #
-# Created: ven jui 27 16:55:56 2007
+# Created: ven jui 27 18:16:35 2007
 #      by: The PyQt User Interface Compiler (pyuic) 3.17
 #
 # WARNING! All changes made in this file will be lost!
@@ -41,10 +41,6 @@ class WindowCrypt(QDialog):
         LayoutWidget = QWidget(self,"Layout1")
         LayoutWidget.setGeometry(QRect(0,120,300,33))
         Layout1 = QHBoxLayout(LayoutWidget,0,6,"Layout1")
-
-        self.crypt_help = QPushButton(LayoutWidget,"crypt_help")
-        self.crypt_help.setAutoDefault(1)
-        Layout1.addWidget(self.crypt_help)
         Horizontal_Spacing2 = QSpacerItem(20,20,QSizePolicy.Expanding,QSizePolicy.Minimum)
         Layout1.addItem(Horizontal_Spacing2)
 
@@ -59,7 +55,7 @@ class WindowCrypt(QDialog):
 
         self.languageChange()
 
-        self.resize(QSize(610,610).expandedTo(self.minimumSizeHint()))
+        self.resize(QSize(301,173).expandedTo(self.minimumSizeHint()))
         self.clearWState(Qt.WState_Polished)
 
 
@@ -68,8 +64,6 @@ class WindowCrypt(QDialog):
         self.textLabel1_2.setText(self.__tr("Password:"))
         self.textLabel1_2_2.setText(self.__tr("Confirmation:"))
         self.textLabel1.setText(self.__tr("Path:"))
-        self.crypt_help.setText(self.__tr("&Help"))
-        self.crypt_help.setAccel(QKeySequence(self.__tr("F1")))
         self.crypt_ok.setText(self.__tr("&OK"))
         self.crypt_ok.setAccel(QKeySequence(QString.null))
         self.crypt_cancel.setText(self.__tr("&Cancel"))
