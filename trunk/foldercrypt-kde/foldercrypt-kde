@@ -63,7 +63,7 @@ class ManagerWindow:
         self.qtapp.exec_loop()
     
     def test(self):
-        pass
+        print "hahah"
 
 
 if __name__ == '__main__':
