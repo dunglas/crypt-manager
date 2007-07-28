@@ -50,6 +50,8 @@ class Manager:
         self.win.show()
         wlist.append(self.win)
 
+        #self.win.manager_open_close.setEnabled(False)
+
         qtapp.connect(self.win.manager_crypt, SIGNAL("clicked()"), Crypt)
         qtapp.connect(self.win.manager_decrypt, SIGNAL("clicked()"), Decrypt)
         qtapp.connect(self.win.manager_open_close, SIGNAL("clicked()"), Open)
@@ -59,9 +61,23 @@ class Manager:
         qtapp.connect(self.win.manager_apply, SIGNAL("clicked()"), self.test)
         qtapp.connect(qtapp, SIGNAL("lastWindowClosed()"), qtapp,\
             SLOT("quit()"))
+        
+        self.update()
     
     def test(self):
         print "hahah"
+    
+    def update(self):
+        """Update the folders list"""
+        self.win.manager_list.clear()
+        for f in folders.li:
+            #path = f.path.split("/")
+            #path = path[len(path) - 1]
+            if f.opened == True:
+                o = _("Yes")
+            else:
+                o = _("No")
+            self.win.manager_list.insertItem(f.path)
 
 
 class Open:
