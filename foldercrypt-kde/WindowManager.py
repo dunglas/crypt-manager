@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'qt3/WindowManager.ui'
 #
-# Created: ven jui 27 19:35:04 2007
+# Created: sam jui 28 15:15:42 2007
 #      by: The PyQt User Interface Compiler (pyuic) 3.17
 #
 # WARNING! All changes made in this file will be lost!
@@ -43,8 +43,12 @@ class WindowManager(QMainWindow):
         self.manager_decrypt.setEnabled(0)
         self.manager_decrypt.setGeometry(QRect(490,150,90,30))
 
-        self.manager_list = QListBox(self.centralWidget(),"manager_list")
+        self.manager_list = QListView(self.centralWidget(),"manager_list")
+        self.manager_list.addColumn(QString.null)
+        self.manager_list.addColumn(self.__tr("Path"))
+        self.manager_list.addColumn(self.__tr("Open"))
         self.manager_list.setGeometry(QRect(30,30,450,360))
+        self.manager_list.setAllColumnsShowFocus(0)
 
 
 
@@ -62,8 +66,9 @@ class WindowManager(QMainWindow):
         self.manager_open_close.setText(self.__tr("Open"))
         self.manager_properties.setText(self.__tr("Properties"))
         self.manager_decrypt.setText(self.__tr("Decrypt"))
-        self.manager_list.clear()
-        self.manager_list.insertItem(self.__tr("New Item"))
+        self.manager_list.header().setLabel(0,QString.null)
+        self.manager_list.header().setLabel(1,self.__tr("Path"))
+        self.manager_list.header().setLabel(2,self.__tr("Open"))
 
 
     def __tr(self,s,c = None):

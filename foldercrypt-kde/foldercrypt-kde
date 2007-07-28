@@ -77,7 +77,8 @@ class Manager:
                 o = _("Yes")
             else:
                 o = _("No")
-            self.win.manager_list.insertItem(f.path)
+            self.win.manager_list.insertItem(QListViewItem(\
+                self.win.manager_list, "", f.path, o))
 
 
 class Open:

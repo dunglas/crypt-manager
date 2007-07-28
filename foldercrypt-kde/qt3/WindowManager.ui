@@ -120,12 +120,40 @@
             <string>Decrypt</string>
         </property>
     </widget>
-    <widget class="QListBox">
-        <item>
+    <widget class="QListView">
+        <column>
             <property name="text">
-                <string>New Item</string>
+                <string></string>
             </property>
-        </item>
+            <property name="clickable">
+                <bool>true</bool>
+            </property>
+            <property name="resizable">
+                <bool>true</bool>
+            </property>
+        </column>
+        <column>
+            <property name="text">
+                <string>Path</string>
+            </property>
+            <property name="clickable">
+                <bool>true</bool>
+            </property>
+            <property name="resizable">
+                <bool>true</bool>
+            </property>
+        </column>
+        <column>
+            <property name="text">
+                <string>Open</string>
+            </property>
+            <property name="clickable">
+                <bool>true</bool>
+            </property>
+            <property name="resizable">
+                <bool>true</bool>
+            </property>
+        </column>
         <property name="name">
             <cstring>manager_list</cstring>
         </property>
@@ -136,6 +164,9 @@
                 <width>450</width>
                 <height>360</height>
             </rect>
+        </property>
+        <property name="allColumnsShowFocus">
+            <bool>false</bool>
         </property>
     </widget>
 </widget>
