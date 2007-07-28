@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'qt3/WindowManager.ui'
 #
-# Created: ven jui 27 19:21:44 2007
+# Created: ven jui 27 19:35:04 2007
 #      by: The PyQt User Interface Compiler (pyuic) 3.17
 #
 # WARNING! All changes made in this file will be lost!
@@ -31,17 +31,20 @@ class WindowManager(QMainWindow):
         self.manager_crypt = QPushButton(self.centralWidget(),"manager_crypt")
         self.manager_crypt.setGeometry(QRect(490,30,90,30))
 
-        self.manager_list = QListBox(self.centralWidget(),"manager_list")
-        self.manager_list.setGeometry(QRect(30,30,450,360))
-
         self.manager_open_close = QPushButton(self.centralWidget(),"manager_open_close")
+        self.manager_open_close.setEnabled(0)
         self.manager_open_close.setGeometry(QRect(490,70,90,30))
 
+        self.manager_properties = QPushButton(self.centralWidget(),"manager_properties")
+        self.manager_properties.setEnabled(0)
+        self.manager_properties.setGeometry(QRect(490,110,90,30))
+
         self.manager_decrypt = QPushButton(self.centralWidget(),"manager_decrypt")
+        self.manager_decrypt.setEnabled(0)
         self.manager_decrypt.setGeometry(QRect(490,150,90,30))
 
-        self.manager_properties = QPushButton(self.centralWidget(),"manager_properties")
-        self.manager_properties.setGeometry(QRect(490,110,90,30))
+        self.manager_list = QListBox(self.centralWidget(),"manager_list")
+        self.manager_list.setGeometry(QRect(30,30,450,360))
 
 
 
@@ -56,11 +59,11 @@ class WindowManager(QMainWindow):
         self.manager_reset.setText(self.__tr("Reset"))
         self.manager_apply.setText(self.__tr("Apply"))
         self.manager_crypt.setText(self.__tr("Encrypt"))
+        self.manager_open_close.setText(self.__tr("Open"))
+        self.manager_properties.setText(self.__tr("Properties"))
+        self.manager_decrypt.setText(self.__tr("Decrypt"))
         self.manager_list.clear()
         self.manager_list.insertItem(self.__tr("New Item"))
-        self.manager_open_close.setText(self.__tr("Open"))
-        self.manager_decrypt.setText(self.__tr("Decrypt"))
-        self.manager_properties.setText(self.__tr("Properties"))
 
 
     def __tr(self,s,c = None):
