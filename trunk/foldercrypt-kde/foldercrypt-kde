@@ -72,6 +72,10 @@ class Manager:
         while item:
             if item.isSelected ():
                 selected = True
+                if item.text(2) == _("Yes"):
+                    self.win.manager_open_close.setText(_("Close"))
+                else:
+                    self.win.manager_open_close.setText(_("Open"))
                 item = False
             else:
                 item = item.nextSibling ()
