@@ -61,11 +61,27 @@ class Manager:
         qtapp.connect(self.win.manager_apply, SIGNAL("clicked()"), self.test)
         qtapp.connect(qtapp, SIGNAL("lastWindowClosed()"), qtapp,\
             SLOT("quit()"))
+        qtapp.connect(self.win.manager_list, SIGNAL("selectionChanged()"),\
+            self.buttons)
         
         self.update()
     
+    def buttons(self):
+        selected = False
+        item = self.win.manager_list.firstChild()
+        while item:
+            if item.isSelected ():
+                selected = True
+                item = False
+            else:
+                item = item.nextSibling ()
+        self.win.manager_open_close.setEnabled(selected)
+        self.win.manager_properties.setEnabled(selected)
+        self.win.manager_decrypt.setEnabled(selected)
+    
     def test(self):
         print "hahah"
+        print self.win.manager_list.takeItem(self.win.manager_list.currentItem())
     
     def update(self):
         """Update the folders list"""
