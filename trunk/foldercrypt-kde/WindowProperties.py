@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'qt3/WindowProperties.ui'
 #
-# Created: ven jui 27 19:27:10 2007
+# Created: lun jui 30 14:33:47 2007
 #      by: The PyQt User Interface Compiler (pyuic) 3.17
 #
 # WARNING! All changes made in this file will be lost!
@@ -23,15 +23,6 @@ class WindowProperties(QDialog):
 
         self.properties_path = QLabel(self,"properties_path")
         self.properties_path.setGeometry(QRect(150,10,231,21))
-
-        self.properties_confirm = QLineEdit(self,"properties_confirm")
-        self.properties_confirm.setGeometry(QRect(150,100,171,21))
-
-        self.properties_new = QLineEdit(self,"properties_new")
-        self.properties_new.setGeometry(QRect(150,70,171,21))
-
-        self.properties_old = QLineEdit(self,"properties_old")
-        self.properties_old.setGeometry(QRect(150,40,171,21))
 
         self.textLabel1_2 = QLabel(self,"textLabel1_2")
         self.textLabel1_2.setGeometry(QRect(40,40,100,20))
@@ -60,9 +51,21 @@ class WindowProperties(QDialog):
         self.textLabel1_4 = QLabel(self,"textLabel1_4")
         self.textLabel1_4.setGeometry(QRect(40,100,100,30))
 
+        self.properties_old = QLineEdit(self,"properties_old")
+        self.properties_old.setGeometry(QRect(150,40,171,21))
+        self.properties_old.setEchoMode(QLineEdit.Password)
+
+        self.properties_new = QLineEdit(self,"properties_new")
+        self.properties_new.setGeometry(QRect(150,70,171,21))
+        self.properties_new.setEchoMode(QLineEdit.Password)
+
+        self.properties_confirm = QLineEdit(self,"properties_confirm")
+        self.properties_confirm.setGeometry(QRect(150,100,171,21))
+        self.properties_confirm.setEchoMode(QLineEdit.Password)
+
         self.languageChange()
 
-        self.resize(QSize(472,220).expandedTo(self.minimumSizeHint()))
+        self.resize(QSize(349,176).expandedTo(self.minimumSizeHint()))
         self.clearWState(Qt.WState_Polished)
 
         self.connect(self.properties_ok,SIGNAL("clicked()"),self.accept)

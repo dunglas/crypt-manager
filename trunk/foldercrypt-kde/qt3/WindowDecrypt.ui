@@ -8,7 +8,7 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>391</width>
+            <width>283</width>
             <height>139</height>
         </rect>
     </property>
@@ -50,19 +50,6 @@
             <string>Password:</string>
         </property>
     </widget>
-    <widget class="QLineEdit">
-        <property name="name">
-            <cstring>decrypt_password</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>110</x>
-                <y>60</y>
-                <width>250</width>
-                <height>22</height>
-            </rect>
-        </property>
-    </widget>
     <widget class="QLabel">
         <property name="name">
             <cstring>textLabel2</cstring>
@@ -87,7 +74,7 @@
             <rect>
                 <x>20</x>
                 <y>90</y>
-                <width>360</width>
+                <width>250</width>
                 <height>33</height>
             </rect>
         </property>
@@ -150,6 +137,22 @@
                 </property>
             </widget>
         </hbox>
+    </widget>
+    <widget class="QLineEdit">
+        <property name="name">
+            <cstring>decrypt_password</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>110</x>
+                <y>60</y>
+                <width>150</width>
+                <height>22</height>
+            </rect>
+        </property>
+        <property name="echoMode">
+            <enum>Password</enum>
+        </property>
     </widget>
 </widget>
 <connections>
