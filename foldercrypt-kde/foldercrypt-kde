@@ -147,7 +147,9 @@ class Open:
         global this
         this = self
         
-        qtapp.connect(self.win.open_close, SIGNAL("stateChanged(int)"), this.time)
+        qtapp.connect(self.win.open_close, SIGNAL("stateChanged(int)"),\
+            this.time)
+        qtapp.connect(self.win.open_ok, SIGNAL("clicked()"), this.run)
         qtapp.connect(self.win.open_cancel, SIGNAL("clicked()"), self.win,\
             SLOT("close()"))
         qtapp.connect(qtapp, SIGNAL("lastWindowClosed()"), qtapp,\
@@ -158,6 +160,31 @@ class Open:
             self.win.open_time.setEnabled(True)
         else:
             self.win.open_time.setEnabled(False)
+
+    def run(self):
+        if self.win.open_close.state() == 2:
+            idle = self.win.open_time.value()
+        else:
+            idle = None
+
+        path = str(self.win.open_path.text())
+        password = str(self.win.open_password.text())
+        
+        try:
+            folder = folders.get(path)
+        except foldercrypt.NoEncrypted:
+            Util().error_box(_("%s is not a crypted directory.") % folder.path)
+            return
+        try:
+            folder = foldercrypt.Manage(folder).mount(password, idle)
+        except foldercrypt.AlreadyOpened:
+            Util().error_box(_("%s is already open.") % folder.path)
+        except foldercrypt.BadPassword:
+            Util().error_box(_("Your password is wrong."))
+        else:
+            folders.update(folder)
+            manager.update()
+            self.win.close()
 
 
 class Close:
