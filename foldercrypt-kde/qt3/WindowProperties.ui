@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>349</width>
-            <height>176</height>
+            <width>352</width>
+            <height>174</height>
         </rect>
     </property>
     <property name="caption">
@@ -18,22 +18,6 @@
     <property name="sizeGripEnabled">
         <bool>true</bool>
     </property>
-    <widget class="QLabel">
-        <property name="name">
-            <cstring>properties_path</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>150</x>
-                <y>10</y>
-                <width>231</width>
-                <height>21</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string></string>
-        </property>
-    </widget>
     <widget class="QLabel">
         <property name="name">
             <cstring>textLabel1_2</cstring>
@@ -216,6 +200,22 @@
         </property>
         <property name="echoMode">
             <enum>Password</enum>
+        </property>
+    </widget>
+    <widget class="QLabel">
+        <property name="name">
+            <cstring>properties_path</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>150</x>
+                <y>10</y>
+                <width>170</width>
+                <height>21</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string></string>
         </property>
     </widget>
 </widget>
