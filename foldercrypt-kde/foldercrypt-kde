@@ -33,6 +33,7 @@ from WindowOpen import *
 from WindowCrypt import *
 from WindowProperties import *
 from WindowDecrypt import *
+from WindowError import *
 import foldercrypt
 
 import __builtin__
@@ -43,6 +44,32 @@ APPVERSION="0.1"
 CACHE = os.environ['HOME'] + "/.foldercrypt/cache"
 ICON = "/usr/share/foldercrypt/icon.png"
 wlist = []
+
+class Util:
+    """Utilities"""
+    def error_box(self, msg):
+        """Display an error box"""
+        self.win = WindowError()
+        self.win.show()
+        wlist.append(self.win)
+        
+        self.win.error_msg.setText(msg)
+        qtapp.connect(self.win.error_ok, SIGNAL("clicked()"), self.win,\
+            SLOT("close()"))
+        qtapp.connect(qtapp, SIGNAL("lastWindowClosed()"), qtapp,\
+            SLOT("quit()"))
+    
+    def valid_properties(self, new, confirmation):
+        """Validation for the crypt window"""
+        if len(new) == 0:
+            self.error_box(_("Password can not be null."))
+            return False
+        if not new == confirmation:
+            self.error_box(
+                _("New password do not match with the confirmation."))
+            return False
+        return True
+
 
 class Manager:
     def __init__(self):
@@ -118,17 +145,63 @@ class Crypt:
         self.win.show()
         wlist.append(self.win)
         
-        qtapp.connect(self.win.crypt_cancel, SIGNAL("clicked()"),\
+        global this_crypt
+        this_crypt = self
+        
+        qtapp.connect(self.win.crypt_ok, SIGNAL("clicked()"), this_crypt.crypt)
+        qtapp.connect(this_crypt.win.crypt_cancel, SIGNAL("clicked()"),\
             self.win, SLOT("close()"))
         qtapp.connect(qtapp, SIGNAL("lastWindowClosed()"), qtapp,\
             SLOT("quit()"))
+        
+    def crypt(self):
+        if self.valid():
+            self.run()
 
+    def valid(self):
+        """Validation for the crypt window"""
+        self.path = foldercrypt.Util().fullpath(str(self.win.crypt_path.text()))
+        self.password = str(self.win.crypt_password.text())
+        self.confirmation = str(self.win.crypt_confirmation.text())
+        self.win.crypt_path.setText(self.path)
+        if not os.path.exists(self.path):
+            Util().error_box(_("You must select a valid folder."))
+            return False
+        if len(self.password) == 0:
+            Util().error_box(_("Password can not be null."))
+            return False
+        if not self.password == self.confirmation:
+            Util().error_box(_("Password do not match with the confirmation."))
+            return False
+        return True
+
+    def run(self):
+        """Main"""
+        self.folder = foldercrypt.Folder(self.path)
+        try:
+            foldercrypt.Manage(self.folder).\
+                crypt(self.password)
+        except foldercrypt.AlreadyEncrypted:
+            Util().error_box(_("%s is already an encrypted folder.")
+                % self.folder.path)
+        except foldercrypt.NotWritable:
+            Util().error_box(
+                _("%s and all his files must be writable.") % self.folder.path)
+        else:
+            folders.add(self.folder)
+            self.win.close()
+            manager.update()
+
+class Test:
+    def __init__(self):
+        print "hahah"
 
 class Decrypt:
     def __init__(self):
         self.win = WindowDecrypt()
         self.win.show()
         wlist.append(self.win)
+        
         
         qtapp.connect(self.win.decrypt_cancel, SIGNAL("clicked()"), self.win,\
             SLOT("close()"))

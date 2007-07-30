@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'WindowCrypt.ui'
+# Form implementation generated from reading ui file 'qt3/WindowCrypt.ui'
 #
-# Created: ven jui 27 18:16:35 2007
+# Created: dim jui 29 15:21:57 2007
 #      by: The PyQt User Interface Compiler (pyuic) 3.17
 #
 # WARNING! All changes made in this file will be lost!
