@@ -18,22 +18,6 @@
     <property name="sizeGripEnabled">
         <bool>true</bool>
     </property>
-    <widget class="QCheckBox">
-        <property name="name">
-            <cstring>open_close</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>10</x>
-                <y>100</y>
-                <width>130</width>
-                <height>21</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>Auto close after</string>
-        </property>
-    </widget>
     <widget class="QLayoutWidget">
         <property name="name">
             <cstring>Layout1</cstring>
@@ -108,38 +92,6 @@
     </widget>
     <widget class="QLabel">
         <property name="name">
-            <cstring>textLabel3</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>200</x>
-                <y>100</y>
-                <width>110</width>
-                <height>21</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string>minutes of IDLE</string>
-        </property>
-    </widget>
-    <widget class="QLabel">
-        <property name="name">
-            <cstring>open_path</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>120</x>
-                <y>20</y>
-                <width>190</width>
-                <height>21</height>
-            </rect>
-        </property>
-        <property name="text">
-            <string></string>
-        </property>
-    </widget>
-    <widget class="QLabel">
-        <property name="name">
             <cstring>textLabel1_2</cstring>
         </property>
         <property name="geometry">
@@ -170,20 +122,36 @@
             <string>Path:</string>
         </property>
     </widget>
-    <widget class="QLineEdit">
+    <widget class="QLabel">
         <property name="name">
-            <cstring>crypt_password</cstring>
+            <cstring>textLabel3</cstring>
         </property>
         <property name="geometry">
             <rect>
-                <x>120</x>
-                <y>60</y>
-                <width>190</width>
+                <x>200</x>
+                <y>100</y>
+                <width>110</width>
                 <height>21</height>
             </rect>
         </property>
-        <property name="echoMode">
-            <enum>Password</enum>
+        <property name="text">
+            <string>minutes of IDLE</string>
+        </property>
+    </widget>
+    <widget class="QCheckBox">
+        <property name="name">
+            <cstring>open_close</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>10</x>
+                <y>100</y>
+                <width>130</width>
+                <height>21</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>Auto close after</string>
         </property>
     </widget>
     <widget class="QSpinBox">
@@ -203,6 +171,38 @@
         </property>
         <property name="minValue">
             <number>1</number>
+        </property>
+    </widget>
+    <widget class="QLineEdit">
+        <property name="name">
+            <cstring>open_password</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>120</x>
+                <y>60</y>
+                <width>190</width>
+                <height>21</height>
+            </rect>
+        </property>
+        <property name="echoMode">
+            <enum>Password</enum>
+        </property>
+    </widget>
+    <widget class="QLabel">
+        <property name="name">
+            <cstring>open_path</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>120</x>
+                <y>20</y>
+                <width>190</width>
+                <height>21</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string></string>
         </property>
     </widget>
 </widget>
