@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'qt3/WindowDecrypt.ui'
 #
-# Created: lun jui 30 15:41:30 2007
+# Created: mar jui 31 00:16:44 2007
 #      by: The PyQt User Interface Compiler (pyuic) 3.17
 #
 # WARNING! All changes made in this file will be lost!
@@ -42,20 +42,23 @@ class WindowDecrypt(QDialog):
         self.decrypt_path = QLabel(self,"decrypt_path")
         self.decrypt_path.setGeometry(QRect(30,30,60,20))
 
+        self.textLabel2 = QLabel(self,"textLabel2")
+        self.textLabel2.setGeometry(QRect(110,30,150,21))
+
         self.decrypt_password = QLineEdit(self,"decrypt_password")
         self.decrypt_password.setGeometry(QRect(110,60,150,22))
         self.decrypt_password.setEchoMode(QLineEdit.Password)
 
-        self.textLabel2 = QLabel(self,"textLabel2")
-        self.textLabel2.setGeometry(QRect(110,30,250,21))
-
         self.languageChange()
 
-        self.resize(QSize(283,139).expandedTo(self.minimumSizeHint()))
+        self.resize(QSize(283,132).expandedTo(self.minimumSizeHint()))
         self.clearWState(Qt.WState_Polished)
 
         self.connect(self.decrypt_ok,SIGNAL("clicked()"),self.accept)
         self.connect(self.decrypt_cancel,SIGNAL("clicked()"),self.reject)
+
+        self.setTabOrder(self.decrypt_password,self.decrypt_ok)
+        self.setTabOrder(self.decrypt_ok,self.decrypt_cancel)
 
 
     def languageChange(self):

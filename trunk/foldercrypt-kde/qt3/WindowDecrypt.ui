@@ -169,5 +169,10 @@
         <slot>reject()</slot>
     </connection>
 </connections>
+<tabstops>
+    <tabstop>decrypt_password</tabstop>
+    <tabstop>decrypt_ok</tabstop>
+    <tabstop>decrypt_cancel</tabstop>
+</tabstops>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

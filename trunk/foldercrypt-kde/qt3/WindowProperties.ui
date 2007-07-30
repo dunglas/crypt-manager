@@ -233,5 +233,12 @@
         <slot>reject()</slot>
     </connection>
 </connections>
+<tabstops>
+    <tabstop>properties_old</tabstop>
+    <tabstop>properties_new</tabstop>
+    <tabstop>properties_confirm</tabstop>
+    <tabstop>properties_ok</tabstop>
+    <tabstop>properties_cancel</tabstop>
+</tabstops>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

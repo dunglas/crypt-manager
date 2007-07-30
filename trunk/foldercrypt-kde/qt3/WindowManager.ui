@@ -104,7 +104,7 @@
     <widget class="QListView">
         <column>
             <property name="text">
-                <string> </string>
+                <string></string>
             </property>
             <property name="clickable">
                 <bool>true</bool>
@@ -172,5 +172,14 @@
 </widget>
 <toolbars>
 </toolbars>
+<tabstops>
+    <tabstop>manager_list</tabstop>
+    <tabstop>manager_crypt</tabstop>
+    <tabstop>manager_open_close</tabstop>
+    <tabstop>manager_properties</tabstop>
+    <tabstop>manager_decrypt</tabstop>
+    <tabstop>manager_reset</tabstop>
+    <tabstop>manager_apply</tabstop>
+</tabstops>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>
