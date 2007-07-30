@@ -28,6 +28,8 @@ import sys
 import gettext
 import locale
 from qt import *
+from kdecore import KApplication
+from kfile import KDirSelectDialog
 from WindowManager import *
 from WindowOpen import *
 from WindowCrypt import *
@@ -54,9 +56,9 @@ class Util:
         wlist.append(self.win)
         
         self.win.error_msg.setText(msg)
-        qtapp.connect(self.win.error_ok, SIGNAL("clicked()"), self.win,\
+        app.connect(self.win.error_ok, SIGNAL("clicked()"), self.win,\
             SLOT("close()"))
-        qtapp.connect(qtapp, SIGNAL("lastWindowClosed()"), qtapp,\
+        app.connect(app, SIGNAL("lastWindowClosed()"), app,\
             SLOT("quit()"))
     
     def valid_properties(self, new, confirmation):
@@ -79,17 +81,17 @@ class Manager:
 
         #self.win.manager_open_close.setEnabled(False)
 
-        qtapp.connect(self.win.manager_crypt, SIGNAL("clicked()"), Crypt)
-        qtapp.connect(self.win.manager_decrypt, SIGNAL("clicked()"), Decrypt)
-        qtapp.connect(self.win.manager_open_close, SIGNAL("clicked()"),\
+        app.connect(self.win.manager_crypt, SIGNAL("clicked()"), Crypt)
+        app.connect(self.win.manager_decrypt, SIGNAL("clicked()"), Decrypt)
+        app.connect(self.win.manager_open_close, SIGNAL("clicked()"),\
             self.open_close)
-        qtapp.connect(self.win.manager_properties, SIGNAL("clicked()"),\
+        app.connect(self.win.manager_properties, SIGNAL("clicked()"),\
             Properties)
-        qtapp.connect(self.win.manager_reset, SIGNAL("clicked()"), self.test)
-        qtapp.connect(self.win.manager_apply, SIGNAL("clicked()"), self.test)
-        qtapp.connect(qtapp, SIGNAL("lastWindowClosed()"), qtapp,\
+        app.connect(self.win.manager_reset, SIGNAL("clicked()"), self.test)
+        app.connect(self.win.manager_apply, SIGNAL("clicked()"), self.test)
+        app.connect(app, SIGNAL("lastWindowClosed()"), app,\
             SLOT("quit()"))
-        qtapp.connect(self.win.manager_list, SIGNAL("selectionChanged()"),\
+        app.connect(self.win.manager_list, SIGNAL("selectionChanged()"),\
             self.select)
         
         self.update()
@@ -149,12 +151,12 @@ class Open:
         global this
         this = self
         
-        qtapp.connect(self.win.open_close, SIGNAL("stateChanged(int)"),\
+        app.connect(self.win.open_close, SIGNAL("stateChanged(int)"),\
             this.time)
-        qtapp.connect(self.win.open_ok, SIGNAL("clicked()"), this.run)
-        qtapp.connect(self.win.open_cancel, SIGNAL("clicked()"), self.win,\
+        app.connect(self.win.open_ok, SIGNAL("clicked()"), this.run)
+        app.connect(self.win.open_cancel, SIGNAL("clicked()"), self.win,\
             SLOT("close()"))
-        qtapp.connect(qtapp, SIGNAL("lastWindowClosed()"), qtapp,\
+        app.connect(app, SIGNAL("lastWindowClosed()"), app,\
             SLOT("quit()"))
         
     def time(self):
@@ -217,10 +219,12 @@ class Crypt:
         global this_crypt
         this_crypt = self
         
-        qtapp.connect(self.win.crypt_ok, SIGNAL("clicked()"), this_crypt.crypt)
-        qtapp.connect(this_crypt.win.crypt_cancel, SIGNAL("clicked()"),\
+        app.connect(self.win.crypt_file, SIGNAL("clicked()"),\
+            this_crypt.choose)
+        app.connect(self.win.crypt_ok, SIGNAL("clicked()"), this_crypt.crypt)
+        app.connect(this_crypt.win.crypt_cancel, SIGNAL("clicked()"),\
             self.win, SLOT("close()"))
-        qtapp.connect(qtapp, SIGNAL("lastWindowClosed()"), qtapp,\
+        app.connect(app, SIGNAL("lastWindowClosed()"), app,\
             SLOT("quit()"))
         
     def crypt(self):
@@ -243,6 +247,10 @@ class Crypt:
             Util().error_box(_("Password do not match with the confirmation."))
             return False
         return True
+
+    def choose(self):
+        path = KDirSelectDialog.selectDirectory(QString.null, 1).path()
+        self.win.crypt_path.setText(path)
 
     def run(self):
         """Main"""
@@ -280,10 +288,10 @@ class Decrypt:
         global this
         this = self
         
-        qtapp.connect(self.win.decrypt_ok, SIGNAL("clicked()"), this.decrypt)
-        qtapp.connect(self.win.decrypt_cancel, SIGNAL("clicked()"), self.win,\
+        app.connect(self.win.decrypt_ok, SIGNAL("clicked()"), this.decrypt)
+        app.connect(self.win.decrypt_cancel, SIGNAL("clicked()"), self.win,\
             SLOT("close()"))
-        qtapp.connect(qtapp, SIGNAL("lastWindowClosed()"), qtapp,\
+        app.connect(app, SIGNAL("lastWindowClosed()"), app,\
             SLOT("quit()"))
 
     def decrypt(self):
@@ -316,11 +324,11 @@ class Properties:
         global this
         this = self
         
-        qtapp.connect(self.win.properties_ok, SIGNAL("clicked()"),\
+        app.connect(self.win.properties_ok, SIGNAL("clicked()"),\
             this.run)
-        qtapp.connect(self.win.properties_cancel, SIGNAL("clicked()"),\
+        app.connect(self.win.properties_cancel, SIGNAL("clicked()"),\
             self.win, SLOT("close()"))
-        qtapp.connect(qtapp, SIGNAL("lastWindowClosed()"), qtapp,\
+        app.connect(app, SIGNAL("lastWindowClosed()"), app,\
             SLOT("quit()"))
 
     def valid(self):
@@ -355,13 +363,14 @@ class Properties:
     
 def exit(para=0):
     data.save()
+    app.quit()
     sys.exit(para)
 
 if __name__ == '__main__':
     data = foldercrypt.Data()
     folders = data.folders
     folders.clean()
-    qtapp = QApplication(sys.argv)
+    app = KApplication(sys.argv, "Foldercrypt")
 
     # Command Line Interface
     if len(sys.argv) == 1:
@@ -405,5 +414,5 @@ Options:
         msg = """Invalid option
 Try « %s --info » to get more information""" % APPNAME
         Util().error_box(msg)
-    qtapp.exec_loop()
+    app.exec_loop()
     exit()

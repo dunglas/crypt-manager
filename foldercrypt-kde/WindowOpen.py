@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'qt3/WindowOpen.ui'
 #
-# Created: lun jui 30 15:00:39 2007
+# Created: mar jui 31 00:17:03 2007
 #      by: The PyQt User Interface Compiler (pyuic) 3.17
 #
 # WARNING! All changes made in this file will be lost!
@@ -64,6 +64,11 @@ class WindowOpen(QDialog):
 
         self.resize(QSize(324,188).expandedTo(self.minimumSizeHint()))
         self.clearWState(Qt.WState_Polished)
+
+        self.setTabOrder(self.open_password,self.open_close)
+        self.setTabOrder(self.open_close,self.open_time)
+        self.setTabOrder(self.open_time,self.open_ok)
+        self.setTabOrder(self.open_ok,self.open_cancel)
 
 
     def languageChange(self):

@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'qt3/WindowManager.ui'
 #
-# Created: sam jui 28 15:15:42 2007
+# Created: mar jui 31 00:16:54 2007
 #      by: The PyQt User Interface Compiler (pyuic) 3.17
 #
 # WARNING! All changes made in this file will be lost!
@@ -31,10 +31,6 @@ class WindowManager(QMainWindow):
         self.manager_crypt = QPushButton(self.centralWidget(),"manager_crypt")
         self.manager_crypt.setGeometry(QRect(490,30,90,30))
 
-        self.manager_open_close = QPushButton(self.centralWidget(),"manager_open_close")
-        self.manager_open_close.setEnabled(0)
-        self.manager_open_close.setGeometry(QRect(490,70,90,30))
-
         self.manager_properties = QPushButton(self.centralWidget(),"manager_properties")
         self.manager_properties.setEnabled(0)
         self.manager_properties.setGeometry(QRect(490,110,90,30))
@@ -50,6 +46,10 @@ class WindowManager(QMainWindow):
         self.manager_list.setGeometry(QRect(30,30,450,360))
         self.manager_list.setAllColumnsShowFocus(0)
 
+        self.manager_open_close = QPushButton(self.centralWidget(),"manager_open_close")
+        self.manager_open_close.setEnabled(0)
+        self.manager_open_close.setGeometry(QRect(490,70,90,30))
+
 
 
         self.languageChange()
@@ -57,18 +57,25 @@ class WindowManager(QMainWindow):
         self.resize(QSize(621,480).expandedTo(self.minimumSizeHint()))
         self.clearWState(Qt.WState_Polished)
 
+        self.setTabOrder(self.manager_list,self.manager_crypt)
+        self.setTabOrder(self.manager_crypt,self.manager_open_close)
+        self.setTabOrder(self.manager_open_close,self.manager_properties)
+        self.setTabOrder(self.manager_properties,self.manager_decrypt)
+        self.setTabOrder(self.manager_decrypt,self.manager_reset)
+        self.setTabOrder(self.manager_reset,self.manager_apply)
+
 
     def languageChange(self):
         self.setCaption(self.__tr("Manager"))
         self.manager_reset.setText(self.__tr("Reset"))
         self.manager_apply.setText(self.__tr("Apply"))
         self.manager_crypt.setText(self.__tr("Encrypt"))
-        self.manager_open_close.setText(self.__tr("Open"))
         self.manager_properties.setText(self.__tr("Properties"))
         self.manager_decrypt.setText(self.__tr("Decrypt"))
         self.manager_list.header().setLabel(0,QString.null)
         self.manager_list.header().setLabel(1,self.__tr("Path"))
         self.manager_list.header().setLabel(2,self.__tr("Open"))
+        self.manager_open_close.setText(self.__tr("Open"))
 
 
     def __tr(self,s,c = None):

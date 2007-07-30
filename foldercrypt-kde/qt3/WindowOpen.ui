@@ -206,5 +206,12 @@
         </property>
     </widget>
 </widget>
+<tabstops>
+    <tabstop>open_password</tabstop>
+    <tabstop>open_close</tabstop>
+    <tabstop>open_time</tabstop>
+    <tabstop>open_ok</tabstop>
+    <tabstop>open_cancel</tabstop>
+</tabstops>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

@@ -151,6 +151,22 @@
             <enum>Password</enum>
         </property>
     </widget>
+    <widget class="QPushButton">
+        <property name="name">
+            <cstring>crypt_file</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>230</x>
+                <y>20</y>
+                <width>70</width>
+                <height>21</height>
+            </rect>
+        </property>
+        <property name="text">
+            <string>Choose...</string>
+        </property>
+    </widget>
     <widget class="QLineEdit">
         <property name="name">
             <cstring>crypt_password</cstring>
@@ -173,16 +189,24 @@
         </property>
         <property name="geometry">
             <rect>
-                <x>111</x>
+                <x>110</x>
                 <y>20</y>
-                <width>190</width>
+                <width>120</width>
                 <height>21</height>
             </rect>
         </property>
         <property name="echoMode">
-            <enum>Password</enum>
+            <enum>Normal</enum>
         </property>
     </widget>
 </widget>
+<tabstops>
+    <tabstop>crypt_path</tabstop>
+    <tabstop>crypt_file</tabstop>
+    <tabstop>crypt_password</tabstop>
+    <tabstop>crypt_confirmation</tabstop>
+    <tabstop>crypt_ok</tabstop>
+    <tabstop>crypt_cancel</tabstop>
+</tabstops>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'qt3/WindowCrypt.ui'
 #
-# Created: lun jui 30 14:34:14 2007
+# Created: mar jui 31 00:15:54 2007
 #      by: The PyQt User Interface Compiler (pyuic) 3.17
 #
 # WARNING! All changes made in this file will be lost!
@@ -48,18 +48,27 @@ class WindowCrypt(QDialog):
         self.crypt_confirmation.setGeometry(QRect(110,80,190,21))
         self.crypt_confirmation.setEchoMode(QLineEdit.Password)
 
+        self.crypt_file = QPushButton(self,"crypt_file")
+        self.crypt_file.setGeometry(QRect(230,20,70,21))
+
         self.crypt_password = QLineEdit(self,"crypt_password")
         self.crypt_password.setGeometry(QRect(110,50,190,21))
         self.crypt_password.setEchoMode(QLineEdit.Password)
 
         self.crypt_path = QLineEdit(self,"crypt_path")
-        self.crypt_path.setGeometry(QRect(111,20,190,21))
-        self.crypt_path.setEchoMode(QLineEdit.Password)
+        self.crypt_path.setGeometry(QRect(110,20,120,21))
+        self.crypt_path.setEchoMode(QLineEdit.Normal)
 
         self.languageChange()
 
         self.resize(QSize(315,173).expandedTo(self.minimumSizeHint()))
         self.clearWState(Qt.WState_Polished)
+
+        self.setTabOrder(self.crypt_path,self.crypt_file)
+        self.setTabOrder(self.crypt_file,self.crypt_password)
+        self.setTabOrder(self.crypt_password,self.crypt_confirmation)
+        self.setTabOrder(self.crypt_confirmation,self.crypt_ok)
+        self.setTabOrder(self.crypt_ok,self.crypt_cancel)
 
 
     def languageChange(self):
@@ -71,6 +80,7 @@ class WindowCrypt(QDialog):
         self.crypt_ok.setAccel(QKeySequence(QString.null))
         self.crypt_cancel.setText(self.__tr("&Cancel"))
         self.crypt_cancel.setAccel(QKeySequence(QString.null))
+        self.crypt_file.setText(self.__tr("Choose..."))
 
 
     def __tr(self,s,c = None):

@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'qt3/WindowProperties.ui'
 #
-# Created: lun jui 30 14:33:47 2007
+# Created: mar jui 31 00:16:35 2007
 #      by: The PyQt User Interface Compiler (pyuic) 3.17
 #
 # WARNING! All changes made in this file will be lost!
@@ -20,9 +20,6 @@ class WindowProperties(QDialog):
 
         self.setSizeGripEnabled(1)
 
-
-        self.properties_path = QLabel(self,"properties_path")
-        self.properties_path.setGeometry(QRect(150,10,231,21))
 
         self.textLabel1_2 = QLabel(self,"textLabel1_2")
         self.textLabel1_2.setGeometry(QRect(40,40,100,20))
@@ -63,18 +60,25 @@ class WindowProperties(QDialog):
         self.properties_confirm.setGeometry(QRect(150,100,171,21))
         self.properties_confirm.setEchoMode(QLineEdit.Password)
 
+        self.properties_path = QLabel(self,"properties_path")
+        self.properties_path.setGeometry(QRect(150,10,170,21))
+
         self.languageChange()
 
-        self.resize(QSize(349,176).expandedTo(self.minimumSizeHint()))
+        self.resize(QSize(352,174).expandedTo(self.minimumSizeHint()))
         self.clearWState(Qt.WState_Polished)
 
         self.connect(self.properties_ok,SIGNAL("clicked()"),self.accept)
         self.connect(self.properties_cancel,SIGNAL("clicked()"),self.reject)
 
+        self.setTabOrder(self.properties_old,self.properties_new)
+        self.setTabOrder(self.properties_new,self.properties_confirm)
+        self.setTabOrder(self.properties_confirm,self.properties_ok)
+        self.setTabOrder(self.properties_ok,self.properties_cancel)
+
 
     def languageChange(self):
         self.setCaption(self.__tr("Properties"))
-        self.properties_path.setText(QString.null)
         self.textLabel1_2.setText(self.__tr("Old password:"))
         self.textLabel1.setText(self.__tr("Path:"))
         self.textLabel1_3.setText(self.__tr("New password:"))
@@ -83,6 +87,7 @@ class WindowProperties(QDialog):
         self.properties_cancel.setText(self.__tr("&Cancel"))
         self.properties_cancel.setAccel(QKeySequence(QString.null))
         self.textLabel1_4.setText(self.__tr("Confirmation:"))
+        self.properties_path.setText(QString.null)
 
 
     def __tr(self,s,c = None):
