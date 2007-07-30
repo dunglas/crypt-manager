@@ -1,0 +1,144 @@
+<ui version="4.0" >
+ <class>WindowManager</class>
+ <widget class="QMainWindow" name="WindowManager" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>557</width>
+    <height>414</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Manager</string>
+  </property>
+  <widget class="QWidget" name="widget" >
+   <property name="geometry" >
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>557</width>
+     <height>414</height>
+    </rect>
+   </property>
+   <widget class="QPushButton" name="manager_reset" >
+    <property name="geometry" >
+     <rect>
+      <x>360</x>
+      <y>380</y>
+      <width>90</width>
+      <height>30</height>
+     </rect>
+    </property>
+    <property name="text" >
+     <string>Reset</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="manager_apply" >
+    <property name="geometry" >
+     <rect>
+      <x>460</x>
+      <y>380</y>
+      <width>90</width>
+      <height>30</height>
+     </rect>
+    </property>
+    <property name="text" >
+     <string>Apply</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="manager_crypt" >
+    <property name="geometry" >
+     <rect>
+      <x>460</x>
+      <y>10</y>
+      <width>90</width>
+      <height>30</height>
+     </rect>
+    </property>
+    <property name="text" >
+     <string>Encrypt</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="manager_properties" >
+    <property name="enabled" >
+     <bool>false</bool>
+    </property>
+    <property name="geometry" >
+     <rect>
+      <x>460</x>
+      <y>70</y>
+      <width>90</width>
+      <height>30</height>
+     </rect>
+    </property>
+    <property name="text" >
+     <string>Properties</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="manager_decrypt" >
+    <property name="enabled" >
+     <bool>false</bool>
+    </property>
+    <property name="geometry" >
+     <rect>
+      <x>460</x>
+      <y>100</y>
+      <width>90</width>
+      <height>30</height>
+     </rect>
+    </property>
+    <property name="text" >
+     <string>Decrypt</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="manager_open_close" >
+    <property name="enabled" >
+     <bool>false</bool>
+    </property>
+    <property name="geometry" >
+     <rect>
+      <x>460</x>
+      <y>40</y>
+      <width>90</width>
+      <height>30</height>
+     </rect>
+    </property>
+    <property name="text" >
+     <string>Open</string>
+    </property>
+   </widget>
+   <widget class="QTreeView" name="manager_list" >
+    <property name="geometry" >
+     <rect>
+      <x>10</x>
+      <y>10</y>
+      <width>441</width>
+      <height>361</height>
+     </rect>
+    </property>
+   </widget>
+  </widget>
+ </widget>
+ <layoutdefault spacing="6" margin="11" />
+ <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
+ <customwidgets>
+  <customwidget>
+   <class>QMainWindow</class>
+   <extends>QWidget</extends>
+   <header>qmainwindow.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <tabstops>
+  <tabstop>manager_list</tabstop>
+  <tabstop>manager_crypt</tabstop>
+  <tabstop>manager_open_close</tabstop>
+  <tabstop>manager_properties</tabstop>
+  <tabstop>manager_decrypt</tabstop>
+  <tabstop>manager_reset</tabstop>
+  <tabstop>manager_apply</tabstop>
+ </tabstops>
+ <resources/>
+ <connections/>
+</ui>
