@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>472</width>
-            <height>220</height>
+            <width>349</width>
+            <height>176</height>
         </rect>
     </property>
     <property name="caption">
@@ -32,45 +32,6 @@
         </property>
         <property name="text">
             <string></string>
-        </property>
-    </widget>
-    <widget class="QLineEdit">
-        <property name="name">
-            <cstring>properties_confirm</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>150</x>
-                <y>100</y>
-                <width>171</width>
-                <height>21</height>
-            </rect>
-        </property>
-    </widget>
-    <widget class="QLineEdit">
-        <property name="name">
-            <cstring>properties_new</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>150</x>
-                <y>70</y>
-                <width>171</width>
-                <height>21</height>
-            </rect>
-        </property>
-    </widget>
-    <widget class="QLineEdit">
-        <property name="name">
-            <cstring>properties_old</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>150</x>
-                <y>40</y>
-                <width>171</width>
-                <height>21</height>
-            </rect>
         </property>
     </widget>
     <widget class="QLabel">
@@ -207,6 +168,54 @@
         </property>
         <property name="text">
             <string>Confirmation:</string>
+        </property>
+    </widget>
+    <widget class="QLineEdit">
+        <property name="name">
+            <cstring>properties_old</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>150</x>
+                <y>40</y>
+                <width>171</width>
+                <height>21</height>
+            </rect>
+        </property>
+        <property name="echoMode">
+            <enum>Password</enum>
+        </property>
+    </widget>
+    <widget class="QLineEdit">
+        <property name="name">
+            <cstring>properties_new</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>150</x>
+                <y>70</y>
+                <width>171</width>
+                <height>21</height>
+            </rect>
+        </property>
+        <property name="echoMode">
+            <enum>Password</enum>
+        </property>
+    </widget>
+    <widget class="QLineEdit">
+        <property name="name">
+            <cstring>properties_confirm</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>150</x>
+                <y>100</y>
+                <width>171</width>
+                <height>21</height>
+            </rect>
+        </property>
+        <property name="echoMode">
+            <enum>Password</enum>
         </property>
     </widget>
 </widget>

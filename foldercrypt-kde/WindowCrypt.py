@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'qt3/WindowCrypt.ui'
 #
-# Created: dim jui 29 15:21:57 2007
+# Created: lun jui 30 14:34:14 2007
 #      by: The PyQt User Interface Compiler (pyuic) 3.17
 #
 # WARNING! All changes made in this file will be lost!
@@ -26,17 +26,8 @@ class WindowCrypt(QDialog):
         self.textLabel1_2_2 = QLabel(self,"textLabel1_2_2")
         self.textLabel1_2_2.setGeometry(QRect(10,80,91,21))
 
-        self.crypt_confirmation = QLineEdit(self,"crypt_confirmation")
-        self.crypt_confirmation.setGeometry(QRect(110,80,190,21))
-
         self.textLabel1 = QLabel(self,"textLabel1")
         self.textLabel1.setGeometry(QRect(10,20,91,21))
-
-        self.crypt_path = QLineEdit(self,"crypt_path")
-        self.crypt_path.setGeometry(QRect(111,20,190,21))
-
-        self.crypt_password = QLineEdit(self,"crypt_password")
-        self.crypt_password.setGeometry(QRect(110,50,190,21))
 
         LayoutWidget = QWidget(self,"Layout1")
         LayoutWidget.setGeometry(QRect(0,120,300,33))
@@ -53,9 +44,21 @@ class WindowCrypt(QDialog):
         self.crypt_cancel.setAutoDefault(1)
         Layout1.addWidget(self.crypt_cancel)
 
+        self.crypt_confirmation = QLineEdit(self,"crypt_confirmation")
+        self.crypt_confirmation.setGeometry(QRect(110,80,190,21))
+        self.crypt_confirmation.setEchoMode(QLineEdit.Password)
+
+        self.crypt_password = QLineEdit(self,"crypt_password")
+        self.crypt_password.setGeometry(QRect(110,50,190,21))
+        self.crypt_password.setEchoMode(QLineEdit.Password)
+
+        self.crypt_path = QLineEdit(self,"crypt_path")
+        self.crypt_path.setGeometry(QRect(111,20,190,21))
+        self.crypt_path.setEchoMode(QLineEdit.Password)
+
         self.languageChange()
 
-        self.resize(QSize(301,173).expandedTo(self.minimumSizeHint()))
+        self.resize(QSize(315,173).expandedTo(self.minimumSizeHint()))
         self.clearWState(Qt.WState_Polished)
 
 

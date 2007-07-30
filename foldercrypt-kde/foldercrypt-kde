@@ -141,6 +141,8 @@ class Open:
         self.win = WindowOpen()
         self.win.show()
         wlist.append(self.win)
+        
+        self.win.open_path.setText(manager.path)
         qtapp.connect(self.win.open_cancel, SIGNAL("clicked()"), self.win,\
             SLOT("close()"))
         qtapp.connect(qtapp, SIGNAL("lastWindowClosed()"), qtapp,\
