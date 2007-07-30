@@ -81,7 +81,8 @@ class Manager:
 
         qtapp.connect(self.win.manager_crypt, SIGNAL("clicked()"), Crypt)
         qtapp.connect(self.win.manager_decrypt, SIGNAL("clicked()"), Decrypt)
-        qtapp.connect(self.win.manager_open_close, SIGNAL("clicked()"), Open)
+        qtapp.connect(self.win.manager_open_close, SIGNAL("clicked()"),\
+            self.open_close)
         qtapp.connect(self.win.manager_properties, SIGNAL("clicked()"),\
             Properties)
         qtapp.connect(self.win.manager_reset, SIGNAL("clicked()"), self.test)
@@ -89,16 +90,17 @@ class Manager:
         qtapp.connect(qtapp, SIGNAL("lastWindowClosed()"), qtapp,\
             SLOT("quit()"))
         qtapp.connect(self.win.manager_list, SIGNAL("selectionChanged()"),\
-            self.buttons)
+            self.select)
         
         self.update()
     
-    def buttons(self):
+    def select(self):
         selected = False
         item = self.win.manager_list.firstChild()
         while item:
             if item.isSelected ():
                 selected = True
+                self.path = item.text(1)
                 if item.text(2) == _("Yes"):
                     self.win.manager_open_close.setText(_("Close"))
                 else:
@@ -110,9 +112,15 @@ class Manager:
         self.win.manager_properties.setEnabled(selected)
         self.win.manager_decrypt.setEnabled(selected)
     
+    def open_close(self):
+        if self.win.manager_open_close.text() == _("Open"):
+            Open()
+        else:
+            Close()
+    
     def test(self):
-        print "hahah"
-        print self.win.manager_list.takeItem(self.win.manager_list.currentItem())
+        print self.win.manager_list.takeItem(\
+            self.win.manager_list.currentItem())
     
     def update(self):
         """Update the folders list"""
@@ -129,7 +137,7 @@ class Manager:
 
 
 class Open:
-    def __init__(self):
+    def __init__(self):     
         self.win = WindowOpen()
         self.win.show()
         wlist.append(self.win)
@@ -138,6 +146,24 @@ class Open:
         qtapp.connect(qtapp, SIGNAL("lastWindowClosed()"), qtapp,\
             SLOT("quit()"))
 
+class Close:
+    def __init__(self, path = None):
+        if path == None:
+            path = str(manager.path)
+        try:
+            folder = folders.get(path)
+        except foldercrypt.NoEncrypted:
+            Util().error_box(_("%s is not a crypted directory.") % folder.path)
+        try:
+            folder = foldercrypt.Manage(folder).unmount()
+        except foldercrypt.NotOpened:
+            Util().error_box(_("%s is not opened.") % folder.path)
+        else:
+            folders.update(folder)
+            try:
+                manager.update()
+            except:
+                pass
 
 class Crypt:
     def __init__(self):
