@@ -266,16 +266,39 @@ class Test:
         print "hahah"
 
 class Decrypt:
-    def __init__(self):
+    def __init__(self, path = None):
         self.win = WindowDecrypt()
         self.win.show()
         wlist.append(self.win)
         
+        if path == None:
+            self.path = manager.path
+        else:
+            self.path = path
+        self.win.decrypt_path.setText(self.path)
         
+        global this
+        this = self
+        
+        qtapp.connect(self.win.decrypt_ok, SIGNAL("clicked()"), this.decrypt)
         qtapp.connect(self.win.decrypt_cancel, SIGNAL("clicked()"), self.win,\
             SLOT("close()"))
         qtapp.connect(qtapp, SIGNAL("lastWindowClosed()"), qtapp,\
             SLOT("quit()"))
+
+    def decrypt(self):
+        password = str(self.win.decrypt_password.text())
+        try:
+            folder = folders.get(self.path)
+        except foldercrypt.AlreadyOpened:
+            Util().error_box(_("%s is already open.") % folder.path)  
+        try:
+            foldercrypt.Manage(folder).decrypt(password)
+        except foldercrypt.BadPassword:
+            Util().error_box(_("Your password is wrong."))
+        else:
+            folders.rem(folder)
+            self.win.close()
 
 
 class Properties:
@@ -329,7 +352,7 @@ class Properties:
             else:
                 self.win.close()
     
-
+    
 def exit(para=0):
     data.save()
     sys.exit(para)
