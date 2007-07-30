@@ -143,10 +143,22 @@ class Open:
         wlist.append(self.win)
         
         self.win.open_path.setText(manager.path)
+        
+        global this
+        this = self
+        
+        qtapp.connect(self.win.open_close, SIGNAL("stateChanged(int)"), this.time)
         qtapp.connect(self.win.open_cancel, SIGNAL("clicked()"), self.win,\
             SLOT("close()"))
         qtapp.connect(qtapp, SIGNAL("lastWindowClosed()"), qtapp,\
             SLOT("quit()"))
+        
+    def time(self):
+        if self.win.open_close.state() == 2:
+            self.win.open_time.setEnabled(True)
+        else:
+            self.win.open_time.setEnabled(False)
+
 
 class Close:
     def __init__(self, path = None):

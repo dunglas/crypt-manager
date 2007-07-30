@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'qt3/WindowOpen.ui'
 #
-# Created: lun jui 30 14:34:30 2007
+# Created: lun jui 30 14:40:14 2007
 #      by: The PyQt User Interface Compiler (pyuic) 3.17
 #
 # WARNING! All changes made in this file will be lost!
@@ -23,10 +23,6 @@ class WindowOpen(QDialog):
 
         self.open_close = QCheckBox(self,"open_close")
         self.open_close.setGeometry(QRect(10,100,130,21))
-
-        self.open_time = QSpinBox(self,"open_time")
-        self.open_time.setGeometry(QRect(140,100,51,21))
-        self.open_time.setMinValue(1)
 
         LayoutWidget = QWidget(self,"Layout1")
         LayoutWidget.setGeometry(QRect(10,130,300,33))
@@ -58,6 +54,11 @@ class WindowOpen(QDialog):
         self.crypt_password = QLineEdit(self,"crypt_password")
         self.crypt_password.setGeometry(QRect(120,60,190,21))
         self.crypt_password.setEchoMode(QLineEdit.Password)
+
+        self.open_time = QSpinBox(self,"open_time")
+        self.open_time.setEnabled(0)
+        self.open_time.setGeometry(QRect(140,100,51,21))
+        self.open_time.setMinValue(1)
 
         self.languageChange()
 
