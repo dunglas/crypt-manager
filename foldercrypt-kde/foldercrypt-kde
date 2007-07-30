@@ -220,6 +220,9 @@ class Properties:
         qtapp.connect(qtapp, SIGNAL("lastWindowClosed()"), qtapp,\
             SLOT("quit()"))
 
+def exit(para=0):
+    data.save()
+    sys.exit(para)
 
 if __name__ == '__main__':
     data = foldercrypt.Data()
