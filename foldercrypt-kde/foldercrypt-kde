@@ -47,6 +47,14 @@ CACHE = os.environ['HOME'] + "/.foldercrypt/cache"
 ICON = "/usr/share/foldercrypt/icon.png"
 wlist = []
 
+# Are we running as a separate standalone application or in KControl?
+standalone = __name__=='__main__'
+
+if standalone:
+    programbase = QMainWindow
+else:
+    programbase = KCModule
+
 class Util:
     """Utilities"""
     def error_box(self, msg):
@@ -73,8 +81,9 @@ class Util:
         return True
 
 
-class Manager:
+class Manager(programbase):
     def __init__(self):
+        programbase.__init__(self, None, None)
         self.win = WindowManager()
         self.win.show()
         wlist.append(self.win)
@@ -366,12 +375,12 @@ def exit(para=0):
     app.quit()
     sys.exit(para)
 
-if __name__ == '__main__':
-    data = foldercrypt.Data()
-    folders = data.folders
-    folders.clean()
-    app = KApplication(sys.argv, "Foldercrypt")
+data = foldercrypt.Data()
+folders = data.folders
+folders.clean()
+app = KApplication(sys.argv, "Foldercrypt")
 
+if standalone:
     # Command Line Interface
     if len(sys.argv) == 1:
         manager = Manager()
