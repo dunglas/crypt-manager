@@ -135,9 +135,18 @@ class Util:
 
     def fullpath(self, path):
         """Expand a path"""
-        path = os.path.expanduser(path)
-        path = os.path.realpath(path)
-        path = os.path.normpath(path)
+        try:
+            path = os.path.expanduser(path)
+        except AttributeError:
+            pass
+        try:
+            path = os.path.realpath(path)
+        except AttributeError:
+            pass
+        try:
+            path = os.path.normpath(path)
+        except AttributeError:
+            pass
         return path
         
     def cp(self, src, dst):
