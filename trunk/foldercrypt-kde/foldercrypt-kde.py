@@ -1,43 +1,37 @@
 #!/usr/bin/python
-# vim: set fileencoding=utf-8 :
-# Copyright (C) 2007 Kévin Dunglas <dunglas@gmail.com>
-#
-# Authors:
-#  Kévin Dunglas
-#
-# This program is a part of a the Google Summer Of Code 2007
-# For futher information see :
-# http://code.google.com/soc/ubuntu/appinfo.html?csaid=EF4FCF874D88234
-#
-# This program is free software; you can redistribute it and/or modify it under
-# the terms of the GNU General Public License as published by the Free Software
-# Foundation; either version 3 of the License, or (at your option) any later
-# version.
-#
-# This program is distributed in the hope that it will be useful, but WITHOUT
-# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-# FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
-# details.
-#
-# You should have received a copy of the GNU General Public License along with
-# this program; if not, write to the Free Software Foundation, Inc., 59 Temple
-# Place, Suite 330, Boston, MA 02111-1307 USA
+# -*- coding: UTF-8 -*-
+###########################################################################
+# serviceconfig.py - description                                          #
+# ------------------------------                                          #
+# begin     : Wed Apr 30 2003                                             #
+# copyright : (C) 2003-2006 by Simon Edwards                              #
+# email     : simon@simonzone.com                                         #
+#                                                                         #
+###########################################################################
+#                                                                         #
+#   This program is free software; you can redistribute it and/or modify  #
+#   it under the terms of the GNU General Public License as published by  #
+#   the Free Software Foundation; either version 2 of the License, or     #
+#   (at your option) any later version.                                   #
+#                                                                         #
+###########################################################################
+
 
 import os
 import sys
 import gettext
 import locale
 from qt import *
-from kdeui import KCModule
-from kdecore import KApplication, KCmdLineArgs, KAboutData
+from qt import *
+from kdeui import *
+from kdecore import *
 from kfile import KDirSelectDialog
-from ui.WindowManager import *
+import foldercrypt
 from ui.WindowOpen import *
 from ui.WindowCrypt import *
 from ui.WindowProperties import *
 from ui.WindowDecrypt import *
 from ui.WindowError import *
-import foldercrypt
 
 import __builtin__
 __builtin__._ = gettext.gettext
@@ -48,13 +42,6 @@ CACHE = os.environ['HOME'] + "/.foldercrypt/cache"
 ICON = "/usr/share/foldercrypt/icon.png"
 wlist = []
 
-# Are we running as a separate standalone application or in KControl?
-standalone = __name__=='__main__'
-
-if standalone:
-    programbase = QMainWindow
-else:
-    programbase = KCModule
 
 class Util:
     """Utilities"""
@@ -82,64 +69,128 @@ class Util:
         return True
 
 
+# Are we running as a separate standalone application or in KControl?
+standalone = __name__=='__main__'
+
+
+# Try translating this code to C++. I dare ya!
+if standalone:
+    programbase = KDialogBase
+else:
+    programbase = KCModule
+
+# is_shown exists to prevent loadDescriptions from running two times, which is 
+# the case when we're running inside kcontrol. Yes, this is an ugly hack. :(
+# It's set to True after show has finished once. It doesn't play a role when
+# we're running standalone.
+is_shown = False
+
 class Manager(programbase):
-    def __init__(self):
-        programbase.__init__(self, None, None)
-        self.win = WindowManager()
-        self.win.show()
-        wlist.append(self.win)
-        
-        global manager
+    def __init__(self, parent=None, name=None):
+        global standalone, manager
         manager = self
 
-        #self.win.manager_open_close.setEnabled(False)
+        if standalone:
+            KDialogBase.__init__(self,KJanusWidget.Plain,"Foldercrypt", \
+                KDialogBase.User1|KDialogBase.Close, KDialogBase.Close)
+            self.setButtonText(KDialogBase.User1,i18n("About"))
+        else:
+            KCModule.__init__(self,parent,name)
+            self.setButtons(1)
+            self.aboutdata = MakeAboutData()
 
-        app.connect(self.win.manager_crypt, SIGNAL("clicked()"), Crypt)
-        app.connect(self.win.manager_decrypt, SIGNAL("clicked()"), Decrypt)
-        app.connect(self.win.manager_open_close, SIGNAL("clicked()"),\
+        self.updatingGUI = False
+
+        if standalone:
+            toplayout = QVBoxLayout( self.plainPage(), 0, KDialog.spacingHint() )
+            tophb = QSplitter(Qt.Horizontal, self.plainPage())
+        else:
+            toplayout = QVBoxLayout( self, 0, KDialog.spacingHint() )
+            tophb = QSplitter(Qt.Horizontal, self)
+        
+        self.manager_crypt = QPushButton(self,"manager_crypt")
+        self.manager_crypt.setGeometry(QRect(490,30,90,30))
+
+        self.manager_properties = QPushButton(self,"manager_properties")
+        self.manager_properties.setEnabled(0)
+        self.manager_properties.setGeometry(QRect(490,110,90,30))
+
+        self.manager_decrypt = QPushButton(self,"manager_decrypt")
+        self.manager_decrypt.setEnabled(0)
+        self.manager_decrypt.setGeometry(QRect(490,150,90,30))
+
+        self.manager_list = QListView(self,"manager_list")
+        self.manager_list.addColumn(QString.null)
+        self.manager_list.addColumn(_("Path"))
+        self.manager_list.addColumn(_("Open"))
+        self.manager_list.setGeometry(QRect(30,30,450,360))
+        self.manager_list.setAllColumnsShowFocus(0)
+
+        self.manager_open_close = QPushButton(self,"manager_open_close")
+        self.manager_open_close.setEnabled(0)
+        self.manager_open_close.setGeometry(QRect(490,70,90,30))
+        
+        self.setTabOrder(self.manager_list,self.manager_crypt)
+        self.setTabOrder(self.manager_crypt,self.manager_open_close)
+        self.setTabOrder(self.manager_open_close,self.manager_properties)
+        self.setTabOrder(self.manager_properties,self.manager_decrypt)
+
+        self.setCaption(_("Manager"))
+        self.manager_crypt.setText(_("Encrypt"))
+        self.manager_properties.setText(_("Properties"))
+        self.manager_decrypt.setText(_("Decrypt"))
+        self.manager_list.header().setLabel(0," ")
+        self.manager_list.header().setLabel(1,_("Path"))
+        self.manager_list.header().setLabel(2,_("Open"))
+        self.manager_open_close.setText(_("Open"))
+        
+        self.resize(QSize(621,480))
+        
+        app.connect(self.manager_crypt, SIGNAL("clicked()"), Crypt)
+        app.connect(self.manager_decrypt, SIGNAL("clicked()"), Decrypt)
+        app.connect(self.manager_open_close, SIGNAL("clicked()"),\
             self.open_close)
-        app.connect(self.win.manager_properties, SIGNAL("clicked()"),\
+        app.connect(self.manager_properties, SIGNAL("clicked()"),\
             Properties)
-        app.connect(self.win.manager_reset, SIGNAL("clicked()"), self.test)
-        app.connect(self.win.manager_apply, SIGNAL("clicked()"), self.test)
         app.connect(app, SIGNAL("lastWindowClosed()"), app,\
             SLOT("quit()"))
-        app.connect(self.win.manager_list, SIGNAL("selectionChanged()"),\
+        app.connect(self.manager_list, SIGNAL("selectionChanged()"),\
             self.select)
         
         self.update()
-    
+
     def select(self):
         selected = False
-        item = self.win.manager_list.firstChild()
+        item = self.manager_list.firstChild()
         while item:
             if item.isSelected ():
                 selected = True
                 self.path = item.text(1)
                 if item.text(2) == _("Yes"):
-                    self.win.manager_open_close.setText(_("Close"))
+                    self.manager_open_close.setText(_("Close"))
                 else:
-                    self.win.manager_open_close.setText(_("Open"))
+                    self.manager_open_close.setText(_("Open"))
                 item = False
             else:
                 item = item.nextSibling ()
-        self.win.manager_open_close.setEnabled(selected)
-        self.win.manager_properties.setEnabled(selected)
-        self.win.manager_decrypt.setEnabled(selected)
+        self.manager_open_close.setEnabled(selected)
+        self.manager_properties.setEnabled(selected)
+        self.manager_decrypt.setEnabled(selected)
     
     def open_close(self):
-        if self.win.manager_open_close.text() == "&" + _("Open"):
+        print self.manager_open_close.text()
+        if self.manager_open_close.text() == "&" + _("Open"):
             Open()
         else:
             Close()
     
     def test(self):
-        print self.win.manager_list.takeItem(\
-            self.win.manager_list.currentItem())
+        print self.manager_list.takeItem(\
+            self.manager_list.currentItem())
     
     def update(self):
         """Update the folders list"""
-        self.win.manager_list.clear()
+        self.manager_list.clear()
         for f in folders.li:
             #path = f.path.split("/")
             #path = path[len(path) - 1]
@@ -147,9 +198,44 @@ class Manager(programbase):
                 o = _("Yes")
             else:
                 o = _("No")
-            self.win.manager_list.insertItem(QListViewItem(\
-                self.win.manager_list, "", f.path, o))
+            self.manager_list.insertItem(QListViewItem(\
+                self.manager_list, "", f.path, o))
 
+
+    # KDialogBase method
+    def exec_loop(self):
+        global programbase
+
+        programbase.exec_loop(self)
+
+
+    def __selectFirstService(self):                
+        pass
+
+    def show(self):
+        global standalone
+        programbase.show(self)
+
+    # KControl virtual void methods
+    def load(self):
+        pass
+    def save(self):
+        pass
+    def defaults(self):
+        pass        
+    def sysdefaults(self):
+        pass
+
+    def aboutData(self):
+        # Return the KAboutData object which we created during initialisation.
+        return self.aboutdata
+
+    def buttons(self):
+        # Only supply a Help button. Other choices are Default and Apply.
+        return KCModule.Help
+
+    def run(self,argslist):
+        self.exec_loop()
 
 class Open:
     def __init__(self, path = None):     
@@ -377,32 +463,29 @@ class Properties:
 def exit(para=0):
     data.save()
 
+# Factory function for KControl
+def create_foldercrypt(parent,name):
+    global app
+    app = KApplication.kApplication()
+    return Manager(parent, name)
 
-def about_data():
-    about = KAboutData("foldercrypt-kde", APPNAME, APPVERSION,\
+def MakeAboutData():
+    aboutdata = KAboutData("foldercrypt-kde", APPNAME, APPVERSION,\
         "Encrypted folder manager", KAboutData.License_GPL,\
         "Copyright (C) 2007 Kévin Dunglas",\
         "Part of the Google SoC 2007. Mentored by Jani Monoses.")
-    return about
-
-
-def create_foldercrypt(parent, name):
-    print "kcm..."
-    global app
-    app = KApplication()
-    return Manager()
-
+    return aboutdata
 
 data = foldercrypt.Data()
 folders = data.folders
 folders.clean()
 
 if standalone:
-    global app
-    global manager
-    start()
-    app = KApplication(sys.argv, "Foldercrypt")
+    aboutdata = MakeAboutData()
+    KCmdLineArgs.init(sys.argv,aboutdata)
+
+    app = KApplication()
     manager = Manager()
-    app.exec_loop()
+    manager.exec_loop()
 
 exit()

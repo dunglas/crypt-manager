@@ -15,6 +15,9 @@
     <property name="caption">
         <string>Encrypt</string>
     </property>
+    <property name="modal">
+        <bool>true</bool>
+    </property>
     <widget class="QLabel">
         <property name="name">
             <cstring>textLabel1_2</cstring>

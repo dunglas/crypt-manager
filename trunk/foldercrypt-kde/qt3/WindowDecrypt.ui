@@ -18,6 +18,9 @@
     <property name="sizeGripEnabled">
         <bool>true</bool>
     </property>
+    <property name="modal">
+        <bool>true</bool>
+    </property>
     <widget class="QLabel">
         <property name="name">
             <cstring>decrypt_password2</cstring>

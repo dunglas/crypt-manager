@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'qt3/WindowOpen.ui'
 #
-# Created: mar jui 31 00:17:03 2007
+# Created: mer aoû 1 17:19:53 2007
 #      by: The PyQt User Interface Compiler (pyuic) 3.17
 #
 # WARNING! All changes made in this file will be lost!
@@ -19,6 +19,7 @@ class WindowOpen(QDialog):
             self.setName("WindowOpen")
 
         self.setSizeGripEnabled(1)
+        self.setModal(1)
 
 
         LayoutWidget = QWidget(self,"Layout1")
