@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'qt3/WindowProperties.ui'
 #
-# Created: mar jui 31 00:16:35 2007
+# Created: mer aoû 1 17:20:05 2007
 #      by: The PyQt User Interface Compiler (pyuic) 3.17
 #
 # WARNING! All changes made in this file will be lost!
@@ -19,6 +19,7 @@ class WindowProperties(QDialog):
             self.setName("WindowProperties")
 
         self.setSizeGripEnabled(1)
+        self.setModal(1)
 
 
         self.textLabel1_2 = QLabel(self,"textLabel1_2")

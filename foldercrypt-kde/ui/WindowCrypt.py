@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'qt3/WindowCrypt.ui'
 #
-# Created: mar jui 31 00:15:54 2007
+# Created: mer aoû 1 17:16:50 2007
 #      by: The PyQt User Interface Compiler (pyuic) 3.17
 #
 # WARNING! All changes made in this file will be lost!
@@ -18,6 +18,7 @@ class WindowCrypt(QDialog):
         if not name:
             self.setName("WindowCrypt")
 
+        self.setModal(1)
 
 
         self.textLabel1_2 = QLabel(self,"textLabel1_2")
