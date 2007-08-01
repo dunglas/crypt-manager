@@ -88,6 +88,9 @@ class Manager(programbase):
         self.win = WindowManager()
         self.win.show()
         wlist.append(self.win)
+        
+        global manager
+        manager = self
 
         #self.win.manager_open_close.setEnabled(False)
 
@@ -369,17 +372,11 @@ class Properties:
                 Util().error_box(_("Bad password."))
             else:
                 self.win.close()
-    
-    
+
+
 def exit(para=0):
     data.save()
 
-def start():
-    global data
-    global folders
-    data = foldercrypt.Data()
-    folders = data.folders
-    folders.clean()
 
 def about_data():
     about = KAboutData("foldercrypt-kde", APPNAME, APPVERSION,\
@@ -388,13 +385,17 @@ def about_data():
         "Part of the Google SoC 2007. Mentored by Jani Monoses.")
     return about
 
-def create_serviceconfig(parent, name):
-    print "hahaa"
-    global app
-    start()
-    app = KApplication()
-    return SysVInitApp(parent, name)
 
+def create_foldercrypt(parent, name):
+    print "kcm..."
+    global app
+    app = KApplication()
+    return Manager()
+
+
+data = foldercrypt.Data()
+folders = data.folders
+folders.clean()
 
 if standalone:
     global app
