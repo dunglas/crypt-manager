@@ -125,8 +125,7 @@ class Manager(programbase):
         self.win.manager_decrypt.setEnabled(selected)
     
     def open_close(self):
-        print self.win.manager_open_close.text()
-        if self.win.manager_open_close.text() == _("Open"):
+        if self.win.manager_open_close.text() == "&" + _("Open"):
             Open()
         else:
             Close()
