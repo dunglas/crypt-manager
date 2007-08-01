@@ -389,6 +389,7 @@ def about_data():
     return about
 
 def create_serviceconfig(parent, name):
+    print "hahaa"
     global app
     start()
     app = KApplication()
