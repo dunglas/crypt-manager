@@ -28,17 +28,15 @@ import sys
 import gettext
 import locale
 from qt import *
-from kdecore import KApplication
+from kdeui import KCModule
+from kdecore import KApplication, KCmdLineArgs, KAboutData
 from kfile import KDirSelectDialog
-
-sys.path.append("/usr/share/foldercrypt/kde")
-
-from WindowManager import *
-from WindowOpen import *
-from WindowCrypt import *
-from WindowProperties import *
-from WindowDecrypt import *
-from WindowError import *
+from ui.WindowManager import *
+from ui.WindowOpen import *
+from ui.WindowCrypt import *
+from ui.WindowProperties import *
+from ui.WindowDecrypt import *
+from ui.WindowError import *
 import foldercrypt
 
 import __builtin__
@@ -375,59 +373,34 @@ class Properties:
     
 def exit(para=0):
     data.save()
-    app.quit()
-    sys.exit(para)
 
-data = foldercrypt.Data()
-folders = data.folders
-folders.clean()
-args = sys.argv
-app = KApplication(sys.argv, "Foldercrypt")
+def start():
+    global data
+    global folders
+    data = foldercrypt.Data()
+    folders = data.folders
+    folders.clean()
+
+def about_data():
+    about = KAboutData("foldercrypt-kde", APPNAME, APPVERSION,\
+        "Encrypted folder manager", KAboutData.License_GPL,\
+        "Copyright (C) 2007 Kévin Dunglas",\
+        "Part of the Google SoC 2007. Mentored by Jani Monoses.")
+    return about
+
+def create_serviceconfig(parent, name):
+    global app
+    start()
+    app = KApplication()
+    return SysVInitApp(parent, name)
+
 
 if standalone:
-    print len(args)
-    print args
-    # Command Line Interface
-    if len(sys.argv) == 0:
-        manager = Manager()
-        
-    elif len(sys.argv) == 1 and sys.argv[1] == "--info":
-        msg = _("""%s, an encrypted folder manager
-Options:
---crypt [DIRECTORY]         encrypt directory
---open DIRECTORY            open an encrypted folder
---info                      display this help message
---close DIRECTORY           close an encrypted folder
---decrypt DIRECTORY         decrypt encrypted folder
---version                   display version information""") % APPNAME
-        exit(msg)
-        
-    elif len(sys.argv) == 1 and sys.argv[1] == "--version":
-        msg = "%s %s" % APPNAME, APPVERSION
-        exit(msg)
-    
-    elif len(sys.argv) == 1 and sys.argv[1] == "--clean":
-        folders.clean()
-        exit()
-
-    elif len(sys.argv) >= 1 and len(sys.argv) <= 2 and sys.argv[1] == "--crypt":
-        if len(sys.argv) == 3:
-            c = Crypt(sys.argv[2])
-        else:
-            c = Crypt()
-
-    elif len(sys.argv) == 2 and sys.argv[1] == "--close":
-        Unmount(sys.argv[2])
-
-    elif len(sys.argv) == 2 and sys.argv[1] == "--open":
-        Open(sys.argv[2])
-
-    elif len(sys.argv) == 2 and sys.argv[1] == "--decrypt":
-        Decrypt(sys.argv[2])
-
-    else:
-        msg = """Invalid option
-Try « %s --info » to get more information""" % APPNAME
-        Util().error_box(msg)
+    global app
+    global manager
+    start()
+    app = KApplication(sys.argv, "Foldercrypt")
+    manager = Manager()
     app.exec_loop()
-    exit()
+
+exit()
