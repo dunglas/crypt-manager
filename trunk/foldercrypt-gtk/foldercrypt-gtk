@@ -84,7 +84,7 @@ class Keyring:
         
         try:
         # Add an item
-            return gnomekeyring.item_create_sync(
+            auth = gnomekeyring.item_create_sync(
                 self.keyring, # Keyring
                 gnomekeyring.ITEM_GENERIC_SECRET, # Item type
                 folder.digest, # Item name
@@ -94,8 +94,11 @@ class Keyring:
         except gnomekeyring.NoKeyringDaemonError:
             self.available = False
             return None
+        else:
+            folder.attributes["gnomekeyring_id"] = int(auth)
+            folders.update(folder)
     
-    def get_password(self, auth):
+    def get_password(self, folder):
         """Get the password of an encrypted folder, return None if not stored"""
         
         if not self.available:
@@ -103,12 +106,26 @@ class Keyring:
         
         try:
             return gnomekeyring.item_get_info_sync(self.keyring,
-                auth).get_secret()
+                folder.attributes["gnomekeyring_id"]).get_secret()
         except gnomekeyring.DeniedError:
             return None
         except gnomekeyring.NoKeyringDaemonError:
             self.available = False
             return None
+
+    def delete_password(self, folder):
+        """Remove a stored password"""
+        
+        gnomekeyring.item_delete_sync(self.keyring,\
+            folder.attributes["gnomekeyring_id"])
+        
+        folder.attributes.pop("gnomekeyring_id")
+    
+    def change_password(self, folder, new_password):
+        """Change a stored password"""
+        
+        self.delete_password(folder.attributes["gnomekeyring_id"])
+        return self.save_password(folder, new_password)
 
  
 class GladeHandlers:
@@ -229,7 +246,6 @@ class GladeHandlers:
         exit()
     
     def on_manager_destroy(event):
-        print "yeah"
         exit()
 
     def on_properties_cancel_clicked(event):
@@ -470,9 +486,10 @@ class Open:
             return
         
         # Try to get password in default keyring
+        global current_keyring
         password = None
-        keyring = "default"
-        k = Keyring(keyring)
+        current_keyring = "default"
+        k = Keyring(current_keyring)
         # Test if gnomekeyring is available
         if k.available:
             # Test if a "gnomekeyring_id" attribute is set
@@ -480,16 +497,17 @@ class Open:
                 # Get the gnomekeyring id
                 auth = folder.attributes["gnomekeyring_id"]
             except:
-                keyring = "session"
+                current_keyring = None
             else:
                 # Get the password
-                password = k.get_password(auth)
+                password = k.get_password(folder)
                 # If no password, try in the session keyring
                 if password == None:
-                    keyring = "session"
-                    k = Keyring("keyring")
-                    password = k.get_password(auth)
-        
+                    current_keyring = "session"
+                    k = Keyring(current_keyring)
+                    password = k.get_password(folder)
+                else:
+                    current_keyring = None
         #if password == None:
         #    # If the password is always Null, prompt for the password
         #    windows.load("open")
@@ -501,11 +519,11 @@ class Open:
         if not password == None:
             windows["open"]["open_password"].set_text(password)
             windows["open"]["open_savepass"].set_active(True)
-        print keyring
-        if keyring == "session":
-            windows["open"]["open_savechoice"].set_active(0)
-        else:
+
+        if current_keyring == "default":
             windows["open"]["open_savechoice"].set_active(1)
+        else:
+            windows["open"]["open_savechoice"].set_active(0)
         
         
 class Decrypt:
@@ -577,11 +595,19 @@ class Mount:
         except foldercrypt.BadPassword:
             Util().error_box(_("Your password is wrong."))
         else:
-            if not keyring == None:
+            global current_keyring
+            if not current_keyring == None:
+                if keyring == None:
+                    k = Keyring(current_keyring)
+                    k.delete_password(folder)
+                elif not current_keyring == keyring:
+                     k = Keyring(current_keyring)
+                     k.delete_password(folder)
+                     k = Keyring(keyring)
+                     k.save_password(folder, password)
+            elif not keyring == None:
                 k = Keyring(keyring)
-                folder.attributes["gnomekeyring_id"] =\
-                    int(k.save_password(folder, password))
-            folders.update(folder)
+                k.save_password(folder, password)
             windows.hide_or_quit("open")
 
 
@@ -616,6 +642,29 @@ class ChangePassword:
         except foldercrypt.BadPassword:
             Util().error_box(_("Bad password."))
         else:
+            # Try to get password in default keyring
+            global current_keyring
+            current_keyring = "default"
+            k = Keyring(current_keyring)
+            # Test if gnomekeyring is available
+            if k.available:
+                # Test if a "gnomekeyring_id" attribute is set
+                try:
+                    # Get the gnomekeyring id
+                    auth = folder.attributes["gnomekeyring_id"]
+                except:
+                    pass
+                else:
+                    # Get the password
+                    password = k.get_password(folder)
+                    # If no password, try in the session keyring
+                    if password == None:
+                        current_keyring = "session"
+                        k = Keyring(current_keyring)
+                        password = k.get_password(auth)
+                    if not password == None:
+                         k.change_password(folder, new)
+                        
             windows.hide_or_quit("properties")
 
 def quit(para=0):
