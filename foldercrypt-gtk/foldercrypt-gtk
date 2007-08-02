@@ -227,12 +227,10 @@ class GladeHandlers:
         exit()
     
     def on_manager_destroy(event):
+        print "yeah"
         exit()
 
     def on_properties_cancel_clicked(event):
-        windows.hide_or_quit("properties")
-    
-    def on_properties_destroy(event):
         windows.hide_or_quit("properties")
     
     def on_properties_apply_clicked(event):
@@ -244,8 +242,8 @@ class GladeHandlers:
             ChangePassword(windows["properties"]["properties_path"].get_text(),\
                 old, new)
     
-    def on_properties_delete_event(event):
-        return False
+    def on_properties_delete_event(event, state):
+        windows.hide_or_quit("properties")
 
 
 class Windows:
