@@ -453,6 +453,7 @@ forever</property>
                 <child>
                   <widget class="GtkButton" id="manager_decrypt">
                     <property name="visible">True</property>
+                    <property name="sensitive">False</property>
                     <property name="can_focus">True</property>
                     <property name="can_default">True</property>
                     <signal name="clicked" handler="on_manager_decrypt_clicked"/>
