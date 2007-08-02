@@ -119,6 +119,9 @@ class GladeHandlers:
     def on_manager_add_clicked(event):
         windows["manager"]["manager"].set_sensitive(False)
         Crypt()
+    
+    def on_manager_delete(envet, state):
+        exit()
 
     def on_crypt_apply_clicked(event):
         path = windows["crypt"]["crypt_folder"].get_filename()
