@@ -252,7 +252,7 @@ class Encfs:
         p2.communicate()[0]
         
         if p2.poll() is not 0:
-            raise UnexpectedError()
+            raise BadPassword()
 
     def encrypt(self, password):
         """Encrypt a directory"""
