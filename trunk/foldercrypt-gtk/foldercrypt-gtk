@@ -176,7 +176,6 @@ class GladeHandlers:
     def on_open_savepass_toggled(event):
         if windows["open"]["open_savepass"].get_active():
             windows["open"]["open_savechoice"].set_sensitive(True)
-            windows["open"]["open_savechoice"].set_active(0)
         else:
             windows["open"]["open_savechoice"].set_sensitive(False)
     
@@ -472,7 +471,8 @@ class Open:
         
         # Try to get password in default keyring
         password = None
-        k = Keyring("default")
+        keyring = "default"
+        k = Keyring(keyring)
         # Test if gnomekeyring is available
         if k.available:
             # Test if a "gnomekeyring_id" attribute is set
@@ -480,22 +480,34 @@ class Open:
                 # Get the gnomekeyring id
                 auth = folder.attributes["gnomekeyring_id"]
             except:
-                pass
+                keyring = "session"
             else:
                 # Get the password
                 password = k.get_password(auth)
                 # If no password, try in the session keyring
                 if password == None:
-                    k = Keyring("session")
+                    keyring = "session"
+                    k = Keyring("keyring")
                     password = k.get_password(auth)
         
-        if password == None:
-            # If the password is always Null, prompt for the password
-            windows.load("open")
-            windows["open"]["open_path"].set_text(path)
+        #if password == None:
+        #    # If the password is always Null, prompt for the password
+        #    windows.load("open")
+        #    windows["open"]["open_path"].set_text(path)
+        #else:
+        #    Mount(path, password)
+        windows.load("open")
+        windows["open"]["open_path"].set_text(path)
+        if not password == None:
+            windows["open"]["open_password"].set_text(password)
+            windows["open"]["open_savepass"].set_active(True)
+        print keyring
+        if keyring == "session":
+            windows["open"]["open_savechoice"].set_active(0)
         else:
-            Mount(path, password)
-
+            windows["open"]["open_savechoice"].set_active(1)
+        
+        
 class Decrypt:
     """Decrypt window"""
     def __init__(self, path):
