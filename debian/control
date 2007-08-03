@@ -2,7 +2,7 @@ Source: foldercrypt
 Section: admin
 Priority: optional
 Maintainer: Kévin Dunglas <dunglas@gmail.com>
-Build-Depends: debhelper (>= 5.0.38), python-central (>= 0.5.6), cdbs, kdelibs4-dev, libpythonize0-dev, pykdeextensions, pyqt-tools, python-kde3, python-sip4-dev, python-all-dev (>= 2.3.5-11), python-kde3-dev
+Build-Depends: debhelper (>= 5.0.38), python-central (>= 0.5.6), kdelibs4-dev, libpythonize0-dev, pykdeextensions, pyqt-tools, python-kde3, python-sip4-dev, python-all-dev (>= 2.3.5-11), python-kde3-dev
 Standards-Version: 3.7.2
 XB-Python-Version: ${python:Versions}
 XS-Python-Version: all
@@ -19,7 +19,7 @@ Description: An encrypted folder manager
 Package: foldercrypt-gtk
 Architecture: all
 Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}, foldercrypt, python-glade2, python-gtk2
-Recomends: nautilus-foldercrypt
+Recommends: nautilus-foldercrypt
 Description: A graphical encrypted folders manager
  A GTK encrypted folders manager for Linux and the GNOME desktop.
 
@@ -32,6 +32,6 @@ Description: A Nautilus extension to manage encrypted folders
 Package: foldercrypt-kde
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}, foldercrypt, pykdeextensions, python-kde3 
-Recomends: nautilus-foldercrypt
+Recommends: nautilus-foldercrypt
 Description: A graphical encrypted folders manager
  A KDE encrypted folders manager.
