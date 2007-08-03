@@ -27,12 +27,10 @@
 
 from distutils.core import setup
 
-setup(name="foldercrypt-gtk",
+setup(name="nautilus-foldercrypt",
     version="0.0.2",
     author="Kévin Dunglas",
     author_email="dunglas@gmail.com",
     url="http://code.google.com/p/crypt-manager/",
     license = "GPL",
-    scripts = ["foldercrypt-gtk"],
-    data_files = [("/usr/share/foldercrypt", ["share/foldercrypt.glade",
-        "share/icon.png", "share/foldercrypt-gtk.desktop"])])
+    data_files = [("lib/nautilus/extensions-1.0/python/", ["crypt.py"])])
