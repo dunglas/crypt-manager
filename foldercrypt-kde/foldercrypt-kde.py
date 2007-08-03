@@ -37,7 +37,7 @@ import __builtin__
 __builtin__._ = gettext.gettext
 
 APPNAME="foldercrypt-kde"
-APPVERSION="0.1"
+APPVERSION="0.0.2"
 CACHE = os.environ['HOME'] + "/.foldercrypt/cache"
 ICON = "/usr/share/foldercrypt/icon.png"
 wlist = []
