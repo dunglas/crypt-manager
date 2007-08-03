@@ -13,4 +13,7 @@ install/foldercrypt-gtk::
 	cp $(CURDIR)/foldercrypt-gtk/foldercrypt-gtk $(CURDIR)/debian/foldercrypt/usr/bin
 
 install/nautilus-foldercrypt::
-	install $(CURDIR)/nautilus-foldercrypt/foldercrypt.py $(CURDIR)/debian/foldercrypt/usr/lib/nautilus/extensions-1.0/python/
+	install $(CURDIR)/nautilus-foldercrypt/crypt.py $(CURDIR)/debian/foldercrypt/usr/lib/nautilus/extensions-1.0/python/
+
+install/foldercrypt-kde::
+	cd $(CURDIR)/foldercrypt-kde && python setup.py install --prefix=$(CURDIR)/debian/foldercrypt/ && cd -
