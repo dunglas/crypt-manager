@@ -33,5 +33,5 @@ setup(name="foldercrypt",
     author_email="dunglas@gmail.com",
     url="http://code.google.com/p/crypt-manager/",
     license = "GPL",
-    data_files = [("/usr/bin", ["foldercrypt"])],
+    scripts = ["foldercrypt"],
     py_modules=["foldercrypt"])
