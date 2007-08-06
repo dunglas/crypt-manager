@@ -397,8 +397,8 @@ class Decrypt:
         password = str(self.win.decrypt_password.text())
         try:
             folder = folders.get(self.path)
-        except foldercrypt.AlreadyOpened:
-            Util().error_box(_("%s is already open.") % folder.path)  
+        except foldercrypt.foldercrypt.NoEncrypted:
+            Util().error_box(_("%s is not an encrypted directory.") % self.path)   
         try:
             foldercrypt.Manage(folder).decrypt(password)
         except foldercrypt.BadPassword:
