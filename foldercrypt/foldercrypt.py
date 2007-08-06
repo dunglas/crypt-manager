@@ -91,9 +91,9 @@ class NotDir(Exception):
     def __str__(self):
             return "This is not a directory"
 
-class NotDir(Exception):
-    def __str__(self):
-            return "Your not allowed to do this operation"
+#class NotDir(Exception):
+#    def __str__(self):
+#            return "Your not allowed to do this operation"
 
 #class NotWritable(Exception):
 #    def __str__(self):
@@ -409,11 +409,6 @@ class Manage:
 
     def decrypt(self, password):
         """Decrypt a folder"""
-        tmp = os.path.join(TMPDIR, self.folder.digest)
-
-        # Delete /tmp/foldercrypt/DIGEST if already exists
-        Util().rm(tmp)
-
         try:
             self.mount(password)
         except AlreadyOpened:
@@ -421,7 +416,9 @@ class Manage:
         except BadPassword:
             raise BadPassword()
             return
-        print tmp
+        tmp = os.path.join(TMPDIR, self.folder.digest)
+        # Delete /tmp/foldercrypt/DIGEST if already exists
+        Util().rm(tmp)
         Util().mv(self.folder.path, tmp)
         self.unmount()
         Util().rm(self.folder.crypt)
