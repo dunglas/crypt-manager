@@ -45,6 +45,14 @@ install: build
 
 # Build architecture-independent files here.
 binary-indep: build install
+	mkdir -p $(CURDIR)/debian/foldercrypt/usr/share/doc/foldercrypt
+	mkdir -p $(CURDIR)/debian/foldercrypt-gtk/usr/share/doc/foldercrypt-gtk
+	mkdir -p $(CURDIR)/debian/nautilus-foldercrypt/usr/share/doc/nautilus-foldercrypt
+	mkdir -p $(CURDIR)/debian/foldercrypt-kde/usr/share/doc/foldercrypt-kde
+	gzip -c -9 $(CURDIR)/debian/changelog > $(CURDIR)/debian/foldercrypt/usr/share/doc/foldercrypt/changelog.Debian.gz
+	cp $(CURDIR)/debian/foldercrypt/usr/share/doc/foldercrypt/changelog.Debian.gz $(CURDIR)/debian/foldercrypt-gtk/usr/share/doc/foldercrypt-gtk
+	cp $(CURDIR)/debian/foldercrypt/usr/share/doc/foldercrypt/changelog.Debian.gz $(CURDIR)/debian/nautilus-foldercrypt/usr/share/doc/nautilus-foldercrypt
+	cp $(CURDIR)/debian/foldercrypt/usr/share/doc/foldercrypt/changelog.Debian.gz $(CURDIR)/debian/foldercrypt-kde/usr/share/doc/foldercrypt-kde
 	dh_testdir
 	dh_testroot
 	dh_installdocs README
