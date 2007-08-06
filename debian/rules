@@ -26,6 +26,8 @@ clean:
 	rm -rf $(CURDIR)/foldercrypt-gtk/build
 	rm -rf $(CURDIR)/foldercrypt-kde/build
 	rm -rf $(CURDIR)/nautilus-foldercrypt/build
+	rm $(CURDIR)/foldercrypt-kde/kcm_foldercrypt.cpp
+	rm $(CURDIR)/foldercrypt-kde/install_log.txt
 	-find . -name '*.py[co]' | xargs rm -f
 	dh_clean
 
