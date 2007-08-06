@@ -79,24 +79,27 @@ Options:
         exit()
 
     elif len(sys.argv) == 3 and sys.argv[1] == "--crypt":
+        try:
+            folder = foldercrypt.Folder(sys.argv[2])
+        except foldercrypt.NotDir:
+            exit(_( "%s is not a directory.") % sys.argv[2])
+        
         password = getpass.getpass("Password:")
-        folder = foldercrypt.Folder(sys.argv[2])
         try:
             foldercrypt.Manage(folder).crypt(password)
         except foldercrypt.AlreadyEncrypted:
             exit(_( "%s is already a crypted folder.") % folder.path)
-        else:
-            folders.add(folder)
-            exit()
+        folders.add(folder)
+        exit()
 
     elif len(sys.argv) == 3 and sys.argv[1] == "--change-pass":
         try:
             folder = folders.get(sys.argv[2])
         except foldercrypt.NoEncrypted:
-            exit(_("%s is not a crypted directory.") % folder.path)
-        old = raw_input(_("Old password: "))
-        new = raw_input(_("New password: "))
-        confirmation = raw_input(_("Confirmation: "))
+            exit(_("%s is not a crypted directory.") % sys.argv[2])
+        old = getpass.getpass(_("Old password:"))
+        new = getpass.getpass(_("New password:"))
+        confirmation = getpass.getpass(_("Confirmation:"))
         if not new == confirmation:
             exit(_("Password do not match with is confirmation."))
         try:
@@ -109,7 +112,7 @@ Options:
         try:
             folder = folders.get(sys.argv[2])
         except foldercrypt.NoEncrypted:
-            exit(_("%s is not a crypted directory.") % folder.path)
+            exit(_("%s is not a crypted directory.") % sys.argv[2])
         try:
             folder = foldercrypt.Manage(folder).unmount()
         except foldercrypt.NotOpened:
@@ -122,7 +125,7 @@ Options:
             folder = folders.get(sys.argv[2])
         except foldercrypt.NoEncrypted:
             exit(_("%s is not a crypted directory.") % sys.argv[2])
-        password = raw_input("Password: ")
+        password = getpass.getpass("Password: ")
         if len(sys.argv) == 4 and sys.argv[3].isdigit():
             idle = 4
         else:
@@ -140,9 +143,9 @@ Options:
     elif len(sys.argv) == 3 and sys.argv[1] == "--decrypt":
         try:
             folder = folders.get(sys.argv[2])
-        except foldercrypt.AlreadyOpened:
-            exit(_(" is already opened.") % folder.path)
-        password = raw_input(_("Password: "))
+        except foldercrypt.NoEncrypted:
+            exit(_("%s is not a crypted directory.") % sys.argv[2])
+        password = getpass.getpass(_("Password:"))
         try:
             foldercrypt.Manage(folder).decrypt(password)
         except foldercrypt.BadPassword:
