@@ -32,7 +32,12 @@ import re
 import time
 import cPickle
 
-CRYPTDIR = os.environ['HOME'] + "/.foldercrypt/crypt"
+# CRYPTDIR is the directory containing encrypted data.
+# It is located at ~/.Crypt if in $HOME
+# or /mount-point/.Crypt-user (like Trash).
+MTAB = "/etc/mtab"
+DEFAULT_CRYPTDIR = os.environ['HOME'] + "/.Crypt"
+CRYPTDIR = DEFAULT_CRYPTDIR
 CACHE = os.environ['HOME'] + "/.foldercrypt/cache"
 TMPDIR ="/tmp/foldercrypt"
 FUSERMOUNT = "/usr/bin/fusermount"
@@ -90,10 +95,10 @@ class NotDir(Exception):
     def __str__(self):
             return "Your not allowed to do this operation"
 
-class NotWritable(Exception):
-    def __str__(self):
-        return "This directory and all his files must be writable"
-
+#class NotWritable(Exception):
+#    def __str__(self):
+#        return "This directory and all his files must be writable"
+#
 
 class UnexpectedError(Exception):
     def __str__(self):
@@ -314,6 +319,14 @@ class Folder:
         self.crypt = os.path.join(CRYPTDIR, self.digest)
         self.opened = True
         self.attributes = {}
+    
+#    def cryptdir(self):
+#        r = re.compile("^encfs on %s type fuse" % self.folder.path)
+#        f = open(MTAB, "r")
+#        for l in f:
+#            if r.match(l):
+#                return True
+#        return False
         
     def __repr__(self):
         return repr(self.path)
@@ -347,9 +360,9 @@ class Manage:
             raise AlreadyEncrypted()
             return
             
-        if not Util().writable(self.folder.path):
-            raise NotWritable()
-            return
+#        if not Util().writable(self.folder.path):
+#            raise NotWritable()
+#            return
 
         tmp = os.path.join(TMPDIR, self.folder.digest)
         # Delete /tmp/foldercrypt/DIGEST if already exists
