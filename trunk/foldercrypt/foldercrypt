@@ -25,10 +25,10 @@
 
 import os
 import sys
+import getpass
 import gettext
 import locale
 import foldercrypt
-
 import __builtin__
 __builtin__._ = gettext.gettext
 
@@ -79,7 +79,7 @@ Options:
         exit()
 
     elif len(sys.argv) == 3 and sys.argv[1] == "--crypt":
-        password = raw_input("Password: ")
+        password = getpass.getpass("Password:")
         folder = foldercrypt.Folder(sys.argv[2])
         try:
             foldercrypt.Manage(folder).crypt(password)
@@ -121,7 +121,7 @@ Options:
         try:
             folder = folders.get(sys.argv[2])
         except foldercrypt.NoEncrypted:
-            exit(_("%s is not a crypted directory.") % folder.path)
+            exit(_("%s is not a crypted directory.") % sys.argv[2])
         password = raw_input("Password: ")
         if len(sys.argv) == 4 and sys.argv[3].isdigit():
             idle = 4
