@@ -558,13 +558,13 @@ class Rdecrypt(threading.Thread):
         """Main"""
         try:
             folder = folders.get(self.path)
-        except foldercrypt.AlreadyOpened:
+        except foldercrypt.NoEncrypted:
             progressbar.stop()
             try:
                 windows["manager"].set_sensitive(True)
             except:
                 pass
-            Util().error_box(_("%s is already open.") % folder.path)  
+            Util().error_box(_("%s is not an encrypted directory.") % self.path)  
         try:
             foldercrypt.Manage(folder).decrypt(self.password)
         except foldercrypt.BadPassword:
