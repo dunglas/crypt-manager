@@ -28,13 +28,13 @@ import sys
 import getpass
 import gettext
 import locale
-import foldercrypt
+import conceal
 import __builtin__
 __builtin__._ = gettext.gettext
 
-APPNAME="foldercrypt"
+APPNAME="conceal"
 APPVERSION="0.0.2"
-CACHE = os.environ['HOME'] + "/.foldercrypt/cache"
+CACHE = os.environ['HOME'] + "/.conceal/cache"
 
 
 def exit(para=0):
@@ -43,7 +43,7 @@ def exit(para=0):
 
 
 if __name__ == '__main__':
-    data = foldercrypt.Data()
+    data = conceal.Data()
     folders = data.folders
     folders.clean()
     
@@ -80,14 +80,14 @@ Options:
 
     elif len(sys.argv) == 3 and sys.argv[1] == "--crypt":
         try:
-            folder = foldercrypt.Folder(sys.argv[2])
-        except foldercrypt.NotDir:
+            folder = conceal.Folder(sys.argv[2])
+        except conceal.NotDir:
             exit(_( "%s is not a directory.") % sys.argv[2])
         
         password = getpass.getpass("Password:")
         try:
-            foldercrypt.Manage(folder).crypt(password)
-        except foldercrypt.AlreadyEncrypted:
+            conceal.Manage(folder).crypt(password)
+        except conceal.AlreadyEncrypted:
             exit(_( "%s is already a crypted folder.") % folder.path)
         folders.add(folder)
         exit()
@@ -95,7 +95,7 @@ Options:
     elif len(sys.argv) == 3 and sys.argv[1] == "--change-pass":
         try:
             folder = folders.get(sys.argv[2])
-        except foldercrypt.NoEncrypted:
+        except conceal.NoEncrypted:
             exit(_("%s is not a crypted directory.") % sys.argv[2])
         old = getpass.getpass(_("Old password:"))
         new = getpass.getpass(_("New password:"))
@@ -103,19 +103,19 @@ Options:
         if not new == confirmation:
             exit(_("Password do not match with is confirmation."))
         try:
-            foldercrypt.Manage(folder).change_password(old, new)
-        except foldercrypt.BadPassword:
+            conceal.Manage(folder).change_password(old, new)
+        except conceal.BadPassword:
             exit(_("Wrong password."))
             
 
     elif len(sys.argv) == 3 and sys.argv[1] == "--close":
         try:
             folder = folders.get(sys.argv[2])
-        except foldercrypt.NoEncrypted:
+        except conceal.NoEncrypted:
             exit(_("%s is not a crypted directory.") % sys.argv[2])
         try:
-            folder = foldercrypt.Manage(folder).unmount()
-        except foldercrypt.NotOpened:
+            folder = conceal.Manage(folder).unmount()
+        except conceal.NotOpened:
             exit(_("%s folder is not opened.") % folder.path)
         folders.update(folder)
         exit()
@@ -123,7 +123,7 @@ Options:
     elif (len(sys.argv) == 3 or len(sys.argv) == 4) and sys.argv[1] == "--open":
         try:
             folder = folders.get(sys.argv[2])
-        except foldercrypt.NoEncrypted:
+        except conceal.NoEncrypted:
             exit(_("%s is not a crypted directory.") % sys.argv[2])
         password = getpass.getpass("Password: ")
         if len(sys.argv) == 4 and sys.argv[3].isdigit():
@@ -131,10 +131,10 @@ Options:
         else:
             idle = None
         try:
-            folder = foldercrypt.Manage(folder).mount(password, idle)
-        except foldercrypt.AlreadyOpened:
+            folder = conceal.Manage(folder).mount(password, idle)
+        except conceal.AlreadyOpened:
             exit(_("%s is already opened.") % folder.path)
-        except foldercrypt.BadPassword:
+        except conceal.BadPassword:
             exit(_("Your password is wrong."))
         else:
             folders.update(folder)
@@ -143,12 +143,12 @@ Options:
     elif len(sys.argv) == 3 and sys.argv[1] == "--decrypt":
         try:
             folder = folders.get(sys.argv[2])
-        except foldercrypt.NoEncrypted:
+        except conceal.NoEncrypted:
             exit(_("%s is not a crypted directory.") % sys.argv[2])
         password = getpass.getpass(_("Password:"))
         try:
-            foldercrypt.Manage(folder).decrypt(password)
-        except foldercrypt.BadPassword:
+            conceal.Manage(folder).decrypt(password)
+        except conceal.BadPassword:
             exit(_("Your password is wrong."))
         #folders.rem(folder)
         exit()

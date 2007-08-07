@@ -26,7 +26,7 @@ from qt import *
 from kdeui import *
 from kdecore import *
 from kfile import KDirSelectDialog
-import foldercrypt
+import conceal
 from ui.WindowOpen import *
 from ui.WindowCrypt import *
 from ui.WindowProperties import *
@@ -36,10 +36,10 @@ from ui.WindowError import *
 import __builtin__
 __builtin__._ = gettext.gettext
 
-APPNAME="foldercrypt-kde"
+APPNAME="conceal-kde"
 APPVERSION="0.0.2"
-CACHE = os.environ['HOME'] + "/.foldercrypt/cache"
-ICON = "/usr/share/foldercrypt/icon.png"
+CACHE = os.environ['HOME'] + "/.conceal/cache"
+ICON = "/usr/share/conceal/icon.png"
 wlist = []
 
 
@@ -91,7 +91,7 @@ class Manager(programbase):
         manager = self
 
         if standalone:
-            KDialogBase.__init__(self,KJanusWidget.Plain,"Foldercrypt", \
+            KDialogBase.__init__(self,KJanusWidget.Plain,"conceal", \
                 KDialogBase.User1|KDialogBase.Close, KDialogBase.Close)
             self.setButtonText(KDialogBase.User1,i18n("About"))
         else:
@@ -275,14 +275,14 @@ class Open:
         
         try:
             folder = folders.get(path)
-        except foldercrypt.NoEncrypted:
+        except conceal.NoEncrypted:
             Util().error_box(_("%s is not a crypted directory.") % folder.path)
             return
         try:
-            folder = foldercrypt.Manage(folder).mount(password, idle)
-        except foldercrypt.AlreadyOpened:
+            folder = conceal.Manage(folder).mount(password, idle)
+        except conceal.AlreadyOpened:
             Util().error_box(_("%s is already open.") % folder.path)
-        except foldercrypt.BadPassword:
+        except conceal.BadPassword:
             Util().error_box(_("Your password is wrong."))
         else:
             folders.update(folder)
@@ -296,11 +296,11 @@ class Close:
             path = str(manager.path)
         try:
             folder = folders.get(path)
-        except foldercrypt.NoEncrypted:
+        except conceal.NoEncrypted:
             Util().error_box(_("%s is not a crypted directory.") % folder.path)
         try:
-            folder = foldercrypt.Manage(folder).unmount()
-        except foldercrypt.NotOpened:
+            folder = conceal.Manage(folder).unmount()
+        except conceal.NotOpened:
             Util().error_box(_("%s is not opened.") % folder.path)
         else:
             folders.update(folder)
@@ -332,7 +332,7 @@ class Crypt:
 
     def valid(self):
         """Validation for the crypt window"""
-        self.path = foldercrypt.Util().fullpath(str(self.win.crypt_path.text()))
+        self.path = conceal.Util().fullpath(str(self.win.crypt_path.text()))
         self.password = str(self.win.crypt_password.text())
         self.confirmation = str(self.win.crypt_confirmation.text())
         self.win.crypt_path.setText(self.path)
@@ -353,14 +353,14 @@ class Crypt:
 
     def run(self):
         """Main"""
-        self.folder = foldercrypt.Folder(self.path)
+        self.folder = conceal.Folder(self.path)
         try:
-            foldercrypt.Manage(self.folder).\
+            conceal.Manage(self.folder).\
                 crypt(self.password)
-        except foldercrypt.AlreadyEncrypted:
+        except conceal.AlreadyEncrypted:
             Util().error_box(_("%s is already an encrypted folder.")
                 % self.folder.path)
-        except foldercrypt.NotWritable:
+        except conceal.NotWritable:
             Util().error_box(
                 _("%s and all his files must be writable.") % self.folder.path)
         else:
@@ -397,11 +397,11 @@ class Decrypt:
         password = str(self.win.decrypt_password.text())
         try:
             folder = folders.get(self.path)
-        except foldercrypt.foldercrypt.NoEncrypted:
+        except conceal.conceal.NoEncrypted:
             Util().error_box(_("%s is not an encrypted directory.") % self.path)   
         try:
-            foldercrypt.Manage(folder).decrypt(password)
-        except foldercrypt.BadPassword:
+            conceal.Manage(folder).decrypt(password)
+        except conceal.BadPassword:
             Util().error_box(_("Your password is wrong."))
         else:
             folders.rem(folder)
@@ -448,13 +448,13 @@ class Properties:
         if self.valid():
             try:
                 folder = folders.get(self.path)
-            except foldercrypt.NoEncrypted:
+            except conceal.NoEncrypted:
                 Util().error_box(_("%s is not a crypted directory.")\
                     % folder.path)
             try:
-                folder = foldercrypt.Manage(folder).change_password(self.old,\
+                folder = conceal.Manage(folder).change_password(self.old,\
                     self.new)
-            except foldercrypt.BadPassword:
+            except conceal.BadPassword:
                 Util().error_box(_("Bad password."))
             else:
                 self.win.close()
@@ -464,19 +464,19 @@ def exit(para=0):
     data.save()
 
 # Factory function for KControl
-def create_foldercrypt(parent,name):
+def create_conceal(parent,name):
     global app
     app = KApplication.kApplication()
     return Manager(parent, name)
 
 def MakeAboutData():
-    aboutdata = KAboutData("foldercrypt-kde", APPNAME, APPVERSION,\
+    aboutdata = KAboutData("conceal-kde", APPNAME, APPVERSION,\
         "Encrypted folder manager", KAboutData.License_GPL,\
         "Copyright (C) 2007 Kévin Dunglas",\
         "Part of the Google SoC 2007. Mentored by Jani Monoses.")
     return aboutdata
 
-data = foldercrypt.Data()
+data = conceal.Data()
 folders = data.folders
 folders.clean()
 

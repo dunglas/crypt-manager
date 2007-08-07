@@ -27,7 +27,7 @@
 
 from distutils.core import setup
 
-setup(name="nautilus-foldercrypt",
+setup(name="nautilus-conceal",
     version="0.0.2",
     author="Kévin Dunglas",
     author_email="dunglas@gmail.com",

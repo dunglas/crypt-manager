@@ -38,8 +38,8 @@ import cPickle
 MTAB = "/etc/mtab"
 DEFAULT_CRYPTDIR = os.environ['HOME'] + "/.Crypt"
 CRYPTDIR = DEFAULT_CRYPTDIR
-CACHE = os.environ['HOME'] + "/.foldercrypt/cache"
-TMPDIR ="/tmp/foldercrypt"
+CACHE = os.environ['HOME'] + "/.conceal/cache"
+TMPDIR ="/tmp/conceal"
 FUSERMOUNT = "/usr/bin/fusermount"
 ENCFS = "/usr/bin/encfs"
 ENCFSCTL = "/usr/bin/encfsctl"
@@ -345,7 +345,7 @@ class Manage:
 
     def crypt(self, password):
         """Encrypt a folder"""
-        # Create ~/.config/foldercrypt if needed
+        # Create ~/.config/conceal if needed
         # The disk images are stored here
         if not os.path.exists(CRYPTDIR):
             os.makedirs(CRYPTDIR)
@@ -365,7 +365,7 @@ class Manage:
 #            return
 
         tmp = os.path.join(TMPDIR, self.folder.digest)
-        # Delete /tmp/foldercrypt/DIGEST if already exists
+        # Delete /tmp/conceal/DIGEST if already exists
         Util().rm(tmp)
         # Move the existing content in a tmp directory
         Util().mv(self.folder.path, tmp)
@@ -417,7 +417,7 @@ class Manage:
             raise BadPassword()
             return
         tmp = os.path.join(TMPDIR, self.folder.digest)
-        # Delete /tmp/foldercrypt/DIGEST if already exists
+        # Delete /tmp/conceal/DIGEST if already exists
         Util().rm(tmp)
         Util().mv(self.folder.path, tmp)
         self.unmount()

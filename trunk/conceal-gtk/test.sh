@@ -1,5 +1,5 @@
 #!/bin/bash
-echo "Unit tests for foldercrypt"
+echo "Unit tests for conceal"
 echo "-------------------------------------------------------------------------"
 echo "GTK interface"
 echo "-------------------------------------------------------------------------"
@@ -8,8 +8,8 @@ sudo rm -rf build
 find . -name '*.py[co]' | xargs rm -f
 sudo python setup.py build
 sudo python setup.py install
-foldercrypt-gtk --version
-foldercrypt-gtk --info
+conceal-gtk --version
+conceal-gtk --info
 
 if [ -e dontexists ]
 then
@@ -17,13 +17,13 @@ then
 fi
 
 echo "Open a directory that don't exists..."
-foldercrypt-gtk --open dontexists
+conceal-gtk --open dontexists
 echo "Encrypt a directory that don't exists..."
-foldercrypt-gtk --crypt dontexists
+conceal-gtk --crypt dontexists
 echo "Close a directory that don't exists..."
-foldercrypt-gtk --close dontexists
+conceal-gtk --close dontexists
 echo "Decrypt a directory that don't exists..."
-foldercrypt-gtk --decrypt dontexists
+conceal-gtk --decrypt dontexists
 
 echo "Create a directory with some files and subdirecotries and encrypt it..."
 
@@ -40,16 +40,16 @@ echo "test1" > testencrypt/haha
 echo "test2" > testencrypt/sub1/haha
 echo "test3" > testencrypt/sub2/plop
 echo "test4" > testencrypt/hohoooo
-foldercrypt-gtk --crypt testencrypt
+conceal-gtk --crypt testencrypt
 echo "Close it..."
-foldercrypt-gtk --close testencrypt
+conceal-gtk --close testencrypt
 
 
 echo "Open it... Please enter a BAD password."
-foldercrypt-gtk --open testencrypt
+conceal-gtk --open testencrypt
 echo "Open it... Please enter the GOOD password."
-foldercrypt-gtk --open testencrypt
+conceal-gtk --open testencrypt
 echo "Decrypt it... Please enter a BAD password."
-foldercrypt-gtk --decrypt testencrypt
+conceal-gtk --decrypt testencrypt
 echo "Decrypt it... Please enter the GOOD password."
-foldercrypt-gtk --decrypt testencrypt
+conceal-gtk --decrypt testencrypt

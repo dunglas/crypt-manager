@@ -30,7 +30,7 @@ from distutils.core import Extension
 import kdedistutils
 
 def doit():
-    kdedistutils.setup(name="foldercrypt-kde",
+    kdedistutils.setup(name="conceal-kde",
         version="0.0.1",
         author="Kévin Dunglas",
         author_email="dunglas@gmail.com",
@@ -38,9 +38,9 @@ def doit():
         min_kde_version = "3.0.0",
         min_qt_version = "3.0.0",
         license = "GPL",
-        application_data = ["foldercrypt-kde.py"],
-        executable_links = [("foldercrypt-kde", "foldercrypt-kde.py")],
-        kcontrol_modules = [("foldercrypt-kde.desktop", "foldercrypt-kde")],
+        application_data = ["conceal-kde.py"],
+        executable_links = [("conceal-kde", "conceal-kde.py")],
+        kcontrol_modules = [("conceal-kde.desktop", "conceal-kde")],
 
         py_modules=["ui.WindowOpen", "ui.WindowCrypt", "ui.WindowDecrypt",\
             "ui.WindowManager", "ui.WindowProperties", "ui.WindowError"])
