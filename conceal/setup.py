@@ -27,11 +27,11 @@
 
 from distutils.core import setup
 
-setup(name="foldercrypt",
+setup(name="conceal",
     version="0.0.2",
     author="Kévin Dunglas",
     author_email="dunglas@gmail.com",
     url="http://code.google.com/p/crypt-manager/",
     license = "GPL",
-    scripts = ["foldercrypt"],
-    py_modules=["foldercrypt"])
+    scripts = ["conceal"],
+    py_modules=["conceal"])

@@ -1,11 +1,11 @@
-foldercrypt (0.0.2-0ubuntu1) gutsy; urgency=low
+conceal (0.0.2-0ubuntu1) gutsy; urgency=low
 
   * New upstream release
-  * Added support for foldercrypt-kde
+  * Added support for conceal-kde
 
  -- Kévin Dunglas <dunglas@gmail.com>  Fri, 03 Aug 2007 10:00:00 +0200
 
-foldercrypt (0.0.1-0ubuntu1) unstable; urgency=low
+conceal (0.0.1-0ubuntu1) unstable; urgency=low
 
   * Initial release
 

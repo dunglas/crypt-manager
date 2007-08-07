@@ -27,7 +27,7 @@ import nautilus
 import urllib
 import gettext
 import locale
-import foldercrypt
+import conceal
 import subprocess
 import os
 
@@ -37,29 +37,29 @@ __builtin__._ = gettext.gettext
 # Crypt Manager extension for nautilus
 EMBLEM = "readonly"
 
-class FoldercryptExtension(nautilus.InfoProvider, nautilus.MenuProvider):
+class concealExtension(nautilus.InfoProvider, nautilus.MenuProvider):
     def __init__(self):
         pass
 
     def _load_data(self):
-        data = foldercrypt.Data()
+        data = conceal.Data()
         self.folders = data.folders
         self.folders.clean()
      
     def _clicked(self, menu, file):
         if self.status == 1:
-            p = subprocess.Popen(["foldercrypt-gtk", "--crypt", self.filename])
+            p = subprocess.Popen(["conceal-gtk", "--crypt", self.filename])
             if p.poll() == 0:
                 file.add_emblem(EMBLEM)
         if self.status == 2:
-            p = subprocess.Popen(["foldercrypt-gtk", "--close", self.filename])
+            p = subprocess.Popen(["conceal-gtk", "--close", self.filename])
         if self.status == 3:
-            p = subprocess.Popen(["foldercrypt-gtk", "--open", self.filename])
+            p = subprocess.Popen(["conceal-gtk", "--open", self.filename])
 
     def _get_status(self):
         try:
             folder = self.folders.get(self.filename)
-        except foldercrypt.NoEncrypted:
+        except conceal.NoEncrypted:
             self.status = 1
         else:
             if folder.opened:
@@ -85,18 +85,18 @@ class FoldercryptExtension(nautilus.InfoProvider, nautilus.MenuProvider):
         if not file.is_directory():
             # Workaround to ask the password
             # when entering in an encrypted folder
-            if f == "foldercrypt.lock":
+            if f == "conceal.lock":
                 parent = urllib.unquote(file.get_parent_uri()[7:])
                 os.unlink(self.filename)
-                p = subprocess.Popen(["foldercrypt-gtk", "--open",
+                p = subprocess.Popen(["conceal-gtk", "--open",
                     parent])
             return
         self._load_data()
         self._get_status()
 
         if self.status == 3 and not os.path.exists(os.path.join(self.filename,
-            "foldercrypt.lock")):
-            f = open (os.path.join(self.filename, "foldercrypt.lock"), "w")
+            "conceal.lock")):
+            f = open (os.path.join(self.filename, "conceal.lock"), "w")
             f.write("")
             f.close()
 
@@ -118,7 +118,7 @@ class FoldercryptExtension(nautilus.InfoProvider, nautilus.MenuProvider):
 
         
         menu = nautilus.MenuItem(
-            "NautilusPython::FoldercryptExtension",
+            "NautilusPython::concealExtension",
             self.entry,
             self.desc
         )

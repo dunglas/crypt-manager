@@ -1,5 +1,5 @@
 #!/bin/bash
-echo "Unit tests for foldercrypt"
+echo "Unit tests for conceal"
 echo "-------------------------------------------------------------------------"
 echo "Command line tool"
 echo "-------------------------------------------------------------------------"
@@ -8,8 +8,8 @@ sudo rm -rf build
 find . -name '*.py[co]' | xargs rm -f
 sudo python setup.py build
 sudo python setup.py install
-foldercrypt --version
-foldercrypt --help
+conceal --version
+conceal --help
 
 if [ -e dontexists ]
 then
@@ -17,15 +17,15 @@ then
 fi
 
 echo "Open a directory that don't exists..."
-foldercrypt --open dontexists
+conceal --open dontexists
 echo "Encrypt a directory that don't exists..."
-foldercrypt --crypt dontexists
+conceal --crypt dontexists
 echo "Close a directory that don't exists..."
-foldercrypt --close dontexists
+conceal --close dontexists
 echo "Decrypt a directory that don't exists..."
-foldercrypt --decrypt dontexists
+conceal --decrypt dontexists
 echo "Change the password of a directory that don't exists..."
-foldercrypt --change-pass dontexists
+conceal --change-pass dontexists
 
 echo "Create a directory with some files and subdirecotries and encrypt it..."
 
@@ -42,20 +42,20 @@ echo "test1" > testencrypt/haha
 echo "test2" > testencrypt/sub1/haha
 echo "test3" > testencrypt/sub2/plop
 echo "test4" > testencrypt/hohoooo
-foldercrypt --crypt testencrypt
+conceal --crypt testencrypt
 echo "Close it..."
-foldercrypt --close testencrypt
+conceal --close testencrypt
 echo "Change password... Please enter a BAD password."
-foldercrypt --change-pass testencrypt
+conceal --change-pass testencrypt
 echo "Change password... Please DON'T match confirmation and password."
-foldercrypt --change-pass testencrypt
+conceal --change-pass testencrypt
 echo "Change password... Please enter a GOOD password."
-foldercrypt --change-pass testencrypt
+conceal --change-pass testencrypt
 echo "Open it... Please enter a BAD password."
-foldercrypt --open testencrypt
+conceal --open testencrypt
 echo "Open it... Please enter the GOOD password."
-foldercrypt --open testencrypt
+conceal --open testencrypt
 echo "Decrypt it... Please enter a BAD password."
-foldercrypt --decrypt testencrypt
+conceal --decrypt testencrypt
 echo "Decrypt it... Please enter the GOOD password."
-foldercrypt --decrypt testencrypt
+conceal --decrypt testencrypt

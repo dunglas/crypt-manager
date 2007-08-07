@@ -2,7 +2,7 @@
 #include /usr/share/cdbs/1/rules/debhelper.mk
 #DEB_PYTHON_SYSTEM=pycentral
 #include /usr/share/cdbs/1/class/python-distutils.mk
-#DEB_PYTHON_SETUP_CMD_foldercrypt=foldercrypt/setup.py
+#DEB_PYTHON_SETUP_CMD_conceal=conceal/setup.py
 
 PYTHON	:= /usr/bin/python
 PYVER   := $(shell $(PYTHON) -c 'import sys; print sys.version[:3]')
@@ -11,10 +11,10 @@ build: build-stamp
 
 build-stamp:
 	dh_testdir
-	cd foldercrypt && python setup.py build && cd -
-	cd foldercrypt-gtk && python setup.py build && cd -
-	cd foldercrypt-kde && python setup.py build && cd -
-	cd nautilus-foldercrypt && python setup.py build && cd -
+	cd conceal && python setup.py build && cd -
+	cd conceal-gtk && python setup.py build && cd -
+	cd conceal-kde && python setup.py build && cd -
+	cd nautilus-conceal && python setup.py build && cd -
 	touch build-stamp
 
 clean:
@@ -22,12 +22,12 @@ clean:
 	dh_testroot
 	rm -f build-stamp
 	rm -rf build
-	rm -rf $(CURDIR)/foldercrypt/build
-	rm -rf $(CURDIR)/foldercrypt-gtk/build
-	rm -rf $(CURDIR)/foldercrypt-kde/build
-	rm -rf $(CURDIR)/nautilus-foldercrypt/build
-	rm $(CURDIR)/foldercrypt-kde/kcm_foldercrypt.cpp
-	rm $(CURDIR)/foldercrypt-kde/install_log.txt
+	rm -rf $(CURDIR)/conceal/build
+	rm -rf $(CURDIR)/conceal-gtk/build
+	rm -rf $(CURDIR)/conceal-kde/build
+	rm -rf $(CURDIR)/nautilus-conceal/build
+	rm $(CURDIR)/conceal-kde/kcm_conceal.cpp
+	rm $(CURDIR)/conceal-kde/install_log.txt
 	-find . -name '*.py[co]' | xargs rm -f
 	dh_clean
 
@@ -36,25 +36,25 @@ install: build
 	dh_testroot
 	dh_clean -k 
 	dh_installdirs
-	cd foldercrypt && python setup.py install \
-		--root=$(CURDIR)/debian/foldercrypt && cd -
-	cd foldercrypt-gtk && python setup.py install \
-		--root=$(CURDIR)/debian/foldercrypt-gtk && cd -
-	cd foldercrypt-kde && python setup.py install \
-		--root=$(CURDIR)/debian/foldercrypt-kde && cd -
-	cd nautilus-foldercrypt && python setup.py install \
-		--root=$(CURDIR)/debian/nautilus-foldercrypt && cd -
+	cd conceal && python setup.py install \
+		--root=$(CURDIR)/debian/conceal && cd -
+	cd conceal-gtk && python setup.py install \
+		--root=$(CURDIR)/debian/conceal-gtk && cd -
+	cd conceal-kde && python setup.py install \
+		--root=$(CURDIR)/debian/conceal-kde && cd -
+	cd nautilus-conceal && python setup.py install \
+		--root=$(CURDIR)/debian/nautilus-conceal && cd -
 
 # Build architecture-independent files here.
 binary-indep: build install
-	mkdir -p $(CURDIR)/debian/foldercrypt/usr/share/doc/foldercrypt
-	mkdir -p $(CURDIR)/debian/foldercrypt-gtk/usr/share/doc/foldercrypt-gtk
-	mkdir -p $(CURDIR)/debian/nautilus-foldercrypt/usr/share/doc/nautilus-foldercrypt
-	mkdir -p $(CURDIR)/debian/foldercrypt-kde/usr/share/doc/foldercrypt-kde
-	gzip -c -9 $(CURDIR)/debian/changelog > $(CURDIR)/debian/foldercrypt/usr/share/doc/foldercrypt/changelog.Debian.gz
-	cp $(CURDIR)/debian/foldercrypt/usr/share/doc/foldercrypt/changelog.Debian.gz $(CURDIR)/debian/foldercrypt-gtk/usr/share/doc/foldercrypt-gtk
-	cp $(CURDIR)/debian/foldercrypt/usr/share/doc/foldercrypt/changelog.Debian.gz $(CURDIR)/debian/nautilus-foldercrypt/usr/share/doc/nautilus-foldercrypt
-	cp $(CURDIR)/debian/foldercrypt/usr/share/doc/foldercrypt/changelog.Debian.gz $(CURDIR)/debian/foldercrypt-kde/usr/share/doc/foldercrypt-kde
+	mkdir -p $(CURDIR)/debian/conceal/usr/share/doc/conceal
+	mkdir -p $(CURDIR)/debian/conceal-gtk/usr/share/doc/conceal-gtk
+	mkdir -p $(CURDIR)/debian/nautilus-conceal/usr/share/doc/nautilus-conceal
+	mkdir -p $(CURDIR)/debian/conceal-kde/usr/share/doc/conceal-kde
+	gzip -c -9 $(CURDIR)/debian/changelog > $(CURDIR)/debian/conceal/usr/share/doc/conceal/changelog.Debian.gz
+	cp $(CURDIR)/debian/conceal/usr/share/doc/conceal/changelog.Debian.gz $(CURDIR)/debian/conceal-gtk/usr/share/doc/conceal-gtk
+	cp $(CURDIR)/debian/conceal/usr/share/doc/conceal/changelog.Debian.gz $(CURDIR)/debian/nautilus-conceal/usr/share/doc/nautilus-conceal
+	cp $(CURDIR)/debian/conceal/usr/share/doc/conceal/changelog.Debian.gz $(CURDIR)/debian/conceal-kde/usr/share/doc/conceal-kde
 	dh_testdir
 	dh_testroot
 	dh_installdocs README

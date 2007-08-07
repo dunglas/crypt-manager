@@ -27,12 +27,12 @@
 
 from distutils.core import setup
 
-setup(name="foldercrypt-gtk",
+setup(name="conceal-gtk",
     version="0.0.2",
     author="Kévin Dunglas",
     author_email="dunglas@gmail.com",
     url="http://code.google.com/p/crypt-manager/",
     license = "GPL",
-    scripts = ["foldercrypt-gtk"],
-    data_files = [("/usr/share/foldercrypt", ["share/foldercrypt.glade",
-        "share/icon.png", "share/foldercrypt-gtk.desktop"])])
+    scripts = ["conceal-gtk"],
+    data_files = [("/usr/share/conceal", ["share/conceal.glade",
+        "share/icon.png", "share/conceal-gtk.desktop"])])
