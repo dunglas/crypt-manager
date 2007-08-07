@@ -293,7 +293,7 @@ class Encfs:
     def unmount(self):
         """Unmount an encrypted directory"""
         print "Unmounting..."
-        subprocess.Popen([FUSERMOUNT, "-u", self.folder.path])
+        subprocess.Popen([FUSERMOUNT, "-z", "-u", self.folder.path])
     
     def is_mounted(self):
         """Test if a folder is mounted"""
