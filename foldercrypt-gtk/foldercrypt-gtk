@@ -199,10 +199,13 @@ class GladeHandlers:
     def on_decrypt_apply_clicked(event):
         Sdecrypt(windows["decrypt"]["decrypt_path"].get_text(),\
             windows["decrypt"]["decrypt_password"].get_text())
-        windows.hide_or_quit("decrypt")
+        windows["decrypt"]["decrypt"].set_sensitive(False)
 
     def on_error_close_clicked(event):
-        windows["error"]["error"].destroy()
+        windows.hide_or_quit("error", 1)
+    
+    def on_error_delete_event(event, state):
+        windows.hide_or_quit("error", 1)
     
     def on_manager_list_cursor_changed(event):
         (m, i) = windows["manager"]["manager_list"].get_selection().\
@@ -428,6 +431,7 @@ class Crypt:
     def __init__(self, path=None):
         windows.load("crypt")
         if path is not None and os.path.exists(path):
+            path = foldercrypt.Util().fullpath(path)
             windows["crypt"]["crypt_folder"].set_current_folder(path)
             windows["crypt"]["crypt_folder"].set_sensitive(False)
 
@@ -481,8 +485,7 @@ class Open:
         try:
             folder = folders.get(path)
         except foldercrypt.NoEncrypted:
-            Util().error_box(_("%s is not an encrypted directory.")
-                % folder.path)
+            Util().error_box(_("%s is not an encrypted directory.") % path)
             return
         
         # Try to get password in default keyring
@@ -529,9 +532,14 @@ class Open:
 class Decrypt:
     """Decrypt window"""
     def __init__(self, path):
-        windows.load("decrypt")
-        windows["decrypt"]["decrypt_password"].set_text("")
-        windows["decrypt"]["decrypt_path"].set_text(path)
+        try:
+            folder = folders.get(path)
+        except:
+            Util().error_box("This is not an encrypted directory")
+        else:
+            windows.load("decrypt")
+            windows["decrypt"]["decrypt_password"].set_text("")
+            windows["decrypt"]["decrypt_path"].set_text(path)
 
 
 class Sdecrypt:
@@ -540,7 +548,9 @@ class Sdecrypt:
         global progressbar
         progressbar = Progressbar()
         r = Rdecrypt()
+        print r
         r.set_para(path, password)
+        print "oéoé"
         windows["decrypt"]["decrypt"].destroy()
         progressbar.start()
         r.start()
@@ -551,29 +561,26 @@ class Rdecrypt(threading.Thread):
     
     def set_para(self, path, password):
         """Set what path and password to use"""
+        print "set para.."
         self.path = path
         self.password = password
 
     def run(self):
         """Main"""
+        print "yeah..."
         try:
             folder = folders.get(self.path)
         except foldercrypt.NoEncrypted:
             progressbar.stop()
-            try:
-                windows["manager"].set_sensitive(True)
-            except:
-                pass
-            Util().error_box(_("%s is not an encrypted directory.") % self.path)  
+            Util().error_box(_("%s is not an encrypted directory.") % self.path)
+            windows.hide_or_quit("decrypt")
+            return
         try:
             foldercrypt.Manage(folder).decrypt(self.password)
         except foldercrypt.BadPassword:
             progressbar.stop()
-            try:
-                windows["manager"].set_sensitive(True)
-            except:
-                pass
             Util().error_box(_("Your password is wrong."))
+            windows["decrypt"]["decrypt"].set_sensitive(True)
         else:
             folders.rem(folder)
             progressbar.stop()
@@ -617,7 +624,8 @@ class Unmount:
         try:
             folder = folders.get(path)
         except foldercrypt.NoEncrypted:
-            Util().error_box(_("%s is not a crypted directory.") % folder.path)
+            Util().error_box(_("%s is not an encrypted directory.") % path)
+            return
         try:
             folder = foldercrypt.Manage(folder).unmount()
         except foldercrypt.NotOpened:
@@ -627,7 +635,7 @@ class Unmount:
             try:
                 manager.update()
             except:
-                pass
+                exit()
 
 
 class ChangePassword:
@@ -697,12 +705,11 @@ Options:
 --open DIRECTORY            open an encrypted folder
 --info                      display this help message
 --close DIRECTORY           close an encrypted folder
---decrypt DIRECTORY         decrypt encrypted folder
 --version                   display version information""") % APPNAME
         exit(msg)
         
     elif len(sys.argv) == 2 and sys.argv[1] == "--version":
-        msg = "%s %s" % APPNAME, APPVERSION
+        msg = "%s %s" % (APPNAME, APPVERSION)
         exit(msg)
     
     elif len(sys.argv) == 2 and sys.argv[1] == "--clean":
@@ -721,8 +728,8 @@ Options:
     elif len(sys.argv) == 3 and sys.argv[1] == "--open":
         Open(sys.argv[2])
 
-    elif len(sys.argv) == 3 and sys.argv[1] == "--decrypt":
-        Decrypt(sys.argv[2])
+#    elif len(sys.argv) == 3 and sys.argv[1] == "--decrypt":
+#        Decrypt(sys.argv[2])
 
     else:
         msg = """Invalid option
