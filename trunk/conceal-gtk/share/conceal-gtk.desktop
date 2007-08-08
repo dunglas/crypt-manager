@@ -1,7 +1,7 @@
 [Desktop Entry]
-Name=Encrypted folders
+Name=Encrypted directories
 Name[fr]=Dossiers chiffrés
-Comment=Add and manage encrypted folders
+Comment=Add and manage encrypted directories
 Comment[fr]=Ajouter et gérer les dossiers chiffrés
 Exec=conceal-gtk
 Icon=/usr/share/conceal/icon.png

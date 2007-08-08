@@ -197,9 +197,9 @@ class GladeHandlers:
             windows["open"]["open_savechoice"].set_sensitive(False)
     
     def on_decrypt_apply_clicked(event):
+        windows["decrypt"]["decrypt"].set_sensitive(False)
         Sdecrypt(windows["decrypt"]["decrypt_path"].get_text(),\
             windows["decrypt"]["decrypt_password"].get_text())
-        windows["decrypt"]["decrypt"].set_sensitive(False)
 
     def on_error_close_clicked(event):
         windows.hide_or_quit("error", 1)
@@ -548,10 +548,7 @@ class Sdecrypt:
         global progressbar
         progressbar = Progressbar()
         r = Rdecrypt()
-        print r
         r.set_para(path, password)
-        print "oéoé"
-        windows["decrypt"]["decrypt"].destroy()
         progressbar.start()
         r.start()
 
@@ -561,19 +558,17 @@ class Rdecrypt(threading.Thread):
     
     def set_para(self, path, password):
         """Set what path and password to use"""
-        print "set para.."
         self.path = path
         self.password = password
 
     def run(self):
         """Main"""
-        print "yeah..."
         try:
             folder = folders.get(self.path)
         except conceal.NoEncrypted:
             progressbar.stop()
             Util().error_box(_("%s is not an encrypted directory.") % self.path)
-            windows.hide_or_quit("decrypt")
+            windows["decrypt"]["decrypt"].destroy()
             return
         try:
             conceal.Manage(folder).decrypt(self.password)
@@ -687,7 +682,8 @@ def exit(para=0):
     sys.exit(para)
 
 
-if __name__ == '__main__':
+def main():
+    global data, folders, manager, windows, loop
     loop = False
     data = conceal.Data()
     folders = data.folders
@@ -698,14 +694,14 @@ if __name__ == '__main__':
     if len(sys.argv) == 1:
         manager = Manager()
         
-    elif len(sys.argv) == 2 and sys.argv[1] == "--info":
+    elif len(sys.argv) == 2 and (sys.argv[1] == "--info" or sys.argv[1] == "-i"):
         msg = _("""%s, an encrypted folder manager
 Options:
---crypt [DIRECTORY]         encrypt directory
---open DIRECTORY            open an encrypted folder
---info                      display this help message
---close DIRECTORY           close an encrypted folder
---version                   display version information""") % APPNAME
+--version								show program's version number and exit
+-i, --info								show this help message and exit
+-e [DIRECTORY], --encrypt [DIRECTORY]	encrypt directory
+-o DIRECTORY, --open DIRECTORY			open an encrypted folder
+-c DIRECTORY, --close DIRECTORY			close an encrypted folder""") % APPNAME
         exit(msg)
         
     elif len(sys.argv) == 2 and sys.argv[1] == "--version":
@@ -716,20 +712,20 @@ Options:
         folders.clean()
         exit()
 
-    elif len(sys.argv) >= 2 and len(sys.argv) <= 3 and sys.argv[1] == "--crypt":
+    elif len(sys.argv) >= 2 and len(sys.argv) <= 3 and\
+        (sys.argv[1] == "--encrypt" or sys.argv[1] == "-e"):
         if len(sys.argv) == 3:
             c = Crypt(sys.argv[2])
         else:
             c = Crypt()
 
-    elif len(sys.argv) == 3 and sys.argv[1] == "--close":
+    elif len(sys.argv) == 3 and (sys.argv[1] == "--close" or\
+        sys.argv[1] == "-c"):
         Unmount(sys.argv[2])
 
-    elif len(sys.argv) == 3 and sys.argv[1] == "--open":
+    elif len(sys.argv) == 3 and (sys.argv[1] == "--open" or\
+        sys.argv[1] == "-o"):
         Open(sys.argv[2])
-
-#    elif len(sys.argv) == 3 and sys.argv[1] == "--decrypt":
-#        Decrypt(sys.argv[2])
 
     else:
         msg = """Invalid option
@@ -739,3 +735,6 @@ Try « %s --info » to get more information""" % APPNAME
     loop = True
     gtk.main()
     exit()
+
+if __name__ == '__main__':
+    main()

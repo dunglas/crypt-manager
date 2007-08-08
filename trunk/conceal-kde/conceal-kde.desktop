@@ -1,5 +1,5 @@
 [Desktop Entry]
-Name=Encrypted folders
+Name=Encrypted directories
 Name[fr]=Dossiers chiffrés
 Icon=/usr/share/conceal/icon.png
 Encoding=UTF-8
@@ -10,5 +10,5 @@ X-KDE-RootOnly=false
 Type=Application
 Exec=kcmshell Security/conceal-kde
 Categories=Qt;KDE;X-KDE-settings-security;
-GenericName=Encrypted folder manager for Linux
+GenericName=Encrypted directories manager for Linux
 GenericName[fr]=Gestionnaire de dossiers chiffrés pour Linux
