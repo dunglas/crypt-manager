@@ -36,7 +36,7 @@ import cPickle
 # It is located at ~/.Crypt if in $HOME
 # or /mount-point/.Crypt-user (like Trash).
 MTAB = "/etc/mtab"
-DEFAULT_CRYPTDIR = os.environ['HOME'] + "/.Crypt"
+DEFAULT_CRYPTDIR = os.environ['HOME'] + "/.conceal/crypt"
 CRYPTDIR = DEFAULT_CRYPTDIR
 CACHE = os.environ['HOME'] + "/.conceal/cache"
 TMPDIR ="/tmp/conceal"
@@ -197,6 +197,9 @@ class Folders:
     """Folders list"""
     def __init__(self):
         self.li = []
+    
+    def __getitem__(self, key):
+        return self.li[key]
 
     def add(self, folder):
         """Add a folder"""
