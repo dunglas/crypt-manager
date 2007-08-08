@@ -62,6 +62,7 @@ class NullPassword(Exception):
     def __str__(self):
         return "Password can not be null"
 
+
 class AlreadyExists(Exception):
     def __str__(self):
         return "This folder already exists"
@@ -99,6 +100,7 @@ class NotDir(Exception):
 #    def __str__(self):
 #        return "This directory and all his files must be writable"
 #
+
 
 class UnexpectedError(Exception):
     def __str__(self):
@@ -415,7 +417,9 @@ class Manage:
         try:
             self.mount(password)
         except AlreadyOpened:
-            pass
+            self.unmount()
+            self.decrypt(password)
+            return
         except BadPassword:
             raise BadPassword()
             return
