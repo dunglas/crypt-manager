@@ -42,22 +42,22 @@ echo "test1" > testencrypt/haha
 echo "test2" > testencrypt/sub1/haha
 echo "test3" > testencrypt/sub2/plop
 echo "test4" > testencrypt/hohoooo
-echo -e "keyes\n" | conceal -e testencrypt
+echo -e "keyes\n" | conceal -s -e testencrypt
 echo "Close it..."
 conceal -c testencrypt
 echo "Change password: BAD password..."
-echo -e "plop\nlapin\nlapin\n" | conceal -p testencrypt
+echo -e "plop\nlapin\nlapin\n" | conceal -s -p testencrypt
 echo "Change password: passwords DO NOT match..."
-echo -e "keyes\nlapin\npinla\n" | conceal -p testencrypt
+echo -e "keyes\nlapin\npinla\n" | conceal -s -p testencrypt
 echo "Change password: GOOD password and passwords match..."
-echo -e "keyes\nlapin\nlapin\n" | conceal -p testencrypt
+echo -e "keyes\nlapin\nlapin\n" | conceal -s -p testencrypt
 echo "Open it: BAD password..."
-rvho -e "plop\n" | conceal -o testencrypt
+echo -e "plop\n" | conceal -s -o testencrypt
 echo "Open it: GOOD password..."
-echo -e "lapin\n" | conceal -o testencrypt
+echo -e "lapin\n" | conceal -s -o testencrypt
 conceal
 echo "Decrypt it: BAD password..."
-echo -e "plop\n" | conceal -d testencrypt
+echo -e "plop\n" | conceal -s -d testencrypt
 echo "Decrypt it: GOOD password..."
-echo -e "lapin\n" | conceal -d testencrypt
+echo -e "lapin\n" | conceal -s -d testencrypt
 conceal

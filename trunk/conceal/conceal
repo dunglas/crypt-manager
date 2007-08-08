@@ -194,7 +194,8 @@ class Main():
         try:
             folder = self.folders.get(self.options.decrypt)
         except conceal.NoEncrypted:
-            exit(_("%s is not an encrypted directory.") % self.options.decrypt)
+            print _("%s is not an encrypted directory.") % self.options.decrypt
+            sys.exit(2)
         password = self.getpass()
         try:
             conceal.Manage(folder).decrypt(password)
