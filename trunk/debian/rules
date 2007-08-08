@@ -20,14 +20,9 @@ build-stamp:
 clean:
 	dh_testdir
 	dh_testroot
-	rm -f build-stamp
-	rm -rf build
-	rm -rf $(CURDIR)/conceal/build
-	rm -rf $(CURDIR)/conceal-gtk/build
-	rm -rf $(CURDIR)/conceal-kde/build
-	rm -rf $(CURDIR)/nautilus-conceal/build
-	rm $(CURDIR)/conceal-kde/kcm_conceal.cpp
-	rm $(CURDIR)/conceal-kde/install_log.txt
+	-find . -name '.svn' | xargs rm -Rf
+	-find . -name 'build' | xargs rm -Rf
+	-find . -name 'build-stamp' | xargs rm -Rf
 	-find . -name '*.py[co]' | xargs rm -f
 	dh_clean
 
