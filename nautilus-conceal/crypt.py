@@ -48,7 +48,7 @@ class concealExtension(nautilus.InfoProvider, nautilus.MenuProvider):
      
     def _clicked(self, menu, file):
         if self.status == 1:
-            p = subprocess.Popen(["conceal-gtk", "--crypt", self.filename])
+            p = subprocess.Popen(["conceal-gtk", "--encrypt", self.filename])
             if p.poll() == 0:
                 file.add_emblem(EMBLEM)
         if self.status == 2:

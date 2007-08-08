@@ -19,11 +19,9 @@ fi
 echo "Open a directory that don't exists..."
 conceal-gtk --open dontexists
 echo "Encrypt a directory that don't exists..."
-conceal-gtk --crypt dontexists
+conceal-gtk --encrypt dontexists
 echo "Close a directory that don't exists..."
 conceal-gtk --close dontexists
-echo "Decrypt a directory that don't exists..."
-conceal-gtk --decrypt dontexists
 
 echo "Create a directory with some files and subdirecotries and encrypt it..."
 
@@ -40,7 +38,7 @@ echo "test1" > testencrypt/haha
 echo "test2" > testencrypt/sub1/haha
 echo "test3" > testencrypt/sub2/plop
 echo "test4" > testencrypt/hohoooo
-conceal-gtk --crypt testencrypt
+conceal-gtk --encrypt testencrypt
 echo "Close it..."
 conceal-gtk --close testencrypt
 
@@ -49,7 +47,3 @@ echo "Open it... Please enter a BAD password."
 conceal-gtk --open testencrypt
 echo "Open it... Please enter the GOOD password."
 conceal-gtk --open testencrypt
-echo "Decrypt it... Please enter a BAD password."
-conceal-gtk --decrypt testencrypt
-echo "Decrypt it... Please enter the GOOD password."
-conceal-gtk --decrypt testencrypt
