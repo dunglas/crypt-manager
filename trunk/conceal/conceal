@@ -25,6 +25,7 @@
 
 import os
 import sys
+from optparse import OptionParser
 import getpass
 import gettext
 import locale
@@ -37,123 +38,186 @@ APPVERSION="0.0.2"
 CACHE = os.environ['HOME'] + "/.conceal/cache"
 
 
-def exit(para=0):
-    data.save()
-    sys.exit(para)
-
-
-if __name__ == '__main__':
-    data = conceal.Data()
-    folders = data.folders
-    folders.clean()
+class Main():
+    """Main class"""
+    def __init__(self):
     
-    # Command Line Interface
-    if len(sys.argv) == 2 and sys.argv[1] == "--help":
-        msg = _("""%s, an encrypted folder manager
-Options:
---crypt DIRECTORY       encrypt directory
---change-pass DIRECTORY change a password
---open DIRECTORY [IDLE] open an encrypted folder, close after IDLE (in minutes)
---help                  display this help message
---close DIRECTORY       close an encrypted folder
---decrypt DIRECTORY     decrypt encrypted folder
---version               display version information""") % APPNAME
-        exit(msg)
-
-    elif len(sys.argv) >= 2 and sys.argv[1] == "--info":
-        if len(sys.argv) == 2:
-            print _("Folder list:")
-            print folders.li
-        if len(sys.argv) == 3:
-            print _("Open:")
-            print folders.get(sys.argv[2]).opened
-            print _("Digest:")
-            print folders.get(sys.argv[2]).digest
-        
-    elif len(sys.argv) == 2 and sys.argv[1] == "--version":
-        msg = APPNAME + " " + APPVERSION
-        exit(msg)
+        self.data = conceal.Data()
+        self.folders = self.data.folders
+        self.folders.clean()
     
-    elif len(sys.argv) == 2 and sys.argv[1] == "--clean":
-        folders.clean()
-        exit()
+        parser = OptionParser(version="%prog " + APPVERSION)
+        parser.add_option("-e", "--encrypt", dest="crypt",\
+            help="encrypt DIRECTORY", metavar="DIRECTORY")
+        parser.add_option("-c", "--close", dest="close",\
+            help="close DIRECTORY", metavar="DIRECTORY")
+        parser.add_option("-o", "--open", dest="_open",\
+            help="open encrypted DIRECTORY", metavar="DIRECTORY")
+        parser.add_option("-i", "--idle", dest="idle", type="int",\
+            help="automaticaly close after IDLE time", metavar="IDLE")
+        parser.add_option("-d", "--decrypt", dest="decrypt",\
+            help="decrypt DIRECTORY", metavar="DIRECTORY")
+        parser.add_option("-p", "--change-password", dest="change_password",\
+            help="change the password of DIRECTORY", metavar="DIRECTORY")
+        parser.add_option("-l", "--clean", action="store_true", dest="clean",\
+            help="Clean directories list")
+        parser.add_option("-s", "--stdin", action="store_true", dest="stdin",\
+            default=False, help="Get input from stdin")
+    
+        (self.options, self.args) = parser.parse_args()
 
-    elif len(sys.argv) == 3 and sys.argv[1] == "--crypt":
+        #parser.error("only use one option at time")
+            
+        if self.options.idle is not None and self.options._open is None:
+            parser.error("--idle option can only be used with --open option")
+            
+        elif self.options.crypt is not None:
+            self.crypt()
+            
+        elif self.options.close is not None:
+            self.close()
+            
+        elif self.options._open is not None:
+            self._open()
+            
+        elif self.options.decrypt is not None:
+            self.decrypt()
+            
+        elif self.options.change_password is not None:
+            self.change_password()
+            
+        elif self.options.clean is not None:
+            self.clean()
+            
+        else:
+            self.folder_list()
+
+    def exit(self):
+        self.data.save()
+        sys.exit()
+    
+    def getpass(self, text=None):
+        if text is None:
+            text = _("Password:")
+        if self.options.stdin:
+            return raw_input()
         try:
-            folder = conceal.Folder(sys.argv[2])
+            return getpass.getpass(text)
+        except:
+            print _("Error: invalid argument.")
+            print _("Try using --stdin option.")
+            sys.exit(2)
+
+    def clean(self):
+        self.folders.clean()
+        self.exit()
+
+    def crypt(self):
+        try:
+            folder = conceal.Folder(self.options.crypt)
         except conceal.NotDir:
-            exit(_( "%s is not a directory.") % sys.argv[2])
+            print _("%s is not a directory.") % self.options.crypt
+            sys.exit(2)
+            
+        password = self.getpass()
         
-        password = getpass.getpass("Password:")
         try:
             conceal.Manage(folder).crypt(password)
         except conceal.AlreadyEncrypted:
-            exit(_( "%s is already a crypted folder.") % folder.path)
-        folders.add(folder)
-        exit()
+            print _("%s is already an encrypted directory.") % folder.path
+            sys.exit(2)
+        
+        self.folders.add(folder)
+        self.exit()
 
-    elif len(sys.argv) == 3 and sys.argv[1] == "--change-pass":
+    def change_password(self):
         try:
-            folder = folders.get(sys.argv[2])
+            folder = self.folders.get(self.options.change_password)
         except conceal.NoEncrypted:
-            exit(_("%s is not a crypted directory.") % sys.argv[2])
-        old = getpass.getpass(_("Old password:"))
-        new = getpass.getpass(_("New password:"))
-        confirmation = getpass.getpass(_("Confirmation:"))
+            print _("%s is not an encrypted directory.") %\
+                self.options.change_password
+            sys.exit(2)
+        
+        current = self.getpass(_("Enter current directory password:"))
+        new = self.getpass(_("Enter new directory password:"))
+        confirmation = self.getpass(_("Retype new directory password:"))
+        
         if not new == confirmation:
-            exit(_("Password do not match with is confirmation."))
+            print _("Sorry, passwords do not match.")
+            sys.exit(2)
+        
         try:
-            conceal.Manage(folder).change_password(old, new)
+            conceal.Manage(folder).change_password(current, new)
         except conceal.BadPassword:
-            exit(_("Wrong password."))
+            print _("Wrong password.")
+            print _("Password unchanged.")
+            sys.exit(2)
             
 
-    elif len(sys.argv) == 3 and sys.argv[1] == "--close":
+    def close(self):
         try:
-            folder = folders.get(sys.argv[2])
+            folder = self.folders.get(self.options.close)
         except conceal.NoEncrypted:
-            exit(_("%s is not a crypted directory.") % sys.argv[2])
+            print _("%s is not an encrypted directory.") % self.options.close
+            sys.exit(2)
+        
         try:
             folder = conceal.Manage(folder).unmount()
         except conceal.NotOpened:
-            exit(_("%s folder is not opened.") % folder.path)
-        folders.update(folder)
-        exit()
+            print _("Directory %s is not opened.") % folder.path
+            sys.exit(2)
+        
+        self.folders.update(folder)
+        self.exit()
 
-    elif (len(sys.argv) == 3 or len(sys.argv) == 4) and sys.argv[1] == "--open":
+    def _open(self):
         try:
-            folder = folders.get(sys.argv[2])
+            folder = self.folders.get(self.options._open)
         except conceal.NoEncrypted:
-            exit(_("%s is not a crypted directory.") % sys.argv[2])
-        password = getpass.getpass("Password: ")
-        if len(sys.argv) == 4 and sys.argv[3].isdigit():
-            idle = 4
-        else:
-            idle = None
+            exit(_("%s is not an encrypted directory.") % self.options._open)
+        password = self.getpass()
+        
         try:
-            folder = conceal.Manage(folder).mount(password, idle)
+            folder = conceal.Manage(folder).mount(password, self.options.idle)
         except conceal.AlreadyOpened:
-            exit(_("%s is already opened.") % folder.path)
+            print _("%s is already opened.") % folder.path
+            sys.exit(2)
+        
         except conceal.BadPassword:
-            exit(_("Your password is wrong."))
-        else:
-            folders.update(folder)
-            exit()
+            print _("Wrong password.")
+            sys.exit(2)
 
-    elif len(sys.argv) == 3 and sys.argv[1] == "--decrypt":
+        self.folders.update(folder)
+        self.exit()
+
+    def decrypt(self):
         try:
-            folder = folders.get(sys.argv[2])
+            folder = self.folders.get(self.options.decrypt)
         except conceal.NoEncrypted:
-            exit(_("%s is not a crypted directory.") % sys.argv[2])
-        password = getpass.getpass(_("Password:"))
+            exit(_("%s is not an encrypted directory.") % self.options.decrypt)
+        password = self.getpass()
         try:
             conceal.Manage(folder).decrypt(password)
         except conceal.BadPassword:
-            exit(_("Your password is wrong."))
-        #folders.rem(folder)
-        exit()
+            print _("Wrong password.")
+            sys.exit(2)
+        self.folders.rem(folder)
+        self.exit()
 
-    else:
-        msg = _("""Invalid option
-Try « %s --help » to get more information""") % APPNAME
-        exit(msg)
+    def folder_list(self):
+        if len(self.folders.li) > 0:
+            print "%s	%s" % (_("Open"), _("Path"))
+
+            for f in self.folders.li:
+                if f.opened:
+                    o = _("Yes")
+                else:
+                    o = _("No")
+                
+                print "%s	%s" % (o, f.path)
+        else:
+            print _("There is no encrypted directory.")
+        self.exit()
+
+if __name__ == '__main__':
+    Main()

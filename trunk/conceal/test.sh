@@ -10,22 +10,22 @@ sudo python setup.py build
 sudo python setup.py install
 conceal --version
 conceal --help
-
+conceal
 if [ -e dontexists ]
 then
     rm -Rf dontexists
 fi
 
 echo "Open a directory that don't exists..."
-conceal --open dontexists
+conceal -o dontexists
 echo "Encrypt a directory that don't exists..."
-conceal --crypt dontexists
+conceal -e dontexists
 echo "Close a directory that don't exists..."
-conceal --close dontexists
+conceal -c dontexists
 echo "Decrypt a directory that don't exists..."
-conceal --decrypt dontexists
+conceal -d dontexists
 echo "Change the password of a directory that don't exists..."
-conceal --change-pass dontexists
+conceal -p dontexists
 
 echo "Create a directory with some files and subdirecotries and encrypt it..."
 
@@ -42,20 +42,22 @@ echo "test1" > testencrypt/haha
 echo "test2" > testencrypt/sub1/haha
 echo "test3" > testencrypt/sub2/plop
 echo "test4" > testencrypt/hohoooo
-conceal --crypt testencrypt
+echo -e "keyes\n" | conceal -e testencrypt
 echo "Close it..."
-conceal --close testencrypt
-echo "Change password... Please enter a BAD password."
-conceal --change-pass testencrypt
-echo "Change password... Please DON'T match confirmation and password."
-conceal --change-pass testencrypt
-echo "Change password... Please enter a GOOD password."
-conceal --change-pass testencrypt
-echo "Open it... Please enter a BAD password."
-conceal --open testencrypt
-echo "Open it... Please enter the GOOD password."
-conceal --open testencrypt
-echo "Decrypt it... Please enter a BAD password."
-conceal --decrypt testencrypt
-echo "Decrypt it... Please enter the GOOD password."
-conceal --decrypt testencrypt
+conceal -c testencrypt
+echo "Change password: BAD password..."
+echo -e "plop\nlapin\nlapin\n" | conceal -p testencrypt
+echo "Change password: passwords DO NOT match..."
+echo -e "keyes\nlapin\npinla\n" | conceal -p testencrypt
+echo "Change password: GOOD password and passwords match..."
+echo -e "keyes\nlapin\nlapin\n" | conceal -p testencrypt
+echo "Open it: BAD password..."
+rvho -e "plop\n" | conceal -o testencrypt
+echo "Open it: GOOD password..."
+echo -e "lapin\n" | conceal -o testencrypt
+conceal
+echo "Decrypt it: BAD password..."
+echo -e "plop\n" | conceal -d testencrypt
+echo "Decrypt it: GOOD password..."
+echo -e "lapin\n" | conceal -d testencrypt
+conceal
