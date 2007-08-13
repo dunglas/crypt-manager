@@ -176,6 +176,14 @@ class Util:
         for f in os.listdir(src):
             shutil.move(os.path.join(src, f), os.path.join(dst, f))
 
+#    def mountpoint(self, path):
+#        """Return the device mount point"""
+#        if (os.path.ismount(path) or len(path) == 0):
+#            return path
+#        else:
+#            return mountpoint(os.path.split(path)[0])
+
+
 class Data:
     def __init__(self):
         if not os.path.exists(os.path.join(CACHE, "folders")):

@@ -71,13 +71,13 @@ class concealExtension(nautilus.InfoProvider, nautilus.MenuProvider):
         """1: unencrypted, 2: opened, 3: closed"""
         if self.status == 1:
             self.entry = _("Encrypt")
-            self.desc = _("Encrypt this folder using Crypt Manager")
+            self.desc = _("Encrypt this folder using Conceal")
         elif self.status == 2:
-            self.entry = _("Close")
-            self.desc = _("Close this encrypted folder")
+            self.entry = _("Close encrypted directory")
+            self.desc = _("Close this encrypted directory using Conceal")
         else:
-            self.entry = _("Open")
-            self.desc = _("Open this encrypted folder")
+            self.entry = _("Open encrypted directory")
+            self.desc = _("Open this encrypted directory using Conceal")
 
     def update_file_info(self, file):
         self.filename = urllib.unquote(file.get_uri()[7:])
