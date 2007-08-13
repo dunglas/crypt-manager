@@ -35,4 +35,4 @@ setup(name="conceal-gtk",
     license = "GPL",
     scripts = ["conceal-gtk"],
     data_files = [("/usr/share/conceal", ["share/conceal.glade",
-        "share/icon.png", "share/conceal-gtk.desktop"])])
+        "share/icon.png", "share/conceal-gtk.desktop", "share/locked.png"])])

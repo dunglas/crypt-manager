@@ -36,6 +36,7 @@ __builtin__._ = gettext.gettext
 
 # Crypt Manager extension for nautilus
 EMBLEM = "readonly"
+ICON = "/usr/share/conceal/locked.png"
 
 class concealExtension(nautilus.InfoProvider, nautilus.MenuProvider):
     def __init__(self):
@@ -70,7 +71,7 @@ class concealExtension(nautilus.InfoProvider, nautilus.MenuProvider):
     def _get_messages(self):
         """1: unencrypted, 2: opened, 3: closed"""
         if self.status == 1:
-            self.entry = _("Encrypt")
+            self.entry = _("Encrypt...")
             self.desc = _("Encrypt this folder using Conceal")
         elif self.status == 2:
             self.entry = _("Close encrypted directory")
@@ -120,7 +121,8 @@ class concealExtension(nautilus.InfoProvider, nautilus.MenuProvider):
         menu = nautilus.MenuItem(
             "NautilusPython::concealExtension",
             self.entry,
-            self.desc
+            self.desc,
+            ICON
         )
         menu.connect("activate", self._clicked, file)
         return menu,
