@@ -1,10 +1,5 @@
 .\"                                      Hey, EMACS: -*- nroff -*-
-.\" First parameter, NAME, should be all caps
-.\" Second parameter, SECTION, should be 1-8, maybe w/ subsection
-.\" other parameters are allowed: see man(7), man(1)
-.TH CRYPT-MANAGER SECTION "juillet 24, 2007"
-.\" Please adjust this date whenever revising the manpage.
-.\"
+.TH CONCEAL 1 "august 16, 2007"
 .\" Some roff macros, for reference:
 .\" .nh        disable hyphenation
 .\" .hy        enable hyphenation
@@ -16,44 +11,59 @@
 .\" .sp <n>    insert n+1 empty lines
 .\" for manpage-specific macros, see man(7)
 .SH NAME
-crypt-manager \- program to do something
+conceal \- an encrypted folder manager
 .SH SYNOPSIS
-.B crypt-manager
-.RI [ options ] " files" ...
+.B conceal
+.RI [ options ] " directory" ...
 .br
-.B bar
-.RI [ options ] " files" ...
 .SH DESCRIPTION
 This manual page documents briefly the
-.B crypt-manager
-and
-.B bar
-commands.
+.B conceal
+command.
 .PP
 .\" TeX users may be more comfortable with the \fB<whatever>\fP and
 .\" \fI<whatever>\fP escape sequences to invode bold face and italics, 
 .\" respectively.
-\fBcrypt-manager\fP is a program that...
 .SH OPTIONS
 These programs follow the usual GNU command line syntax, with long
 options starting with two dashes (`-').
 A summary of options is included below.
-For a complete description, see the Info files.
+For a complete description, see conceal \-\-help.
 .TP
 .B \-h, \-\-help
 Show summary of options.
 .TP
-.B \-v, \-\-version
+.B \-\-version
 Show version of program.
+.TP
+.B \-e DIRECTORY, \-\-encrypt=DIRECTORY
+encrypt DIRECTORY
+.TP
+.B \-c DIRECTORY, \-\-close=DIRECTORY
+close DIRECTORY
+.TP
+.B \-o DIRECTORY, \-\-open=DIRECTORY
+open encrypted DIRECTORY
+.TP
+.B \-i IDLE, \-\-idle=IDLE 
+automaticaly close after IDLE time
+.TP
+.B \-d DIRECTORY, \-\-decrypt=DIRECTORY
+decrypt DIRECTORY
+.TP
+.B \-p DIRECTORY, \-\-change\-password=DIRECTORY
+change the password of DIRECTORY
+.TP
+.B \-l, \-\-clean
+Clean directories list
+.TP
+.B \-s, -\-stdin
+Get input from stdin
 .SH SEE ALSO
-.BR bar (1),
-.BR baz (1).
+.BR encfs (1),
 .br
-The programs are documented fully by
-.IR "The Rise and Fall of a Fooish Bar" ,
-available via the Info system.
 .SH AUTHOR
-crypt-manager was written by <upstream author>.
+conceal was written by Kévin Dunglas <dunglas@gmail.com>.
 .PP
-This manual page was written by Kévin <dunglas@gmail.com>,
+This manual page was written by Kévin Dunglas <dunglas@gmail.com>,
 for the Debian project (but may be used by others).
