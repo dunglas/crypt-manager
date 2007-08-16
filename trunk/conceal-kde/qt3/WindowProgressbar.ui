@@ -1,0 +1,36 @@
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<class>WindowProgressbar</class>
+<widget class="QDialog">
+    <property name="name">
+        <cstring>WindowProgressbar</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>279</width>
+            <height>21</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>Processing...</string>
+    </property>
+    <property name="modal">
+        <bool>true</bool>
+    </property>
+    <widget class="QProgressBar">
+        <property name="name">
+            <cstring>progressBar1</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>280</width>
+                <height>23</height>
+            </rect>
+        </property>
+    </widget>
+</widget>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>
