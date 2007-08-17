@@ -43,7 +43,7 @@ APPNAME="conceal-gtk"
 APPVERSION="0.0.3"
 CACHE = os.environ['HOME'] + "/.conceal/cache"
 GLADE = "/usr/share/conceal/conceal.glade"
-ICON = "/usr/share/conceal/icon.png"
+ICON = "/usr/share/pixmaps/conceal.png"
 class Keyring:
     """Store passwords using GNOME Keyring if available"""
     
