@@ -32,6 +32,7 @@ from ui.WindowCrypt import *
 from ui.WindowProperties import *
 from ui.WindowDecrypt import *
 from ui.WindowError import *
+from ui.WindowProgressbar import *
 
 import __builtin__
 __builtin__._ = gettext.gettext

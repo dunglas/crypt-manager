@@ -30,6 +30,15 @@
                 <height>23</height>
             </rect>
         </property>
+        <property name="totalSteps">
+            <number>0</number>
+        </property>
+        <property name="progress">
+            <number>0</number>
+        </property>
+        <property name="percentageVisible">
+            <bool>false</bool>
+        </property>
     </widget>
 </widget>
 <layoutdefaults spacing="6" margin="11"/>
