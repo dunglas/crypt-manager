@@ -36,7 +36,7 @@ __builtin__._ = gettext.gettext
 
 # Crypt Manager extension for nautilus
 EMBLEM = "readonly"
-ICON = "/usr/share/conceal/locked.png"
+ICON = "gtk-dialog-authentication"
 
 class concealExtension(nautilus.InfoProvider, nautilus.MenuProvider):
     def __init__(self):
