@@ -1,7 +1,7 @@
 [Desktop Entry]
 Name=Encrypted directories
 Name[fr]=Dossiers chiffrés
-Icon=/usr/share/pixmaps/conceal.png
+Icon=conceal.png
 Encoding=UTF-8
 X-KDE-ModuleType=Library
 X-KDE-Library=conceal
