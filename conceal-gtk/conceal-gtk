@@ -274,6 +274,12 @@ class Windows:
     
     def load(self, name):
         self.win[name] = Widgets(name)
+        if not name == "manager":
+            try:
+                windows[name][name].set_transient_for(\
+                    windows["manager"]["manager"])
+            except:
+                pass
         
     def __getitem__(self, key):
         """Alow to use windows['window']['widget']"""
