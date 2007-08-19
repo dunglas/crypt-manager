@@ -38,7 +38,7 @@ import __builtin__
 __builtin__._ = gettext.gettext
 
 APPNAME="conceal-kde"
-APPVERSION="0.0.3"
+APPVERSION="0.0.4"
 CACHE = os.environ['HOME'] + "/.conceal/cache"
 ICON = "/usr/share/pixmaps/conceal.png"
 wlist = []
