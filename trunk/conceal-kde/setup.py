@@ -31,7 +31,7 @@ import kdedistutils
 
 def doit():
     kdedistutils.setup(name="conceal-kde",
-        version="0.0.1",
+        version="0.0.4",
         author="Kévin Dunglas",
         author_email="dunglas@gmail.com",
         url="http://code.google.com/p/crypt-manager/",
