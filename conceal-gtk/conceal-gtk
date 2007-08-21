@@ -27,6 +27,7 @@ import os
 import sys
 import pygtk
 pygtk.require('2.0')
+import gobject
 import gtk
 import gtk.glade
 from time import sleep
@@ -217,6 +218,14 @@ class GladeHandlers:
         windows["manager"]["manager_open_close"].set_sensitive(True)
         windows["manager"]["manager_decrypt"].set_sensitive(True)
         windows["manager"]["manager_properties"].set_sensitive(True)
+    
+    def on_manager_list_drag_data_received(\
+        event, b, c, d, e, f, g):
+        data = e.data.split("file://")[1].split("\r\n")[0]
+        if os.path.isdir(data):
+            Crypt(data)
+        else:
+            Util().error_box(_("You must drag a folder."))
     
     def on_manager_open_close_clicked(event):
         (m, i) = windows["manager"]["manager_list"].get_selection().\
@@ -416,6 +425,10 @@ class Manager:
         
         self.folderList = gtk.ListStore(gtk.gdk.Pixbuf, str, str)
         windows["manager"]["manager_list"].set_model(self.folderList)
+        
+        target = [('text/uri-list', 0, 0)]
+        windows["manager"]["manager_list"].drag_dest_set(gtk.DEST_DEFAULT_ALL,\
+            target, gtk.gdk.ACTION_COPY)
         self.update()
 
     def update(self):
