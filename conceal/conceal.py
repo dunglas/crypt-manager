@@ -32,7 +32,7 @@ import re
 import time
 import cPickle
 
-# CRYPTDIR is the directory containing encrypted data.
+# CRYPTDIR is the folder containing encrypted data.
 # It is located at ~/.Crypt if in $HOME
 # or /mount-point/.Crypt-user (like Trash).
 MTAB = "/etc/mtab"
@@ -90,7 +90,7 @@ class LoError(Exception):
 
 class NotDir(Exception):
     def __str__(self):
-            return "This is not a directory"
+            return "This is not a folder"
 
 #class NotDir(Exception):
 #    def __str__(self):
@@ -98,7 +98,7 @@ class NotDir(Exception):
 
 #class NotWritable(Exception):
 #    def __str__(self):
-#        return "This directory and all his files must be writable"
+#        return "This folder and all his files must be writable"
 #
 
 
@@ -126,7 +126,7 @@ class Util:
             return True
 
     def rm(self, path):
-        """Remove recursively a directory"""
+        """Remove recursively a folder"""
         if os.path.exists(path):
             #for f in os.listdir(path):
             #    p = os.path.join(path, p)
@@ -273,7 +273,7 @@ class Encfs:
             raise BadPassword()
 
     def encrypt(self, password):
-        """Encrypt a directory"""
+        """Encrypt a folder"""
         print "Encrypting..."
         os.makedirs(self.folder.crypt)
         para = "\"%(mode)s\n%(pass)s\n\"" % {"mode": MODE, "pass": password}
@@ -304,7 +304,7 @@ class Encfs:
             raise BadPassword()
 
     def unmount(self):
-        """Unmount an encrypted directory"""
+        """Unmount an encrypted folder"""
         print "Unmounting..."
         subprocess.Popen([FUSERMOUNT, "-z", "-u", self.folder.path])
     
@@ -380,7 +380,7 @@ class Manage:
         tmp = os.path.join(TMPDIR, self.folder.digest)
         # Delete /tmp/conceal/DIGEST if already exists
         Util().rm(tmp)
-        # Move the existing content in a tmp directory
+        # Move the existing content in a tmp folder
         Util().mv(self.folder.path, tmp)
         # Create the mount point if needed
         
@@ -389,7 +389,7 @@ class Manage:
         self.encfs.encrypt(password)
         self.folder.opened = True
         
-        # Copy existing data in the crypted directory
+        # Copy existing data in the crypted folder
         Util().mv(tmp, self.folder.path)
 
     def mount(self, password, idle=None):
