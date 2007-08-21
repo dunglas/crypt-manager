@@ -48,17 +48,17 @@ class Main():
     
         parser = OptionParser(version="%prog " + APPVERSION)
         parser.add_option("-e", "--encrypt", dest="crypt",\
-            help="encrypt DIRECTORY", metavar="DIRECTORY")
+            help="encrypt FOLDER", metavar="FOLDER")
         parser.add_option("-c", "--close", dest="close",\
-            help="close DIRECTORY", metavar="DIRECTORY")
+            help="close FOLDER", metavar="FOLDER")
         parser.add_option("-o", "--open", dest="_open",\
-            help="open encrypted DIRECTORY", metavar="DIRECTORY")
+            help="open encrypted FOLDER", metavar="FOLDER")
         parser.add_option("-i", "--idle", dest="idle", type="int",\
             help="automaticaly close after IDLE time", metavar="IDLE")
         parser.add_option("-d", "--decrypt", dest="decrypt",\
-            help="decrypt DIRECTORY", metavar="DIRECTORY")
+            help="decrypt FOLDER", metavar="FOLDER")
         parser.add_option("-p", "--change-password", dest="change_password",\
-            help="change the password of DIRECTORY", metavar="DIRECTORY")
+            help="change the password of FOLDER", metavar="FOLDER")
         parser.add_option("-l", "--clean", action="store_true", dest="clean",\
             help="Clean directories list")
         parser.add_option("-s", "--stdin", action="store_true", dest="stdin",\
@@ -116,7 +116,7 @@ class Main():
         try:
             folder = conceal.Folder(self.options.crypt)
         except conceal.NotDir:
-            print _("%s is not a directory.") % self.options.crypt
+            print _("%s is not a folder.") % self.options.crypt
             sys.exit(2)
             
         password = self.getpass()
@@ -124,7 +124,7 @@ class Main():
         try:
             conceal.Manage(folder).crypt(password)
         except conceal.AlreadyEncrypted:
-            print _("%s is already an encrypted directory.") % folder.path
+            print _("%s is already an encrypted folder.") % folder.path
             sys.exit(2)
         
         self.folders.add(folder)
@@ -134,13 +134,13 @@ class Main():
         try:
             folder = self.folders.get(self.options.change_password)
         except conceal.NoEncrypted:
-            print _("%s is not an encrypted directory.") %\
+            print _("%s is not an encrypted folder.") %\
                 self.options.change_password
             sys.exit(2)
         
-        current = self.getpass(_("Enter current directory password:"))
-        new = self.getpass(_("Enter new directory password:"))
-        confirmation = self.getpass(_("Retype new directory password:"))
+        current = self.getpass(_("Enter current folder password:"))
+        new = self.getpass(_("Enter new folder password:"))
+        confirmation = self.getpass(_("Retype new folder password:"))
         
         if not new == confirmation:
             print _("Sorry, passwords do not match.")
@@ -158,7 +158,7 @@ class Main():
         try:
             folder = self.folders.get(self.options.close)
         except conceal.NoEncrypted:
-            print _("%s is not an encrypted directory.") % self.options.close
+            print _("%s is not an encrypted folder.") % self.options.close
             sys.exit(2)
         
         try:
@@ -174,7 +174,7 @@ class Main():
         try:
             folder = self.folders.get(self.options._open)
         except conceal.NoEncrypted:
-            exit(_("%s is not an encrypted directory.") % self.options._open)
+            exit(_("%s is not an encrypted folder.") % self.options._open)
         password = self.getpass()
         
         try:
@@ -194,7 +194,7 @@ class Main():
         try:
             folder = self.folders.get(self.options.decrypt)
         except conceal.NoEncrypted:
-            print _("%s is not an encrypted directory.") % self.options.decrypt
+            print _("%s is not an encrypted folder.") % self.options.decrypt
             sys.exit(2)
         password = self.getpass()
         try:
@@ -217,7 +217,7 @@ class Main():
                 
                 print "%s	%s" % (o, f.path)
         else:
-            print _("There is no encrypted directory.")
+            print _("There is no encrypted folder.")
         self.exit()
 
 if __name__ == '__main__':
