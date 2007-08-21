@@ -25,7 +25,7 @@ Description: A graphical encrypted folders manager
 
 Package: nautilus-conceal
 Architecture: all
-Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}, conceal-gtk
+Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}, conceal-gtk, python-nautilus, python2.4-dev
 Description: A Nautilus extension to manage encrypted folders
  An extension to the GNOME files manager for encrypted folders.
  
