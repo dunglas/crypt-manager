@@ -28,7 +28,7 @@
 from distutils.core import setup
 
 setup(name="conceal",
-    version="0.0.4",
+    version="0.0.5",
     author="Kévin Dunglas",
     author_email="dunglas@gmail.com",
     url="http://code.google.com/p/crypt-manager/",
