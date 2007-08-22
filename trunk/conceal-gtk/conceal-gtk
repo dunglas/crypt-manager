@@ -41,7 +41,7 @@ import __builtin__
 __builtin__._ = gettext.gettext
 
 APPNAME="conceal-gtk"
-APPVERSION="0.0.4"
+APPVERSION="0.0.5"
 CACHE = os.environ['HOME'] + "/.conceal/cache"
 GLADE = "/usr/share/conceal/conceal.glade"
 ICON = "/usr/share/pixmaps/conceal.png"

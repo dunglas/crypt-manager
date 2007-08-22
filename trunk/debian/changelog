@@ -1,3 +1,10 @@
+conceal (0.0.5-0ubuntu1) gutsy; urgency=low
+
+  * New upstream release
+  * Added nautilus-python and python2.4-dev dependency for nautilus-conceal
+
+ -- Kévin Dunglas <dunglas@gmail.com>  Fri, 19 Aug 2007 20:00:00 +0200
+
 conceal (0.0.4-0ubuntu1) gutsy; urgency=low
 
   * New upstream release
