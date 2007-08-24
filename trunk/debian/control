@@ -2,7 +2,7 @@ Source: conceal
 Section: admin
 Priority: optional
 Maintainer: Kévin Dunglas <dunglas@gmail.com>
-Build-Depends: debhelper (>= 5.0.38), python-central (>= 0.5.6), kdelibs4-dev, libpythonize0-dev, pykdeextensions, pyqt-tools, python-kde3, python-sip4-dev, python-all-dev (>= 2.3.5-11), python-kde3-dev
+Build-Depends: debhelper (>= 5.0.38), python-central (>= 0.5.6), kdelibs4-dev, libpythonize0-dev, pykdeextensions, pyqt-tools, python-kde3, python-sip4-dev, python-all-dev (>= 2.3.5-11), python-kde3-dev, python-qt-dev
 Standards-Version: 3.7.2
 XB-Python-Version: ${python:Versions}
 XS-Python-Version: all
