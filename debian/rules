@@ -38,8 +38,8 @@ install: build
 	cd conceal-kde && python setup.py install \
 		--root=$(CURDIR)/debian/conceal-kde && cd -
 	cd nautilus-conceal && python setup.py install \
-		--root=$(CURDIR)/debian/nautilus-conceal && cd -
-	chmod -R a+x $(CURDIR)/debian/conceal/usr/lib/python2.5/site-packages/conceal.py
+		--install-kcm --root=$(CURDIR)/debian/nautilus-conceal && cd -
+	chmod a+x $(CURDIR)/debian/conceal/usr/lib/python2.5/site-packages/conceal.py
 
 # Build architecture-independent files here.
 binary-indep: build install
