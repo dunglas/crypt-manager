@@ -58,10 +58,10 @@ binary-indep: build install
 	mkdir -p $(CURDIR)/debian/conceal-gtk/usr/share/doc/conceal-gtk
 	mkdir -p $(CURDIR)/debian/nautilus-conceal/usr/share/doc/nautilus-conceal
 	mkdir -p $(CURDIR)/debian/conceal-kde/usr/share/doc/conceal-kde
-	gzip -c -9 $(CURDIR)/debian/changelog > $(CURDIR)/debian/conceal/usr/share/doc/conceal/changelog.Debian.gz
-	cp $(CURDIR)/debian/conceal/usr/share/doc/conceal/changelog.Debian.gz $(CURDIR)/debian/conceal-gtk/usr/share/doc/conceal-gtk
-	cp $(CURDIR)/debian/conceal/usr/share/doc/conceal/changelog.Debian.gz $(CURDIR)/debian/nautilus-conceal/usr/share/doc/nautilus-conceal
-	cp $(CURDIR)/debian/conceal/usr/share/doc/conceal/changelog.Debian.gz $(CURDIR)/debian/conceal-kde/usr/share/doc/conceal-kde
+#	gzip -c -9 $(CURDIR)/debian/changelog > $(CURDIR)/debian/conceal/usr/share/doc/conceal/changelog.Debian.gz
+#	cp $(CURDIR)/debian/conceal/usr/share/doc/conceal/changelog.Debian.gz $(CURDIR)/debian/conceal-gtk/usr/share/doc/conceal-gtk
+#	cp $(CURDIR)/debian/conceal/usr/share/doc/conceal/changelog.Debian.gz $(CURDIR)/debian/nautilus-conceal/usr/share/doc/nautilus-conceal
+/bin/bash: q : commande introuvable
 	dh_testdir
 	dh_testroot
 	dh_installdocs README
