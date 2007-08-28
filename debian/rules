@@ -31,6 +31,8 @@ install: build
 	dh_testroot
 	dh_clean -k 
 	dh_installdirs
+	
+	# Build using distutils
 	cd conceal && python setup.py install \
 		--root=$(CURDIR)/debian/conceal && cd -
 	cd conceal-gtk && python setup.py install \
@@ -38,9 +40,18 @@ install: build
 	cd conceal-kde && python setup.py install \
 		--root=$(CURDIR)/debian/conceal-kde && cd -
 	cd nautilus-conceal && python setup.py install \
-		--install-kcm --root=$(CURDIR)/debian/nautilus-conceal && cd -
+		--root=$(CURDIR)/debian/nautilus-conceal && cd -
+	
+	# binary-or-shlib-defines-rpath
+	chrpath -d $(CURDIR)/debian/conceal-kde/usr/lib/kde3/kcm_*.so.*
+	
+	# script-not-executable
 	chmod a+x $(CURDIR)/debian/conceal/usr/lib/python2.5/site-packages/conceal.py
-
+	
+	# Fix link
+	rm $(CURDIR)/debian/conceal-kde/usr/bin/conceal-kde
+	cd $(CURDIR)/debian/conceal-kde/usr/bin/ && ln -s ../share/apps/conceal-kde/conceal-kde.py conceal-kde && cd -
+	
 # Build architecture-independent files here.
 binary-indep: build install
 	mkdir -p $(CURDIR)/debian/conceal/usr/share/doc/conceal
